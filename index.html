@@ -642,6 +642,281 @@
       font-weight: 700;
     }
 
+    #statsRow.stats-grid {
+      gap: 14px;
+    }
+
+    #statsRow .stat-card {
+      --mx: 16%;
+      --my: 18%;
+      --rx: 0deg;
+      --ry: 0deg;
+      --ix: 0px;
+      --iy: 0px;
+      --orb-x: 0px;
+      --orb-y: 0px;
+      --stat-border: rgba(59, 130, 246, 0.52);
+      --stat-color: #1f4fd8;
+      --stat-icon: rgba(30, 78, 216, 0.22);
+      --stat-grad-a: rgba(191, 219, 254, 0.52);
+      --stat-grad-b: rgba(255, 255, 255, 0.4);
+      --stat-orb: rgba(96, 165, 250, 0.24);
+      position: relative;
+      overflow: hidden;
+      isolation: isolate;
+      display: grid;
+      align-content: start;
+      gap: 10px;
+      min-height: 150px;
+      padding: 20px 22px !important;
+      border-radius: 26px !important;
+      border: 1.6px solid var(--stat-border) !important;
+      color: var(--stat-color) !important;
+      background:
+        radial-gradient(160px 140px at var(--mx) var(--my), rgba(255, 255, 255, 0.62), rgba(255, 255, 255, 0) 72%),
+        linear-gradient(130deg, var(--stat-grad-a) 0%, var(--stat-grad-b) 56%, rgba(255, 255, 255, 0.2) 100%) !important;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.68),
+        0 12px 34px rgba(15, 23, 42, 0.11) !important;
+      transform: translateY(0) rotateX(var(--rx)) rotateY(var(--ry));
+      transform-style: preserve-3d;
+      transition: transform 0.26s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.26s ease, border-color 0.22s ease;
+    }
+
+    #statsRow .stat-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      background: linear-gradient(145deg, rgba(255, 255, 255, 0.26), rgba(255, 255, 255, 0));
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    #statsRow .stat-card::after {
+      content: "";
+      position: absolute;
+      right: -44px;
+      top: -36px;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      background: var(--stat-orb);
+      transform: translate3d(var(--orb-x), var(--orb-y), 0);
+      transition: transform 0.26s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.26s ease;
+      opacity: 0.78;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    #statsRow .stat-card:hover {
+      transform: translateY(-4px) scale(1.01) rotateX(var(--rx)) rotateY(var(--ry));
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.78),
+        0 18px 42px rgba(15, 23, 42, 0.16) !important;
+    }
+
+    #statsRow .stat-card:focus-visible {
+      outline: 2px solid rgba(10, 132, 255, 0.48);
+      outline-offset: 2px;
+    }
+
+    #statsRow .stat-icon {
+      position: absolute;
+      right: 18px;
+      top: 10px;
+      font-size: 3.9rem;
+      line-height: 1;
+      color: var(--stat-icon);
+      opacity: 0.58;
+      transform: translate3d(var(--ix), var(--iy), 24px) rotate(-8deg);
+      transition: transform 0.26s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.26s ease;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    #statsRow .stat-card:hover .stat-icon {
+      opacity: 0.72;
+    }
+
+    #statsRow .stat-label {
+      margin: 0;
+      max-width: 78%;
+      font-size: 1.46rem;
+      font-weight: 800;
+      letter-spacing: 0;
+      text-transform: none;
+      line-height: 1.15;
+      color: var(--stat-color) !important;
+      position: relative;
+      z-index: 1;
+    }
+
+    #statsRow .stat-num,
+    #statsRow .stat-number {
+      margin: 0;
+      margin-top: 2px;
+      font-size: 3.08rem;
+      font-weight: 900;
+      line-height: 0.95;
+      letter-spacing: -0.02em;
+      color: var(--stat-color) !important;
+      position: relative;
+      z-index: 1;
+    }
+
+    #statsRow .stat-card.s-total {
+      --stat-border: rgba(59, 130, 246, 0.66);
+      --stat-color: #2563eb;
+      --stat-icon: rgba(37, 99, 235, 0.23);
+      --stat-grad-a: rgba(147, 197, 253, 0.5);
+      --stat-grad-b: rgba(219, 234, 254, 0.28);
+      --stat-orb: rgba(59, 130, 246, 0.24);
+    }
+
+    #statsRow .stat-card.s-stored {
+      --stat-border: rgba(34, 197, 94, 0.66);
+      --stat-color: #16a34a;
+      --stat-icon: rgba(22, 163, 74, 0.24);
+      --stat-grad-a: rgba(187, 247, 208, 0.5);
+      --stat-grad-b: rgba(220, 252, 231, 0.26);
+      --stat-orb: rgba(34, 197, 94, 0.24);
+    }
+
+    #statsRow .stat-card.s-completed {
+      --stat-border: rgba(20, 184, 166, 0.66);
+      --stat-color: #0f766e;
+      --stat-icon: rgba(15, 118, 110, 0.24);
+      --stat-grad-a: rgba(153, 246, 228, 0.48);
+      --stat-grad-b: rgba(204, 251, 241, 0.25);
+      --stat-orb: rgba(20, 184, 166, 0.24);
+    }
+
+    #statsRow .stat-card.s-pending {
+      --stat-border: rgba(245, 158, 11, 0.7);
+      --stat-color: #d97706;
+      --stat-icon: rgba(217, 119, 6, 0.24);
+      --stat-grad-a: rgba(253, 230, 138, 0.46);
+      --stat-grad-b: rgba(254, 243, 199, 0.25);
+      --stat-orb: rgba(245, 158, 11, 0.23);
+    }
+
+    #statsRow .stat-card.s-inprogress {
+      --stat-border: rgba(14, 165, 233, 0.66);
+      --stat-color: #0ea5e9;
+      --stat-icon: rgba(14, 165, 233, 0.24);
+      --stat-grad-a: rgba(125, 211, 252, 0.5);
+      --stat-grad-b: rgba(224, 242, 254, 0.24);
+      --stat-orb: rgba(14, 165, 233, 0.22);
+    }
+
+    #statsRow .stat-card.s-assigned {
+      --stat-border: rgba(236, 72, 153, 0.66);
+      --stat-color: #db2777;
+      --stat-icon: rgba(219, 39, 119, 0.22);
+      --stat-grad-a: rgba(249, 168, 212, 0.5);
+      --stat-grad-b: rgba(252, 231, 243, 0.24);
+      --stat-orb: rgba(236, 72, 153, 0.22);
+    }
+
+    #statsRow .stat-card.s-return {
+      --stat-border: rgba(107, 114, 128, 0.66);
+      --stat-color: #6b7280;
+      --stat-icon: rgba(107, 114, 128, 0.22);
+      --stat-grad-a: rgba(191, 219, 254, 0.4);
+      --stat-grad-b: rgba(226, 232, 240, 0.3);
+      --stat-orb: rgba(148, 163, 184, 0.24);
+    }
+
+    #statsRow .stat-card.s-cancel {
+      --stat-border: rgba(239, 68, 68, 0.66);
+      --stat-color: #dc2626;
+      --stat-icon: rgba(220, 38, 38, 0.22);
+      --stat-grad-a: rgba(254, 202, 202, 0.5);
+      --stat-grad-b: rgba(254, 226, 226, 0.24);
+      --stat-orb: rgba(239, 68, 68, 0.22);
+    }
+
+    body.dark-mode #statsRow .stat-card {
+      background:
+        radial-gradient(170px 150px at var(--mx) var(--my), rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0) 74%),
+        linear-gradient(132deg, var(--stat-grad-a) 0%, var(--stat-grad-b) 58%, rgba(15, 23, 42, 0.62) 100%) !important;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.12),
+        0 16px 44px rgba(2, 8, 20, 0.52) !important;
+    }
+
+    body.dark-mode #statsRow .stat-card.s-total {
+      --stat-color: #93c5fd;
+      --stat-icon: rgba(147, 197, 253, 0.28);
+      --stat-grad-a: rgba(30, 64, 175, 0.42);
+      --stat-grad-b: rgba(30, 41, 59, 0.52);
+    }
+
+    body.dark-mode #statsRow .stat-card.s-stored {
+      --stat-color: #86efac;
+      --stat-icon: rgba(134, 239, 172, 0.26);
+      --stat-grad-a: rgba(21, 128, 61, 0.42);
+      --stat-grad-b: rgba(22, 30, 44, 0.54);
+    }
+
+    body.dark-mode #statsRow .stat-card.s-completed {
+      --stat-color: #5eead4;
+      --stat-icon: rgba(94, 234, 212, 0.26);
+      --stat-grad-a: rgba(13, 148, 136, 0.42);
+      --stat-grad-b: rgba(22, 30, 44, 0.54);
+    }
+
+    body.dark-mode #statsRow .stat-card.s-pending {
+      --stat-color: #fbbf24;
+      --stat-icon: rgba(251, 191, 36, 0.24);
+      --stat-grad-a: rgba(146, 64, 14, 0.4);
+      --stat-grad-b: rgba(30, 41, 59, 0.54);
+    }
+
+    body.dark-mode #statsRow .stat-card.s-inprogress {
+      --stat-color: #7dd3fc;
+      --stat-icon: rgba(125, 211, 252, 0.26);
+      --stat-grad-a: rgba(3, 105, 161, 0.4);
+      --stat-grad-b: rgba(30, 41, 59, 0.54);
+    }
+
+    body.dark-mode #statsRow .stat-card.s-assigned {
+      --stat-color: #f9a8d4;
+      --stat-icon: rgba(249, 168, 212, 0.26);
+      --stat-grad-a: rgba(157, 23, 77, 0.4);
+      --stat-grad-b: rgba(30, 41, 59, 0.54);
+    }
+
+    body.dark-mode #statsRow .stat-card.s-return {
+      --stat-color: #cbd5e1;
+      --stat-icon: rgba(203, 213, 225, 0.26);
+      --stat-grad-a: rgba(71, 85, 105, 0.42);
+      --stat-grad-b: rgba(30, 41, 59, 0.54);
+    }
+
+    body.dark-mode #statsRow .stat-card.s-cancel {
+      --stat-color: #fca5a5;
+      --stat-icon: rgba(252, 165, 165, 0.28);
+      --stat-grad-a: rgba(153, 27, 27, 0.4);
+      --stat-grad-b: rgba(30, 41, 59, 0.54);
+    }
+
+    @media (max-width: 1200px) {
+      #statsRow .stat-label {
+        font-size: 1.26rem;
+      }
+
+      #statsRow .stat-num,
+      #statsRow .stat-number {
+        font-size: 2.72rem;
+      }
+
+      #statsRow .stat-icon {
+        font-size: 3.25rem;
+      }
+    }
+
     @media (max-width: 1100px) {
       .box-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     }
@@ -654,6 +929,24 @@
 
     @media (max-width: 560px) {
       .box-grid { grid-template-columns: 1fr; }
+      #statsRow .stat-card {
+        min-height: 128px;
+        padding: 16px 16px !important;
+        border-radius: 22px !important;
+      }
+      #statsRow .stat-label {
+        max-width: 72%;
+        font-size: 1.08rem;
+      }
+      #statsRow .stat-num,
+      #statsRow .stat-number {
+        font-size: 2.36rem;
+      }
+      #statsRow .stat-icon {
+        right: 12px;
+        top: 10px;
+        font-size: 2.58rem;
+      }
       .login-wrap {
         padding: 18px 12px 14px;
         border-radius: 24px;
@@ -1054,27 +1347,89 @@
       function renderStats(stats) {
         var s = (stats && typeof stats === 'object') ? stats : {};
         var cards = [
-          { key: 'total', label: 'ทั้งหมด', cls: 's-total' },
-          { key: 'stored', label: 'จัดเก็บแล้ว', cls: 's-stored' },
-          { key: 'completed', label: 'เสร็จสิ้น', cls: 's-completed' },
-          { key: 'pending', label: 'รอจัดเก็บ', cls: 's-pending' },
-          { key: 'inprogress', label: 'กำลังดำเนินการ', cls: 's-inprogress' },
-          { key: 'assigned', label: 'มอบผู้รับผิดชอบ', cls: 's-assigned' },
-          { key: 'returned', label: 'ส่งคืนฯ', cls: 's-return' },
-          { key: 'cancelled', label: 'ยกเลิก', cls: 's-cancel' }
+          { key: 'total', label: 'ทั้งหมด', cls: 's-total', icon: 'bi-folder2-open' },
+          { key: 'stored', label: 'จัดเก็บแล้ว', cls: 's-stored', icon: 'bi-box-seam' },
+          { key: 'completed', label: 'ดำเนินการเสร็จ', cls: 's-completed', icon: 'bi-check2-circle' },
+          { key: 'pending', label: 'รอการจัดเก็บ', cls: 's-pending', icon: 'bi-clock-history' },
+          { key: 'inprogress', label: 'กำลังดำเนินการ', cls: 's-inprogress', icon: 'bi-hourglass-split' },
+          { key: 'assigned', label: 'มอบผู้รับผิดชอบ', cls: 's-assigned', icon: 'bi-person-check' },
+          { key: 'returned', label: 'ส่งคืนเจ้าของเรื่อง', cls: 's-return', icon: 'bi-arrow-return-left' },
+          { key: 'cancelled', label: 'ยกเลิก', cls: 's-cancel', icon: 'bi-x-circle' }
         ];
 
         var html = '';
         for (var i = 0; i < cards.length; i++) {
           var card = cards[i];
           var value = Number(s[card.key] || 0);
-          html += '<div class="stat-card ' + card.cls + '">';
+          html += '<div class="stat-card ' + card.cls + '" tabindex="0" aria-label="' + C.escapeHtml(card.label + ' ' + value) + '">';
+          html += '<span class="stat-icon" aria-hidden="true"><i class="bi ' + C.escapeHtml(card.icon) + '"></i></span>';
           html += '<div class="stat-label">' + C.escapeHtml(card.label) + '</div>';
           html += '<div class="stat-num">' + value + '</div>';
           html += '</div>';
         }
 
         els.statsRow.innerHTML = html;
+        resetAllStatCardFx();
+      }
+
+      function resetStatCardFx(cardEl) {
+        if (!cardEl) return;
+        cardEl.style.setProperty('--mx', '16%');
+        cardEl.style.setProperty('--my', '18%');
+        cardEl.style.setProperty('--rx', '0deg');
+        cardEl.style.setProperty('--ry', '0deg');
+        cardEl.style.setProperty('--ix', '0px');
+        cardEl.style.setProperty('--iy', '0px');
+        cardEl.style.setProperty('--orb-x', '0px');
+        cardEl.style.setProperty('--orb-y', '0px');
+      }
+
+      function resetAllStatCardFx() {
+        if (!els.statsRow) return;
+        var cards = els.statsRow.querySelectorAll('.stat-card');
+        for (var i = 0; i < cards.length; i++) {
+          resetStatCardFx(cards[i]);
+        }
+      }
+
+      function bindStatsPointerFx() {
+        if (!els.statsRow || els.statsRow.dataset.fxBound === '1') return;
+        els.statsRow.dataset.fxBound = '1';
+
+        els.statsRow.addEventListener('pointermove', function (e) {
+          if (e.pointerType === 'touch') return;
+          var card = e.target && e.target.closest ? e.target.closest('.stat-card') : null;
+          if (!card || !els.statsRow.contains(card)) return;
+
+          var rect = card.getBoundingClientRect();
+          if (!rect || !rect.width || !rect.height) return;
+
+          var x = Math.max(0, Math.min(rect.width, e.clientX - rect.left));
+          var y = Math.max(0, Math.min(rect.height, e.clientY - rect.top));
+          var dx = (x - rect.width / 2) / (rect.width / 2);
+          var dy = (y - rect.height / 2) / (rect.height / 2);
+
+          card.style.setProperty('--mx', ((x / rect.width) * 100).toFixed(1) + '%');
+          card.style.setProperty('--my', ((y / rect.height) * 100).toFixed(1) + '%');
+          card.style.setProperty('--rx', (dy * -4.2).toFixed(2) + 'deg');
+          card.style.setProperty('--ry', (dx * 6.2).toFixed(2) + 'deg');
+          card.style.setProperty('--ix', (dx * 12).toFixed(1) + 'px');
+          card.style.setProperty('--iy', (dy * 10).toFixed(1) + 'px');
+          card.style.setProperty('--orb-x', (dx * 10).toFixed(1) + 'px');
+          card.style.setProperty('--orb-y', (dy * 8).toFixed(1) + 'px');
+        });
+
+        els.statsRow.addEventListener('pointerout', function (e) {
+          var card = e.target && e.target.closest ? e.target.closest('.stat-card') : null;
+          if (!card) return;
+          var related = e.relatedTarget;
+          if (related && card.contains(related)) return;
+          resetStatCardFx(card);
+        });
+
+        els.statsRow.addEventListener('pointerleave', function () {
+          resetAllStatCardFx();
+        });
       }
 
       function getDocStatusClass(status, storedLoc) {
@@ -1563,6 +1918,7 @@
         });
 
         switchTab('docs');
+        bindStatsPointerFx();
         renderStats({});
 
         if (initialUrl) {
