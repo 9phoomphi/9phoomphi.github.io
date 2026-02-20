@@ -3,7 +3,7 @@
   'use strict';
 
   global.DOC_CONTROL_CONFIG = {
-    appName: 'ระบบทะเบียนคุมเอกสาร (GitHub Frontend)',
+    appName: 'ระบบทะเบียนคุมเอกสาร',
     subtitle: 'พร้อมใช้งานกับ Apps Script API',
 
     // จำเป็น: ใส่ URL Web App ที่ลงท้ายด้วย /exec

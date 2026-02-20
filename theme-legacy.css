@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai+Looped:wght@300;400;500;600;700;800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap");
 
 :root {
   --bg-gradient: radial-gradient(130% 120% at 10% -12%, rgba(90, 200, 250, 0.24), rgba(90, 200, 250, 0) 58%), radial-gradient(120% 120% at 90% -10%, rgba(10, 132, 255, 0.2), rgba(10, 132, 255, 0) 56%), linear-gradient(180deg, #f8fbff 0%, #f2f6fb 45%, #ecf2f8 100%);
@@ -51,7 +51,7 @@ body {
 body {
   background: var(--bg-gradient) !important;
   color: var(--text-color) !important;
-  font-family: "IBM Plex Sans Thai Looped", sans-serif !important;
+  font-family: "IBM Plex Sans Thai", sans-serif !important;
   transition: background var(--motion-mid) var(--ease-out-soft), color var(--motion-fast) ease;
   min-height: 100vh;
   background-attachment: fixed;
@@ -87,7 +87,7 @@ h6,
 .apple-title,
 .box-name,
 .doc-title {
-  font-family: "IBM Plex Sans Thai Looped", sans-serif !important;
+  font-family: "IBM Plex Sans Thai", sans-serif !important;
   letter-spacing: 0.01em;
 }
 
