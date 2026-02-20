@@ -248,7 +248,6 @@
         user: null,
         doc: null,
         statusData: null,
-        info: null,
         memberMap: {}
       };
 
@@ -398,30 +397,15 @@
             + '<div><div class="label">ครบกำหนดทำลาย</div><div class="value">' + C.escapeHtml(d.destroyDateDisplay || '-') + '</div></div>'
             + '</div>';
         } else {
-          var locOpts = '<option value="">เลือกสถานที่เก็บ...</option>';
-          var fyOpts = '<option value="">เลือกปีงบประมาณ...</option>';
-          var info = (state.info && state.info.data) ? state.info.data : { locations: [], fiscalYears: [] };
-          var locations = Array.isArray(info.locations) ? info.locations : [];
-          var fYears = Array.isArray(info.fiscalYears) ? info.fiscalYears : [];
-          for (var li = 0; li < locations.length; li++) {
-            locOpts += '<option value="' + C.escapeHtml(locations[li]) + '">' + C.escapeHtml(locations[li]) + '</option>';
-          }
-          for (var fi = 0; fi < fYears.length; fi++) {
-            fyOpts += '<option value="' + C.escapeHtml(fYears[fi]) + '">' + C.escapeHtml(fYears[fi]) + '</option>';
-          }
-
           var canStore = !isReadOnly && d.docStatus !== 'ยกเลิก' && d.docStatus !== 'อนุมัติแล้วส่งคืนเจ้าของเรื่อง' && d.docStatus !== 'กำลังดำเนินการ' && d.docStatus !== 'มอบผู้รับผิดชอบ';
           if (!canStore) {
             els.storageWrap.innerHTML = '<div class="muted">เอกสารสถานะนี้ยังไม่สามารถจัดเก็บได้</div>';
           } else {
             els.storageWrap.innerHTML = ''
-              + '<div class="label" style="font-size:.9rem;color:#334155">บันทึกการจัดเก็บ</div>'
-              + '<div class="row two" style="margin-top:8px;">'
-              + '<div><div class="label">สถานที่จัดเก็บ</div><select id="storageLoc">' + locOpts + '</select></div>'
-              + '<div><div class="label">ปีงบประมาณ</div><select id="storageFiscal">' + fyOpts + '</select></div>'
-              + '</div>'
+              + '<div class="label" style="font-size:.9rem;color:#334155">การจัดเก็บเอกสาร</div>'
+              + '<div class="muted" style="margin-top:6px;">ใช้หน้าสแกนกลางเพื่อจัดเก็บเอกสารเป็นชุด</div>'
               + '<div class="actions" style="margin-top:8px;">'
-              + '<button id="btnSaveStorage" class="btn success" type="button"><i class="bi bi-save"></i> บันทึกจัดเก็บ</button>'
+              + '<button id="btnGoScanner" class="btn success" type="button"><i class="bi bi-upc-scan"></i> ไปหน้าสแกนจัดเก็บ</button>'
               + '</div>';
           }
         }
@@ -462,9 +446,11 @@
           btnMainStatus.onclick = changeMainStatus;
         }
 
-        var btnSaveStorage = document.getElementById('btnSaveStorage');
-        if (btnSaveStorage) {
-          btnSaveStorage.onclick = saveStorageData;
+        var btnGoScanner = document.getElementById('btnGoScanner');
+        if (btnGoScanner) {
+          btnGoScanner.onclick = function () {
+            C.redirect('storage-box-scan.html');
+          };
         }
 
         var btnEditAm = document.getElementById('btnEditAm');
@@ -475,34 +461,6 @@
         var btnEditAn = document.getElementById('btnEditAn');
         if (btnEditAn) {
           btnEditAn.onclick = function () { editField('anDate', 'แก้ไขลงวันที่ดำเนินการ (YYYY-MM-DD)', d.anDateInput || ''); };
-        }
-      }
-
-      function calcDestroyDateYmd() {
-        var now = new Date();
-        var d = new Date(now.getFullYear() + 10, now.getMonth(), now.getDate());
-        var m = String(d.getMonth() + 1).padStart(2, '0');
-        var day = String(d.getDate()).padStart(2, '0');
-        return d.getFullYear() + '-' + m + '-' + day;
-      }
-
-      async function saveStorageData() {
-        var locEl = document.getElementById('storageLoc');
-        var fyEl = document.getElementById('storageFiscal');
-        var loc = C.safeTrim(locEl ? locEl.value : '');
-        var fy = C.safeTrim(fyEl ? fyEl.value : '');
-        if (!loc || !fy) {
-          Swal.fire('กรอกข้อมูลไม่ครบ', 'กรุณาเลือกสถานที่จัดเก็บและปีงบประมาณ', 'warning');
-          return;
-        }
-
-        try {
-          var res = await state.api.saveStorageData(state.doc.docId, loc, '', fy, calcDestroyDateYmd());
-          if (!res || res.success === false) throw new Error((res && res.error) ? res.error : 'บันทึกไม่สำเร็จ');
-          Swal.fire('บันทึกสำเร็จ', 'จัดเก็บเอกสารเรียบร้อย', 'success');
-          await loadDetail();
-        } catch (err) {
-          Swal.fire('เกิดข้อผิดพลาด', (err && err.message) ? err.message : 'บันทึกไม่สำเร็จ', 'error');
         }
       }
 
@@ -616,14 +574,12 @@
           var data = await Promise.all([
             state.api.docDetail(docId),
             state.api.optionsMembers(),
-            state.api.optionsInfo(),
             state.api.me()
           ]);
 
           var detailRes = data[0] || {};
           var membersRes = data[1] || {};
-          var infoRes = data[2] || {};
-          var meRes = data[3] || {};
+          var meRes = data[2] || {};
 
           if (!meRes || meRes.success === false || !meRes.user) {
             C.redirect('index.html', {}, true);
@@ -637,7 +593,6 @@
           state.user = meRes.user;
           state.doc = detailRes.doc;
           state.statusData = detailRes.statusData || {};
-          state.info = infoRes || { data: { locations: [], fiscalYears: [] } };
 
           state.memberMap = {};
           var members = (membersRes && membersRes.data && Array.isArray(membersRes.data)) ? membersRes.data : [];
