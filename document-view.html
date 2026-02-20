@@ -560,7 +560,7 @@
         h += '<tr><td class="head">สถานะ</td><td>' + esc(d.docStatus || '-') + '</td></tr>';
         h += '</table>';
         h += '<div class="subj"><div style="font-size:8pt;font-weight:800;color:#475569">เรื่อง</div><div style="font-size:10.5pt;line-height:1.4">' + esc(d.subject || '-') + '</div></div>';
-        h += '</div><div class="no-print"><button onclick="window.print()" style="padding:10px 26px;border:none;border-radius:999px;background:#2563eb;color:#fff;font-weight:800">พิมพ์ใบแปะ</button></div></div></body></html>';
+        h += '</div><div class="no-print"><button onclick="window.print()" style="padding:10px 26px;border:1px solid rgba(10,132,255,.42);border-radius:999px;background:linear-gradient(180deg,#3299ff,#0a84ff);color:#fff;font-weight:760;box-shadow:0 10px 22px rgba(10,132,255,.22);cursor:pointer">พิมพ์ใบแปะ</button></div></div></body></html>';
 
         w.document.write(h);
         w.document.close();

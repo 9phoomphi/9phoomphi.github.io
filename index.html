@@ -400,19 +400,22 @@
       transform: translateY(-50%);
       width: 32px;
       height: 32px;
-      border: none;
-      border-radius: 10px;
-      background: transparent;
+      border: 1px solid rgba(148, 163, 184, 0.24);
+      border-radius: 11px;
+      background: rgba(148, 163, 184, 0.1);
       color: #6b7280;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       font-size: 1.05rem;
       cursor: pointer;
+      transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.24s ease, border-color 0.24s ease, color 0.24s ease;
     }
 
     .pass-eye:hover {
-      background: rgba(10, 132, 255, 0.12);
+      transform: translateY(calc(-50% - 1px));
+      background: rgba(10, 132, 255, 0.14);
+      border-color: rgba(10, 132, 255, 0.3);
       color: #0a84ff;
     }
 
@@ -505,11 +508,14 @@
     }
 
     body.login-mode #loginCard .pass-eye {
-      color: #6b7280 !important;
+      color: #64748b !important;
+      background: rgba(148, 163, 184, 0.12) !important;
+      border-color: rgba(148, 163, 184, 0.24) !important;
     }
 
     body.login-mode #loginCard .pass-eye:hover {
-      background: rgba(10, 132, 255, 0.12) !important;
+      background: rgba(10, 132, 255, 0.14) !important;
+      border-color: rgba(10, 132, 255, 0.32) !important;
       color: #0a84ff !important;
     }
 
@@ -542,11 +548,14 @@
 
     body.login-mode.dark-mode #loginCard .pass-eye {
       color: rgba(226, 232, 240, 0.86) !important;
+      background: rgba(148, 163, 184, 0.14) !important;
+      border-color: rgba(148, 163, 184, 0.24) !important;
     }
 
     body.login-mode.dark-mode #loginCard .pass-eye:hover {
-      background: rgba(125, 211, 252, 0.2) !important;
-      color: #8dd8ff !important;
+      background: rgba(90, 200, 250, 0.24) !important;
+      border-color: rgba(125, 211, 252, 0.42) !important;
+      color: #d5f4ff !important;
     }
 
     body.login-mode.dark-mode #settingsCard {
@@ -753,23 +762,23 @@
     }
 
     #homeTopbar .btn-logout {
-      height: 50px !important;
-      padding: 0 22px !important;
+      height: 46px !important;
+      padding: 0 18px !important;
       border-radius: 999px !important;
-      border: 1.6px solid rgba(239, 68, 68, 0.58) !important;
-      background: rgba(255, 255, 255, 0.42) !important;
-      color: #e11d48 !important;
-      box-shadow: none !important;
-      font-size: 1rem !important;
-      font-weight: 900 !important;
-      letter-spacing: 0;
+      border: 1.4px solid rgba(239, 68, 68, 0.42) !important;
+      background: rgba(255, 255, 255, 0.58) !important;
+      color: #dc2626 !important;
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.08) !important;
+      font-size: 0.95rem !important;
+      font-weight: 760 !important;
+      letter-spacing: 0.005em;
     }
 
     #homeTopbar .btn-logout:hover {
-      background: rgba(254, 226, 226, 0.74) !important;
-      border-color: rgba(239, 68, 68, 0.72) !important;
+      background: rgba(254, 242, 242, 0.86) !important;
+      border-color: rgba(239, 68, 68, 0.56) !important;
       color: #be123c !important;
-      box-shadow: 0 12px 24px rgba(239, 68, 68, 0.16) !important;
+      box-shadow: 0 10px 22px rgba(239, 68, 68, 0.14) !important;
     }
 
     #homeTopbar .app-settings-btn {
@@ -922,15 +931,17 @@
     }
 
     body.dark-mode #homeTopbar .btn-logout {
-      background: rgba(127, 29, 29, 0.22) !important;
-      border-color: rgba(248, 113, 113, 0.6) !important;
+      background: rgba(127, 29, 29, 0.24) !important;
+      border-color: rgba(248, 113, 113, 0.52) !important;
       color: #fda4af !important;
+      box-shadow: 0 10px 20px rgba(2, 8, 20, 0.3) !important;
     }
 
     body.dark-mode #homeTopbar .btn-logout:hover {
-      background: rgba(127, 29, 29, 0.36) !important;
-      border-color: rgba(248, 113, 113, 0.72) !important;
+      background: rgba(127, 29, 29, 0.4) !important;
+      border-color: rgba(248, 113, 113, 0.64) !important;
       color: #fecdd3 !important;
+      box-shadow: 0 12px 24px rgba(2, 8, 20, 0.34) !important;
     }
 
     body.dark-mode .search-panel {

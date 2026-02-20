@@ -190,25 +190,30 @@ textarea:focus,
 
 .btn {
   border-radius: 999px !important;
-  font-weight: 800 !important;
+  font-weight: 760 !important;
+  letter-spacing: 0.01em;
+  border: 1px solid transparent !important;
   position: relative;
   overflow: hidden;
   isolation: isolate;
-  transition: transform var(--motion-fast) var(--ease-out-soft), box-shadow var(--motion-mid) var(--ease-out-soft), filter var(--motion-fast) ease, border-color var(--motion-fast) ease, background-color var(--motion-fast) ease !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transform: translateY(0) scale(1);
+  transition: transform 0.26s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.32s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.28s ease, border-color 0.24s ease, color 0.24s ease, opacity 0.2s ease !important;
   will-change: transform;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.1);
 }
 
 .btn::before {
   content: "";
   position: absolute;
-  top: -24%;
-  left: -34%;
-  width: 36%;
-  height: 148%;
+  inset: 0;
   border-radius: 999px;
-  background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.42), rgba(255, 255, 255, 0));
-  transform: translateX(-170%) rotate(14deg);
-  transition: transform 0.68s var(--ease-out-soft);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.24), rgba(255, 255, 255, 0));
+  opacity: 0.72;
+  transition: opacity 0.28s ease;
   pointer-events: none;
   z-index: 0;
 }
@@ -216,6 +221,10 @@ textarea:focus,
 .btn > * {
   position: relative;
   z-index: 1;
+}
+
+.btn i {
+  font-size: 0.95em;
 }
 
 .btn:not(.outline):not(.secondary):not(.danger):not(.success):not(.warn),
@@ -234,10 +243,10 @@ textarea:focus,
 .apple-login-btn,
 .welcome-btn-primary,
 .welcome-btn-secondary {
-  background: linear-gradient(180deg, #2f97ff, #0a84ff, #0071e3) !important;
-  border: 1px solid rgba(10, 132, 255, 0.5) !important;
+  background: linear-gradient(180deg, #3299ff 0%, #0a84ff 68%, #0673e3 100%) !important;
+  border-color: rgba(10, 132, 255, 0.44) !important;
   color: #fff !important;
-  box-shadow: 0 14px 34px rgba(10, 132, 255, 0.26) !important;
+  box-shadow: 0 10px 24px rgba(10, 132, 255, 0.22) !important;
 }
 
 .btn.secondary,
@@ -246,14 +255,12 @@ textarea:focus,
 #btnLogout,
 #btnOpenSettings,
 #btnRefresh,
-#btnStop,
-#stopBtn,
 .queue-clear-btn,
 .camera-refresh-btn {
-  background: rgba(71, 85, 105, 0.86) !important;
-  border: 1px solid rgba(71, 85, 105, 0.72) !important;
-  color: #fff !important;
-  box-shadow: 0 14px 28px rgba(15, 23, 42, 0.22) !important;
+  background: rgba(226, 232, 240, 0.74) !important;
+  border-color: rgba(148, 163, 184, 0.48) !important;
+  color: #1f2937 !important;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.09) !important;
 }
 
 .btn.outline,
@@ -261,85 +268,189 @@ textarea:focus,
 #btnPrintSticker,
 #btnPrintQr,
 #btnPrintList,
-#btnClearQueue,
 #btnGenerateDevice,
 #btnPrev,
 #btnNext {
-  background: rgba(255, 255, 255, 0.82) !important;
-  border: 1px solid rgba(71, 85, 105, 0.32) !important;
+  background: rgba(255, 255, 255, 0.64) !important;
+  border-color: rgba(148, 163, 184, 0.44) !important;
   color: #0f172a !important;
+  box-shadow: 0 8px 16px rgba(15, 23, 42, 0.07) !important;
 }
 
 .btn.success,
 .print-btn,
 #btnPrintAll {
-  background: linear-gradient(180deg, #34d399, #30d158, #24b74a) !important;
-  border: 1px solid rgba(48, 209, 88, 0.55) !important;
+  background: linear-gradient(180deg, #2dc97f 0%, #21b56f 100%) !important;
+  border-color: rgba(34, 197, 94, 0.5) !important;
   color: #fff !important;
-  box-shadow: 0 14px 34px rgba(48, 209, 88, 0.28) !important;
+  box-shadow: 0 10px 22px rgba(34, 197, 94, 0.2) !important;
 }
 
 .btn.danger,
 #btnClearQueue,
 #btnStop,
 #stopBtn {
-  background: linear-gradient(180deg, #ef4444, #dc2626) !important;
-  border: 1px solid rgba(220, 38, 38, 0.6) !important;
+  background: linear-gradient(180deg, #f15b5b 0%, #e23d3d 100%) !important;
+  border-color: rgba(220, 38, 38, 0.52) !important;
   color: #fff !important;
+  box-shadow: 0 10px 22px rgba(220, 38, 38, 0.2) !important;
 }
 
-.btn:hover,
-.queue-save-btn:hover,
+.btn.warn,
+#btnMainStatus {
+  background: linear-gradient(180deg, #f7b54d 0%, #ea9728 100%) !important;
+  border-color: rgba(217, 119, 6, 0.5) !important;
+  color: #fff !important;
+  box-shadow: 0 10px 22px rgba(217, 119, 6, 0.2) !important;
+}
+
+.btn:focus-visible {
+  outline: none !important;
+  box-shadow: 0 0 0 3px var(--primary-color-soft), 0 8px 18px rgba(15, 23, 42, 0.1) !important;
+}
+
+.btn:hover {
+  transform: translateY(-1px) scale(1.004) !important;
+}
+
+.btn:hover::before {
+  opacity: 0.92;
+}
+
+.btn.secondary:hover,
+#btnBack:hover,
+#btnReload:hover,
+#btnLogout:hover,
+#btnOpenSettings:hover,
+#btnRefresh:hover,
 .queue-clear-btn:hover,
-#btnStart:hover,
-#startBtn:hover,
-#btnSaveQueue:hover,
-#btnSearch:hover,
+.camera-refresh-btn:hover {
+  background: rgba(203, 213, 225, 0.84) !important;
+  border-color: rgba(100, 116, 139, 0.5) !important;
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.12) !important;
+}
+
+.btn.outline:hover,
+#btnReloadBoxes:hover,
+#btnPrintSticker:hover,
+#btnPrintQr:hover,
+#btnPrintList:hover,
+#btnGenerateDevice:hover,
+#btnPrev:hover,
+#btnNext:hover {
+  background: rgba(255, 255, 255, 0.8) !important;
+  border-color: rgba(100, 116, 139, 0.45) !important;
+  box-shadow: 0 10px 20px rgba(15, 23, 42, 0.11) !important;
+}
+
+.btn:not(.outline):not(.secondary):not(.danger):not(.success):not(.warn):hover,
+.btn.primary:hover,
+.btn.search-btn:hover,
+.search-btn:hover,
+.queue-save-btn:hover,
+#btnSaveSettings:hover,
 #btnLogin:hover,
 #btnSubmit:hover,
-#btnSaveSettings:hover,
+#btnSearch:hover,
+#btnSaveQueue:hover,
+#btnStart:hover,
+#startBtn:hover,
 #btnSearchInspector:hover,
-.print-btn:hover {
-  transform: translateY(-2px) scale(1.008) !important;
-  filter: brightness(1.05) saturate(1.02) !important;
+.apple-login-btn:hover,
+.welcome-btn-primary:hover,
+.welcome-btn-secondary:hover {
+  box-shadow: 0 12px 26px rgba(10, 132, 255, 0.24) !important;
 }
 
-.btn:hover::before,
-.queue-save-btn:hover::before,
-.queue-clear-btn:hover::before,
-#btnStart:hover::before,
-#startBtn:hover::before,
-#btnSaveQueue:hover::before,
-#btnSearch:hover::before,
-#btnLogin:hover::before,
-#btnSubmit:hover::before,
-#btnSaveSettings:hover::before,
-#btnSearchInspector:hover::before,
-.print-btn:hover::before {
-  transform: translateX(320%) rotate(14deg);
+.btn.success:hover,
+.print-btn:hover,
+#btnPrintAll:hover {
+  box-shadow: 0 12px 24px rgba(34, 197, 94, 0.24) !important;
 }
 
-.btn:active,
-.queue-save-btn:active,
-.queue-clear-btn:active,
-#btnStart:active,
-#startBtn:active,
-#btnSaveQueue:active,
-#btnSearch:active,
-#btnLogin:active,
-#btnSubmit:active,
-#btnSaveSettings:active,
-#btnSearchInspector:active,
-.print-btn:active {
-  transform: translateY(0) scale(0.985) !important;
-  filter: brightness(0.98) !important;
+.btn.danger:hover,
+#btnClearQueue:hover,
+#btnStop:hover,
+#stopBtn:hover {
+  box-shadow: 0 12px 24px rgba(220, 38, 38, 0.24) !important;
+}
+
+.btn.warn:hover,
+#btnMainStatus:hover {
+  box-shadow: 0 12px 24px rgba(217, 119, 6, 0.24) !important;
+}
+
+.btn:active {
+  transform: translateY(0) scale(0.992) !important;
+}
+
+.btn:active::before {
+  opacity: 0.58;
 }
 
 .btn:disabled,
 button:disabled {
-  opacity: 0.62 !important;
+  opacity: 0.55 !important;
   cursor: not-allowed !important;
   transform: none !important;
+  box-shadow: none !important;
+  filter: saturate(0.88) !important;
+}
+
+.btn:disabled::before,
+button:disabled::before {
+  opacity: 0.18 !important;
+}
+
+.btn.danger,
+#btnClearQueue,
+#btnStop,
+#stopBtn {
+  color: #fff !important;
+}
+
+.pass-eye {
+  border: 1px solid transparent !important;
+  background: rgba(148, 163, 184, 0.12) !important;
+  color: #64748b !important;
+  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.24s ease, border-color 0.24s ease, color 0.24s ease !important;
+}
+
+.pass-eye:hover {
+  background: rgba(10, 132, 255, 0.14) !important;
+  border-color: rgba(10, 132, 255, 0.26) !important;
+  color: #0a84ff !important;
+}
+
+.pass-eye:active {
+  opacity: 0.92;
+}
+
+.queue-remove {
+  border: 1px solid rgba(239, 68, 68, 0.36) !important;
+  background: rgba(254, 226, 226, 0.78) !important;
+  color: #be123c !important;
+  border-radius: 999px !important;
+  height: 32px !important;
+  padding: 0 12px !important;
+  font: inherit !important;
+  font-weight: 700 !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.24s ease, border-color 0.24s ease, box-shadow 0.28s ease !important;
+}
+
+.queue-remove:hover {
+  transform: translateY(-1px);
+  background: rgba(254, 226, 226, 0.96) !important;
+  border-color: rgba(220, 38, 38, 0.48) !important;
+  box-shadow: 0 10px 20px rgba(220, 38, 38, 0.16) !important;
+}
+
+.queue-remove:active {
+  transform: translateY(0) scale(0.98);
 }
 
 .status-pill,
@@ -384,29 +495,34 @@ button:disabled {
 
 .tabs,
 .tabs-bar {
-  background: rgba(255, 255, 255, 0.42) !important;
+  background: rgba(255, 255, 255, 0.44) !important;
   border: 1px solid var(--input-border) !important;
-  box-shadow: 0 10px 26px rgba(15, 23, 42, 0.08) !important;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08) !important;
   backdrop-filter: saturate(180%) blur(22px) !important;
   -webkit-backdrop-filter: saturate(180%) blur(22px) !important;
 }
 
 .tab-btn {
-  font-weight: 800 !important;
+  font-weight: 760 !important;
+  border: 1px solid transparent !important;
+  box-shadow: none !important;
   color: var(--muted-text) !important;
-  transition: transform var(--motion-fast) var(--ease-out-soft), color var(--motion-fast) ease, background-color var(--motion-fast) ease, border-color var(--motion-fast) ease;
+  transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), color 0.24s ease, background-color 0.24s ease, border-color 0.24s ease, box-shadow 0.28s ease;
 }
 
 .tab-btn:hover {
   transform: translateY(-1px);
   color: var(--text-color) !important;
-  background: rgba(10, 132, 255, 0.08) !important;
+  background: rgba(10, 132, 255, 0.1) !important;
+  border-color: rgba(10, 132, 255, 0.2) !important;
+  box-shadow: 0 8px 18px rgba(10, 132, 255, 0.12) !important;
 }
 
 .tab-btn.active {
-  background: var(--primary-color-soft) !important;
-  border: 1px solid rgba(10, 132, 255, 0.28) !important;
+  background: rgba(10, 132, 255, 0.16) !important;
+  border: 1px solid rgba(10, 132, 255, 0.32) !important;
   color: var(--primary-color) !important;
+  box-shadow: 0 8px 20px rgba(10, 132, 255, 0.16) !important;
 }
 
 .docs-list,
@@ -616,18 +732,18 @@ button:disabled {
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 16px 40px rgba(15, 23, 42, 0.18);
-  transition: transform var(--motion-fast) var(--ease-out-soft), box-shadow var(--motion-mid) var(--ease-out-soft), background-color var(--motion-fast) ease, border-color var(--motion-fast) ease;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.14);
+  transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s cubic-bezier(0.22, 1, 0.36, 1), background-color 0.24s ease, border-color 0.24s ease;
   color: var(--text-color);
 }
 
 .theme-toggle-btn:hover {
-  transform: translateY(-2px) scale(1.03);
-  box-shadow: 0 22px 54px rgba(15, 23, 42, 0.24);
+  transform: translateY(-1px) scale(1.015);
+  box-shadow: 0 16px 34px rgba(15, 23, 42, 0.2);
 }
 
 .theme-toggle-btn:active {
-  transform: translateY(0) scale(0.96);
+  transform: translateY(0) scale(0.985);
 }
 
 @keyframes plSpin {
@@ -699,15 +815,23 @@ body.dark-mode .page-loader {
 
 body.dark-mode .tabs,
 body.dark-mode .tabs-bar {
-  background: rgba(148, 163, 184, 0.12) !important;
-  border-color: rgba(148, 163, 184, 0.3) !important;
-  box-shadow: none !important;
+  background: rgba(30, 41, 59, 0.34) !important;
+  border-color: rgba(148, 163, 184, 0.36) !important;
+  box-shadow: 0 10px 24px rgba(2, 8, 20, 0.3) !important;
+}
+
+body.dark-mode .tab-btn:hover {
+  color: #e2e8f0 !important;
+  background: rgba(90, 200, 250, 0.14) !important;
+  border-color: rgba(125, 211, 252, 0.28) !important;
+  box-shadow: 0 8px 18px rgba(2, 8, 20, 0.3) !important;
 }
 
 body.dark-mode .tab-btn.active {
-  background: rgba(90, 200, 250, 0.2) !important;
-  border-color: rgba(90, 200, 250, 0.44) !important;
-  color: #b7ecff !important;
+  background: rgba(90, 200, 250, 0.22) !important;
+  border-color: rgba(125, 211, 252, 0.42) !important;
+  color: #c7f2ff !important;
+  box-shadow: 0 8px 20px rgba(2, 8, 20, 0.3) !important;
 }
 
 body.dark-mode .status-pill,
@@ -722,6 +846,42 @@ body.dark-mode .chip {
   box-shadow: none !important;
 }
 
+body.dark-mode .btn:not(.outline):not(.secondary):not(.danger):not(.success):not(.warn),
+body.dark-mode .btn.primary,
+body.dark-mode .btn.search-btn,
+body.dark-mode .search-btn,
+body.dark-mode .queue-save-btn,
+body.dark-mode #btnSaveSettings,
+body.dark-mode #btnLogin,
+body.dark-mode #btnSubmit,
+body.dark-mode #btnSearch,
+body.dark-mode #btnSaveQueue,
+body.dark-mode #btnStart,
+body.dark-mode #startBtn,
+body.dark-mode #btnSearchInspector,
+body.dark-mode .apple-login-btn,
+body.dark-mode .welcome-btn-primary,
+body.dark-mode .welcome-btn-secondary {
+  background: linear-gradient(180deg, #3aa9ff 0%, #1b91ff 70%, #0f7ce6 100%) !important;
+  border-color: rgba(125, 211, 252, 0.42) !important;
+  color: #f8fbff !important;
+  box-shadow: 0 12px 26px rgba(2, 8, 20, 0.35) !important;
+}
+
+body.dark-mode .btn.secondary,
+body.dark-mode #btnBack,
+body.dark-mode #btnReload,
+body.dark-mode #btnLogout,
+body.dark-mode #btnOpenSettings,
+body.dark-mode #btnRefresh,
+body.dark-mode .queue-clear-btn,
+body.dark-mode .camera-refresh-btn {
+  background: rgba(30, 41, 59, 0.76) !important;
+  border-color: rgba(148, 163, 184, 0.46) !important;
+  color: #e2e8f0 !important;
+  box-shadow: 0 10px 22px rgba(2, 8, 20, 0.32) !important;
+}
+
 body.dark-mode .btn.outline,
 body.dark-mode #btnReloadBoxes,
 body.dark-mode #btnPrintSticker,
@@ -730,9 +890,61 @@ body.dark-mode #btnPrintList,
 body.dark-mode #btnGenerateDevice,
 body.dark-mode #btnPrev,
 body.dark-mode #btnNext {
-  background: rgba(15, 23, 42, 0.84) !important;
-  border-color: rgba(148, 163, 184, 0.42) !important;
+  background: rgba(15, 23, 42, 0.74) !important;
+  border-color: rgba(148, 163, 184, 0.46) !important;
   color: #e2e8f0 !important;
+  box-shadow: 0 10px 20px rgba(2, 8, 20, 0.3) !important;
+}
+
+body.dark-mode .btn.success,
+body.dark-mode .print-btn,
+body.dark-mode #btnPrintAll {
+  background: linear-gradient(180deg, #28c97a 0%, #1faa66 100%) !important;
+  border-color: rgba(74, 222, 128, 0.5) !important;
+  color: #f8fbff !important;
+  box-shadow: 0 10px 22px rgba(2, 8, 20, 0.34) !important;
+}
+
+body.dark-mode .btn.danger,
+body.dark-mode #btnClearQueue,
+body.dark-mode #btnStop,
+body.dark-mode #stopBtn {
+  background: linear-gradient(180deg, #f06464 0%, #df4a4a 100%) !important;
+  border-color: rgba(252, 165, 165, 0.48) !important;
+  color: #fff !important;
+  box-shadow: 0 10px 22px rgba(2, 8, 20, 0.34) !important;
+}
+
+body.dark-mode .btn.warn,
+body.dark-mode #btnMainStatus {
+  background: linear-gradient(180deg, #f6b14a 0%, #e5942b 100%) !important;
+  border-color: rgba(251, 191, 36, 0.5) !important;
+  color: #fff !important;
+  box-shadow: 0 10px 22px rgba(2, 8, 20, 0.34) !important;
+}
+
+body.dark-mode .pass-eye {
+  background: rgba(148, 163, 184, 0.14) !important;
+  border-color: rgba(148, 163, 184, 0.24) !important;
+  color: #cbd5e1 !important;
+}
+
+body.dark-mode .pass-eye:hover {
+  background: rgba(90, 200, 250, 0.24) !important;
+  border-color: rgba(125, 211, 252, 0.42) !important;
+  color: #d5f4ff !important;
+}
+
+body.dark-mode .queue-remove {
+  background: rgba(127, 29, 29, 0.34) !important;
+  border-color: rgba(248, 113, 113, 0.5) !important;
+  color: #fecdd3 !important;
+}
+
+body.dark-mode .queue-remove:hover {
+  background: rgba(127, 29, 29, 0.46) !important;
+  border-color: rgba(248, 113, 113, 0.6) !important;
+  box-shadow: 0 10px 20px rgba(2, 8, 20, 0.34) !important;
 }
 
 body.dark-mode .doc-list-card:hover,
