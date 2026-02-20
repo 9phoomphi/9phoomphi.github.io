@@ -1,0 +1,594 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>เพิ่ม/แก้ไขเอกสาร</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    :root {
+      --bg: #f3f6fb;
+      --card: rgba(255,255,255,0.9);
+      --text: #0f172a;
+      --muted: #475569;
+      --border: #dbe4f0;
+      --primary: #2563eb;
+      --primary2: #1d4ed8;
+      --shadow: 0 18px 46px rgba(15,23,42,0.14);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "IBM Plex Sans Thai", sans-serif;
+      color: var(--text);
+      background: radial-gradient(1200px 540px at 8% -14%, rgba(59,130,246,0.22), rgba(59,130,246,0)), var(--bg);
+    }
+    .shell { max-width: 960px; margin: 0 auto; padding: 14px; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 14px;
+      margin-bottom: 12px;
+      backdrop-filter: saturate(160%) blur(8px);
+    }
+    .topbar { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .title { margin: 0; font-size: 1.1rem; font-weight: 800; }
+    .muted { color: var(--muted); }
+    .btn {
+      border: none;
+      border-radius: 999px;
+      height: 38px;
+      padding: 0 14px;
+      color: #fff;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      background: linear-gradient(180deg, var(--primary), var(--primary2));
+    }
+    .btn.secondary { background: #334155; }
+    .btn.outline { background: #fff; color: var(--primary2); border: 1px solid #93c5fd; }
+    .actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .row { display: grid; gap: 10px; }
+    .row.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .row.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .label { font-size: 0.78rem; color: var(--muted); font-weight: 700; margin-bottom: 2px; }
+    input, select, textarea {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      min-height: 40px;
+      padding: 8px 10px;
+      font: inherit;
+      color: var(--text);
+      background: #fff;
+    }
+    textarea { min-height: 80px; }
+    .sec-title { font-size: 0.9rem; font-weight: 800; color: #334155; margin-bottom: 8px; }
+    .error { border: 1px solid rgba(220,38,38,.35); background: rgba(220,38,38,.08); color: #991b1b; border-radius: 10px; padding: 10px; font-size: 0.9rem; }
+    .hidden { display: none !important; }
+    @media (max-width: 900px) { .row.two, .row.three { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <div class="card topbar">
+      <div>
+        <h1 id="pageTitle" class="title">เพิ่มเอกสาร</h1>
+        <div id="pageSub" class="muted" style="font-size:0.84rem">กำลังโหลด...</div>
+      </div>
+      <div class="actions">
+        <button id="btnBack" class="btn secondary" type="button"><i class="bi bi-arrow-left"></i> กลับ</button>
+      </div>
+    </div>
+
+    <div id="errBox" class="error hidden"></div>
+
+    <div id="formWrap" class="hidden">
+      <div class="card">
+        <div class="sec-title">ข้อมูลพื้นฐาน</div>
+        <div class="row two">
+          <div id="fiscalWrap">
+            <div class="label">ปีงบประมาณ *</div>
+            <select id="fiscalYear"></select>
+          </div>
+          <div>
+            <div class="label">เลขที่รับ</div>
+            <input id="receiveNo" readonly>
+          </div>
+        </div>
+        <div class="row two" style="margin-top:8px;">
+          <div>
+            <div class="label">วันที่รับเอกสาร *</div>
+            <input id="dateRec" type="date">
+          </div>
+          <div>
+            <div class="label">เวลาที่รับ *</div>
+            <div class="row two" style="grid-template-columns:1fr 1fr;">
+              <select id="timeHr"></select>
+              <select id="timeMin"></select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="sec-title">ข้อมูลเอกสาร</div>
+        <div class="row two">
+          <div>
+            <div class="label">เลขที่ สธ. (กลุ่มงาน) *</div>
+            <input id="docNoSdh">
+          </div>
+          <div>
+            <div class="label">ลงวันที่กอง/กลุ่ม *</div>
+            <input id="dated" type="date">
+          </div>
+        </div>
+        <div class="row two" style="margin-top:8px;">
+          <div>
+            <div class="label">กลุ่ม/ศูนย์ *</div>
+            <select id="group"></select>
+          </div>
+          <div>
+            <div class="label">วัตถุประสงค์ *</div>
+            <select id="purpose"></select>
+          </div>
+        </div>
+        <div style="margin-top:8px;">
+          <div class="label">ชื่อผู้ส่ง/ผู้ยืม/ผู้ใช้หนี้/ผู้ประสานงาน *</div>
+          <input id="sender">
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="sec-title">รายละเอียดเรื่อง</div>
+        <div class="row">
+          <div>
+            <div class="label">เรื่อง (L) *</div>
+            <input id="subjectK">
+          </div>
+          <div>
+            <div class="label">วันที่/เดือน/ปี (M)</div>
+            <input id="subjectL">
+          </div>
+          <div>
+            <div class="label">เวลา (N)</div>
+            <input id="subjectM">
+          </div>
+          <div>
+            <div class="label">สถานที่ (O)</div>
+            <input id="subjectN">
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="sec-title">จำนวนเงิน</div>
+        <div class="row two">
+          <div>
+            <div class="label">จำนวนเบิก/ยืม/คืน *</div>
+            <input id="amount" type="number" step="0.01">
+          </div>
+          <div>
+            <div class="label">ส่วนต่าง/เงินเหลือคืน *</div>
+            <input id="difference" type="number" step="0.01">
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="sec-title">ประเภทเงินงบประมาณ</div>
+        <div class="row">
+          <div>
+            <div class="label">ประเภทเงินงบประมาณ *</div>
+            <select id="budgetType"></select>
+          </div>
+          <div id="planFields" class="row two hidden">
+            <div>
+              <div class="label">ผลผลิต *</div>
+              <input id="prod">
+            </div>
+            <div>
+              <div class="label">กิจกรรมหลัก *</div>
+              <input id="mainAct">
+            </div>
+            <div>
+              <div class="label">โครงการย่อย *</div>
+              <input id="subProject">
+            </div>
+            <div>
+              <div class="label">กิจกรรมย่อย *</div>
+              <input id="activity">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="sec-title">เลขที่หนังสือส่งกองคลัง / หมายเหตุ</div>
+        <div class="row two">
+          <div>
+            <div class="label">เลขที่หนังสือ (AK)</div>
+            <input id="amDocNo">
+          </div>
+          <div>
+            <div class="label">ลงวันที่ดำเนินการ (AL)</div>
+            <input id="anDate" type="date">
+          </div>
+        </div>
+        <div style="margin-top:8px;">
+          <div class="label">หมายเหตุ (AM)</div>
+          <textarea id="statusRemark"></textarea>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="actions">
+          <button id="btnSubmit" class="btn" type="button"><i class="bi bi-save-fill"></i> บันทึก</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="./config.js"></script>
+  <script src="./api-client.js"></script>
+  <script src="./app-common.js"></script>
+  <script>
+    (function () {
+      'use strict';
+
+      var C = window.DocFrontendCommon;
+      var query = C.parseQuery();
+      var mode = C.safeTrim(query.mode || '').toLowerCase() === 'edit' ? 'edit' : 'add';
+      var editId = C.safeTrim(query.id || '');
+
+      var state = {
+        api: null,
+        settings: null,
+        user: null,
+        options: null,
+        nextNos: {},
+        doc: null
+      };
+
+      var els = {
+        pageTitle: document.getElementById('pageTitle'),
+        pageSub: document.getElementById('pageSub'),
+        btnBack: document.getElementById('btnBack'),
+        errBox: document.getElementById('errBox'),
+        formWrap: document.getElementById('formWrap'),
+        fiscalWrap: document.getElementById('fiscalWrap'),
+        fiscalYear: document.getElementById('fiscalYear'),
+        receiveNo: document.getElementById('receiveNo'),
+        dateRec: document.getElementById('dateRec'),
+        timeHr: document.getElementById('timeHr'),
+        timeMin: document.getElementById('timeMin'),
+        docNoSdh: document.getElementById('docNoSdh'),
+        dated: document.getElementById('dated'),
+        group: document.getElementById('group'),
+        sender: document.getElementById('sender'),
+        purpose: document.getElementById('purpose'),
+        subjectK: document.getElementById('subjectK'),
+        subjectL: document.getElementById('subjectL'),
+        subjectM: document.getElementById('subjectM'),
+        subjectN: document.getElementById('subjectN'),
+        amount: document.getElementById('amount'),
+        difference: document.getElementById('difference'),
+        budgetType: document.getElementById('budgetType'),
+        planFields: document.getElementById('planFields'),
+        prod: document.getElementById('prod'),
+        mainAct: document.getElementById('mainAct'),
+        subProject: document.getElementById('subProject'),
+        activity: document.getElementById('activity'),
+        amDocNo: document.getElementById('amDocNo'),
+        anDate: document.getElementById('anDate'),
+        statusRemark: document.getElementById('statusRemark'),
+        btnSubmit: document.getElementById('btnSubmit')
+      };
+
+      function showError(message) {
+        var msg = C.safeTrim(message || '');
+        if (!msg) {
+          els.errBox.classList.add('hidden');
+          els.errBox.textContent = '';
+          return;
+        }
+        els.errBox.textContent = msg;
+        els.errBox.classList.remove('hidden');
+      }
+
+      function fillTimeSelects() {
+        var h = '<option value="">--</option>';
+        var m = '<option value="">--</option>';
+        for (var i = 0; i < 24; i++) {
+          var hv = String(i).padStart(2, '0');
+          h += '<option value="' + hv + '">' + hv + '</option>';
+        }
+        for (var j = 0; j < 60; j++) {
+          var mv = String(j).padStart(2, '0');
+          m += '<option value="' + mv + '">' + mv + '</option>';
+        }
+        els.timeHr.innerHTML = h;
+        els.timeMin.innerHTML = m;
+      }
+
+      function updateReceiveNo() {
+        if (mode === 'edit') return;
+        var fy = C.safeTrim(els.fiscalYear.value || '');
+        els.receiveNo.value = state.nextNos[fy] || '';
+      }
+
+      function togglePlan() {
+        var isPlan = C.safeTrim(els.budgetType.value) === 'เงินงบประมาณ';
+        els.planFields.classList.toggle('hidden', !isPlan);
+        if (!isPlan) {
+          els.prod.value = '';
+          els.mainAct.value = '';
+          els.subProject.value = '';
+          els.activity.value = '';
+        }
+      }
+
+      function setFormData(doc) {
+        if (!doc) return;
+        els.receiveNo.value = doc.receiveNo || '';
+        els.dateRec.value = doc.dateRecInput || '';
+
+        var time = C.safeTrim(doc.timeRec || '');
+        var sep = time.indexOf('.') >= 0 ? '.' : ':';
+        var p = time ? time.split(sep) : [];
+        if (p.length >= 2) {
+          els.timeHr.value = String(parseInt(p[0], 10)).padStart(2, '0');
+          els.timeMin.value = String(parseInt(p[1], 10)).padStart(2, '0');
+        }
+
+        els.docNoSdh.value = doc.docNoSdh || '';
+        els.dated.value = doc.datedInput || '';
+        els.group.value = doc.group || '';
+        els.sender.value = doc.sender || '';
+        els.purpose.value = doc.purpose || '';
+        els.subjectK.value = doc.subjectK || '';
+        els.subjectL.value = doc.subjectL || '';
+        els.subjectM.value = doc.subjectM || '';
+        els.subjectN.value = doc.subjectN || '';
+        els.amount.value = doc.amount || '';
+        els.difference.value = doc.difference || '';
+        els.budgetType.value = doc.budgetType || '';
+        els.prod.value = doc.prod || '';
+        els.mainAct.value = doc.mainAct || '';
+        els.subProject.value = doc.subProject || '';
+        els.activity.value = doc.activity || '';
+        els.amDocNo.value = doc.amDocNo || '';
+        els.anDate.value = doc.anDateInput || '';
+        els.statusRemark.value = doc.statusRemark || '';
+
+        togglePlan();
+      }
+
+      function buildFormData() {
+        var timeRec = '';
+        if (C.safeTrim(els.timeHr.value) && C.safeTrim(els.timeMin.value)) {
+          timeRec = C.safeTrim(els.timeHr.value) + '.' + C.safeTrim(els.timeMin.value);
+        }
+
+        return {
+          fiscalYear: C.safeTrim(els.fiscalYear.value),
+          dateRec: C.safeTrim(els.dateRec.value),
+          timeRec: timeRec,
+          docNoSdh: C.safeTrim(els.docNoSdh.value),
+          dated: C.safeTrim(els.dated.value),
+          group: C.safeTrim(els.group.value),
+          sender: C.safeTrim(els.sender.value),
+          purpose: C.safeTrim(els.purpose.value),
+          budgetType: C.safeTrim(els.budgetType.value),
+          subjectK: C.safeTrim(els.subjectK.value),
+          subjectL: C.safeTrim(els.subjectL.value),
+          subjectM: C.safeTrim(els.subjectM.value),
+          subjectN: C.safeTrim(els.subjectN.value),
+          amount: C.safeTrim(els.amount.value),
+          difference: C.safeTrim(els.difference.value),
+          prod: C.safeTrim(els.prod.value),
+          mainAct: C.safeTrim(els.mainAct.value),
+          subProject: C.safeTrim(els.subProject.value),
+          activity: C.safeTrim(els.activity.value),
+          amDocNo: C.safeTrim(els.amDocNo.value),
+          anDate: C.safeTrim(els.anDate.value),
+          statusRemark: C.safeTrim(els.statusRemark.value)
+        };
+      }
+
+      function validate(formData) {
+        if (mode !== 'edit' && !formData.fiscalYear) return 'กรุณาเลือกปีงบประมาณ';
+        if (!formData.dateRec) return 'กรุณาเลือกวันที่รับเอกสาร';
+        if (!formData.timeRec) return 'กรุณากรอกเวลาที่รับเอกสาร';
+        if (!formData.docNoSdh) return 'กรุณากรอกเลขที่ สธ. (กลุ่มงาน)';
+        if (!formData.dated) return 'กรุณาเลือกลงวันที่กอง/กลุ่ม';
+        if (!formData.group) return 'กรุณาเลือกกลุ่ม/ศูนย์';
+        if (!formData.sender) return 'กรุณากรอกชื่อผู้ส่ง/ผู้ยืม/ผู้ใช้หนี้/ผู้ประสานงาน';
+        if (!formData.purpose) return 'กรุณาเลือกวัตถุประสงค์';
+        if (!formData.subjectK) return 'กรุณากรอกเรื่อง (L)';
+        if (!formData.budgetType) return 'กรุณาเลือกประเภทเงินงบประมาณ';
+        if (!formData.amount || isNaN(Number(formData.amount))) return 'กรุณากรอกจำนวนเบิก/ยืม/คืนเป็นตัวเลข';
+        if (!formData.difference || isNaN(Number(formData.difference))) return 'กรุณากรอกส่วนต่าง/เงินเหลือคืนเป็นตัวเลข';
+
+        if (formData.budgetType === 'เงินงบประมาณ') {
+          if (!formData.prod) return 'กรุณากรอกผลผลิต';
+          if (!formData.mainAct) return 'กรุณากรอกกิจกรรมหลัก';
+          if (!formData.subProject) return 'กรุณากรอกโครงการย่อย';
+          if (!formData.activity) return 'กรุณากรอกกิจกรรมย่อย';
+        }
+
+        return '';
+      }
+
+      async function submit() {
+        showError('');
+        var formData = buildFormData();
+        var invalid = validate(formData);
+        if (invalid) {
+          Swal.fire('ข้อมูลไม่ครบ', invalid, 'warning');
+          return;
+        }
+
+        els.btnSubmit.disabled = true;
+        try {
+          var res;
+          if (mode === 'edit') {
+            res = await state.api.docUpdate(editId, formData);
+          } else {
+            res = await state.api.docCreate(formData);
+          }
+
+          if (!res || res.success === false) {
+            throw new Error((res && res.error) ? res.error : 'บันทึกไม่สำเร็จ');
+          }
+
+          var nextId = C.safeTrim((res && res.docId) || formData.amDocNo || editId || '');
+          await Swal.fire('สำเร็จ', mode === 'edit' ? 'บันทึกการแก้ไขแล้ว' : 'เพิ่มเอกสารสำเร็จ', 'success');
+          if (nextId) {
+            C.redirect('doc-view.html', { id: nextId }, true);
+          } else {
+            C.redirect('index.html', {}, true);
+          }
+        } catch (err) {
+          Swal.fire('เกิดข้อผิดพลาด', (err && err.message) ? err.message : 'บันทึกไม่สำเร็จ', 'error');
+        } finally {
+          els.btnSubmit.disabled = false;
+        }
+      }
+
+      function fillOptions() {
+        var info = (state.options && state.options.data) ? state.options.data : { fiscalYears: [], groups: [], purposes: [] };
+        var fiscalYears = Array.isArray(info.fiscalYears) ? info.fiscalYears : [];
+        var groups = Array.isArray(info.groups) ? info.groups : [];
+        var purposes = Array.isArray(info.purposes) ? info.purposes : [];
+
+        var fiscalHtml = '<option value="">เลือกปีงบประมาณ...</option>';
+        for (var i = 0; i < fiscalYears.length; i++) {
+          fiscalHtml += '<option value="' + C.escapeHtml(fiscalYears[i]) + '">' + C.escapeHtml(fiscalYears[i]) + '</option>';
+        }
+        els.fiscalYear.innerHTML = fiscalHtml;
+
+        var groupHtml = '<option value="">เลือกกลุ่ม/ศูนย์...</option>';
+        for (var g = 0; g < groups.length; g++) {
+          groupHtml += '<option value="' + C.escapeHtml(groups[g]) + '">' + C.escapeHtml(groups[g]) + '</option>';
+        }
+        els.group.innerHTML = groupHtml;
+
+        var purposeHtml = '<option value="">เลือกวัตถุประสงค์...</option>';
+        for (var p = 0; p < purposes.length; p++) {
+          purposeHtml += '<option value="' + C.escapeHtml(purposes[p]) + '">' + C.escapeHtml(purposes[p]) + '</option>';
+        }
+        els.purpose.innerHTML = purposeHtml;
+
+        var budgetTypes = ['กองทุน ววน.', 'กองทุนเงินทดแทน', 'เงินบำรุง', 'เงินงบประมาณ'];
+        var budgetHtml = '<option value="">เลือกประเภทเงินงบประมาณ...</option>';
+        for (var b = 0; b < budgetTypes.length; b++) {
+          budgetHtml += '<option value="' + C.escapeHtml(budgetTypes[b]) + '">' + C.escapeHtml(budgetTypes[b]) + '</option>';
+        }
+        els.budgetType.innerHTML = budgetHtml;
+      }
+
+      async function initData() {
+        var calls = [
+          state.api.me(),
+          state.api.optionsInfo(),
+          state.api.call('docs.next_receive_nos', { deviceKey: state.settings.deviceKey })
+        ];
+        if (mode === 'edit') calls.push(state.api.docDetail(editId));
+
+        var data = await Promise.all(calls);
+        var meRes = data[0] || {};
+        var infoRes = data[1] || {};
+        var nextNosRes = data[2] || {};
+        var detailRes = (mode === 'edit') ? (data[3] || {}) : null;
+
+        if (!meRes || meRes.success === false || !meRes.user) {
+          C.redirect('index.html', {}, true);
+          return false;
+        }
+        state.user = meRes.user;
+
+        if (state.user.isReadOnly || state.user.canEdit === false) {
+          throw new Error('บัญชีผู้มีสิทธิ์อ่าน ไม่สามารถเพิ่มหรือแก้ไขเอกสารได้');
+        }
+
+        state.options = infoRes || { data: { fiscalYears: [], groups: [], purposes: [] } };
+        state.nextNos = (nextNosRes && nextNosRes.data && typeof nextNosRes.data === 'object') ? nextNosRes.data : {};
+
+        if (mode === 'edit') {
+          if (!detailRes || detailRes.success === false || !detailRes.doc) {
+            throw new Error((detailRes && detailRes.error) ? detailRes.error : 'ไม่พบเอกสารที่ต้องการแก้ไข');
+          }
+          state.doc = detailRes.doc;
+        }
+
+        return true;
+      }
+
+      async function init() {
+        if (mode === 'edit' && !editId) {
+          showError('ไม่พบพารามิเตอร์ id สำหรับโหมดแก้ไข');
+          return;
+        }
+
+        try {
+          state.settings = C.ensureSettingsOrThrow();
+          state.api = C.createApiClient(state.settings);
+        } catch (_e) {
+          showError('กรุณาตั้งค่า scriptUrl และ deviceKey ที่หน้า index ก่อน');
+          return;
+        }
+
+        fillTimeSelects();
+
+        els.pageTitle.textContent = mode === 'edit' ? 'แก้ไขเอกสาร' : 'เพิ่มเอกสาร';
+        els.pageSub.textContent = mode === 'edit' ? ('เอกสาร: ' + editId) : 'กรอกข้อมูลเพื่อเพิ่มเอกสารใหม่';
+        els.btnSubmit.innerHTML = mode === 'edit' ? '<i class="bi bi-save-fill"></i> บันทึกการแก้ไข' : '<i class="bi bi-save-fill"></i> เพิ่มเอกสาร';
+
+        els.btnBack.onclick = function () {
+          if (mode === 'edit') {
+            C.redirect('doc-view.html', { id: editId });
+          } else {
+            C.redirect('index.html');
+          }
+        };
+
+        els.fiscalYear.onchange = updateReceiveNo;
+        els.budgetType.onchange = togglePlan;
+        els.btnSubmit.onclick = submit;
+
+        try {
+          var ok = await initData();
+          if (!ok) return;
+
+          fillOptions();
+
+          if (mode === 'edit' && state.doc) {
+            els.fiscalWrap.classList.add('hidden');
+            setFormData(state.doc);
+          } else {
+            updateReceiveNo();
+            var today = new Date();
+            var m = String(today.getMonth() + 1).padStart(2, '0');
+            var d = String(today.getDate()).padStart(2, '0');
+            els.dateRec.value = today.getFullYear() + '-' + m + '-' + d;
+            els.dated.value = els.dateRec.value;
+          }
+
+          els.formWrap.classList.remove('hidden');
+        } catch (err) {
+          showError((err && err.message) ? err.message : 'โหลดข้อมูลฟอร์มไม่สำเร็จ');
+        }
+      }
+
+      init();
+    })();
+  </script>
+</body>
+</html>
