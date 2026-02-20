@@ -193,20 +193,55 @@
     });
   };
 
+  DocumentControlApi.prototype._startGlobalLoader = function (opts) {
+    if (opts && opts.noPageLoader) return null;
+    var message = safeTrim(opts && opts.loaderMessage ? opts.loaderMessage : '') || 'กำลังโหลดข้อมูล...';
+
+    if (typeof global.beginPageLoading === 'function') {
+      return global.beginPageLoading(message);
+    }
+    if (typeof global.showPageLoader === 'function') {
+      global.showPageLoader(message, false);
+      return { _legacyLoader: true };
+    }
+    return null;
+  };
+
+  DocumentControlApi.prototype._stopGlobalLoader = function (ticket) {
+    if (!ticket) return;
+    if (typeof global.endPageLoading === 'function') {
+      global.endPageLoading(ticket);
+      return;
+    }
+    if (typeof global.hidePageLoader === 'function') {
+      global.hidePageLoader(false);
+    }
+  };
+
   DocumentControlApi.prototype.call = function (action, payload, opts) {
     var requestPayload = this._ensureSessionKeys(payload || {});
     var useJsonpOnly = !!(opts && opts.useJsonpOnly);
+    var loaderTicket = this._startGlobalLoader(opts);
+    var self = this;
+    var requestPromise;
 
     if (useJsonpOnly) {
-      return this._callJsonp(action, requestPayload, opts);
+      requestPromise = this._callJsonp(action, requestPayload, opts);
+    } else {
+      requestPromise = this._callFetch(action, requestPayload, opts).catch(function (err) {
+        if (err && err.isApiError) {
+          throw err;
+        }
+        return self._callJsonp(action, requestPayload, opts);
+      });
     }
 
-    var self = this;
-    return this._callFetch(action, requestPayload, opts).catch(function (err) {
-      if (err && err.isApiError) {
-        throw err;
-      }
-      return self._callJsonp(action, requestPayload, opts);
+    return requestPromise.then(function (response) {
+      self._stopGlobalLoader(loaderTicket);
+      return response;
+    }, function (err) {
+      self._stopGlobalLoader(loaderTicket);
+      throw err;
     });
   };
 

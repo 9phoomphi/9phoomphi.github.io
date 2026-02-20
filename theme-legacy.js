@@ -2,6 +2,12 @@
   'use strict';
 
   var pageLeaveTimer = null;
+  var pageLoadBusyCount = 0;
+
+  function getLoaderMessage(message) {
+    var text = String(message == null ? '' : message).trim();
+    return text || 'กำลังโหลดข้อมูล...';
+  }
 
   function prefersReducedMotion() {
     try {
@@ -198,7 +204,7 @@
     el = document.createElement('div');
     el.id = 'pageLoader';
     el.className = 'page-loader';
-    el.innerHTML = '<div class="page-loader-card"><div class="page-loader-spinner"></div><div class="page-loader-text" id="pageLoaderText">กำลังโหลด...</div></div>';
+    el.innerHTML = '<div class="page-loader-card"><div class="page-loader-spinner"></div><div class="page-loader-text" id="pageLoaderText">กำลังโหลดข้อมูล...</div></div>';
     document.body.appendChild(el);
     return el;
   }
@@ -206,19 +212,45 @@
   function showPageLoader(message, isNav) {
     var el = ensurePageLoader();
     var text = document.getElementById('pageLoaderText');
-    if (text) text.textContent = message || 'กำลังโหลด...';
+    if (text) text.textContent = getLoaderMessage(message);
     el.setAttribute('data-nav', isNav ? '1' : '0');
+    el.setAttribute('aria-busy', 'true');
     el.classList.add('show');
   }
 
-  function hidePageLoader() {
+  function hidePageLoader(force) {
     var el = document.getElementById('pageLoader');
-    if (el) el.classList.remove('show');
+    if (!el) return;
+    if (!force && el.getAttribute('data-nav') === '1') return;
+    el.classList.remove('show');
+    el.removeAttribute('aria-busy');
+    el.setAttribute('data-nav', '0');
+  }
+
+  function beginPageLoading(message) {
+    pageLoadBusyCount += 1;
+    showPageLoader(getLoaderMessage(message), false);
+    return { _active: true };
+  }
+
+  function endPageLoading(ticket) {
+    if (ticket && ticket._active === false) return;
+    if (ticket && typeof ticket === 'object') ticket._active = false;
+    if (pageLoadBusyCount > 0) pageLoadBusyCount -= 1;
+    if (pageLoadBusyCount <= 0) {
+      pageLoadBusyCount = 0;
+      hidePageLoader(false);
+    }
+  }
+
+  function resetPageLoading() {
+    pageLoadBusyCount = 0;
+    hidePageLoader(true);
   }
 
   function navigateWithLoader(url, message) {
     if (!url) return;
-    showPageLoader(message || 'กำลังเปลี่ยนหน้า...', true);
+    showPageLoader(getLoaderMessage(message), true);
     var dest = appendSessionKeysToUrl(url) || url;
 
     try {
@@ -232,7 +264,7 @@
         try {
           global.location.href = dest;
         } catch (_e2) {
-          hidePageLoader();
+          hidePageLoader(true);
           if (document.body) {
             document.body.classList.remove('page-leaving');
             document.body.classList.add('page-ready');
@@ -269,10 +301,34 @@
         if (nextUrl.origin !== current.origin) return;
 
         e.preventDefault();
-        navigateWithLoader(nextUrl.toString(), 'กำลังเปลี่ยนหน้า...');
+        navigateWithLoader(nextUrl.toString(), 'กำลังโหลดข้อมูล...');
       } catch (_err1) {
         try { a.setAttribute('href', appendSessionKeysToUrl(href)); } catch (_err2) {}
-        showPageLoader('กำลังเปลี่ยนหน้า...', true);
+        showPageLoader('กำลังโหลดข้อมูล...', true);
+      }
+    });
+  }
+
+  function bindPageLoaderForms() {
+    document.addEventListener('submit', function (e) {
+      var form = e && e.target ? e.target : null;
+      if (!form || form.nodeName !== 'FORM') return;
+      if (form.hasAttribute('data-no-loader')) return;
+      var target = String(form.getAttribute('target') || '').trim().toLowerCase();
+      if (target === '_blank') return;
+
+      try {
+        var method = String(form.getAttribute('method') || form.method || 'get').toLowerCase();
+        if (method === 'get') {
+          var action = form.getAttribute('action') || global.location.href;
+          form.setAttribute('action', appendSessionKeysToUrl(action));
+        }
+      } catch (_err0) {}
+
+      showPageLoader('กำลังโหลดข้อมูล...', true);
+      if (document.body) {
+        document.body.classList.add('page-leaving');
+        document.body.classList.remove('page-ready');
       }
     });
   }
@@ -281,7 +337,10 @@
     markPageReady();
     global.addEventListener('pageshow', function () {
       markPageReady();
-      hidePageLoader();
+      resetPageLoading();
+    });
+    global.addEventListener('beforeunload', function () {
+      showPageLoader('กำลังโหลดข้อมูล...', true);
     });
   }
 
@@ -326,9 +385,10 @@
     ensureDeviceKey();
     syncCurrentUrlSessionKeys();
     bindPageLoaderLinks();
+    bindPageLoaderForms();
     bindPageTransitionLifecycle();
     ensurePageLoader();
-    hidePageLoader();
+    resetPageLoading();
   }
 
   global.normalizeDeviceKeyClient = normalizeDeviceKeyClient;
@@ -342,6 +402,9 @@
   global.appendSessionKeysToUrl = appendSessionKeysToUrl;
   global.syncCurrentUrlSessionKeys = syncCurrentUrlSessionKeys;
   global.syncCurrentUrlDeviceKey = syncCurrentUrlSessionKeys;
+  global.beginPageLoading = beginPageLoading;
+  global.endPageLoading = endPageLoading;
+  global.resetPageLoading = resetPageLoading;
   global.showPageLoader = showPageLoader;
   global.hidePageLoader = hidePageLoader;
   global.navigateWithLoader = navigateWithLoader;
