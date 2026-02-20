@@ -13,7 +13,7 @@
     deviceKey: '',
 
     // ถ้า true จะซ่อนปุ่มตั้งค่า API บนหน้าเว็บ และบังคับใช้ค่าจากไฟล์นี้
-    lockSettings: false,
+    lockSettings: true,
 
     // ใส่เฉพาะลิงก์ที่ต้องการแสดงบนหน้าเว็บ
     links: {
