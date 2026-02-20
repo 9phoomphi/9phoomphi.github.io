@@ -38,12 +38,22 @@
     return 'dk_' + Math.random().toString(36).slice(2, 10) + '_' + Date.now().toString(36);
   }
 
+  function normalizeTimeoutMs(value, fallback) {
+    var num = Number(value);
+    var base = Number(fallback || 15000);
+    if (!isFinite(base) || base <= 0) base = 15000;
+    if (!isFinite(num) || num <= 0) return base;
+    if (num < 5000) return 5000;
+    if (num > 120000) return 120000;
+    return Math.round(num);
+  }
+
   function DocumentControlApi(options) {
     options = options || {};
     this.scriptUrl = normalizeScriptUrl(options.scriptUrl || '');
     this.defaultDeviceKey = safeTrim(options.deviceKey || '') || randomDeviceKey();
     this.defaultIpKey = safeTrim(options.ipKey || '');
-    this.timeoutMs = Number(options.timeoutMs || 15000);
+    this.timeoutMs = normalizeTimeoutMs(options.timeoutMs, 15000);
   }
 
   DocumentControlApi.prototype._buildPayload = function (action, payload, opts) {
@@ -95,7 +105,7 @@
 
     var endpoint = appendQuery(this.scriptUrl, { api: '1' });
     var body = this._buildPayload(action, payload, opts);
-    var timeoutMs = Number((opts && opts.timeoutMs) || this.timeoutMs || 15000);
+    var timeoutMs = normalizeTimeoutMs((opts && opts.timeoutMs), this.timeoutMs || 15000);
 
     return this._fetchWithTimeout(
       endpoint,
@@ -131,7 +141,7 @@
       var scriptTag = null;
       var timer = null;
       var callbackFired = false;
-      var timeoutMs = Number((opts && opts.timeoutMs) || self.timeoutMs || 15000);
+      var timeoutMs = normalizeTimeoutMs((opts && opts.timeoutMs), self.timeoutMs || 15000);
 
       function cleanup() {
         if (timer) {

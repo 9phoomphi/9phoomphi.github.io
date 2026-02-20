@@ -3,6 +3,7 @@
 
   var pageLeaveTimer = null;
   var pageLoadBusyCount = 0;
+  var statCardObserver = null;
 
   function getLoaderMessage(message) {
     var text = String(message == null ? '' : message).trim();
@@ -15,6 +16,167 @@
     } catch (_err) {
       return false;
     }
+  }
+
+  function setViewportHeightVar() {
+    if (!document || !document.documentElement) return;
+    var h = 0;
+    try {
+      if (global.visualViewport && Number(global.visualViewport.height) > 0) {
+        h = Number(global.visualViewport.height);
+      }
+    } catch (_e0) {}
+    if (!h && Number(global.innerHeight) > 0) h = Number(global.innerHeight);
+    if (!h) return;
+    document.documentElement.style.setProperty('--app-vh', Math.round(h) + 'px');
+  }
+
+  function bindViewportHeightVar() {
+    setViewportHeightVar();
+    var timer = null;
+
+    function scheduleUpdate() {
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(function () {
+        timer = null;
+        setViewportHeightVar();
+      }, 24);
+    }
+
+    try {
+      global.addEventListener('resize', scheduleUpdate, { passive: true });
+      global.addEventListener('orientationchange', scheduleUpdate, { passive: true });
+      global.addEventListener('pageshow', scheduleUpdate, { passive: true });
+    } catch (_e1) {
+      global.addEventListener('resize', scheduleUpdate);
+      global.addEventListener('orientationchange', scheduleUpdate);
+      global.addEventListener('pageshow', scheduleUpdate);
+    }
+
+    try {
+      if (global.visualViewport) {
+        global.visualViewport.addEventListener('resize', scheduleUpdate, { passive: true });
+        global.visualViewport.addEventListener('scroll', scheduleUpdate, { passive: true });
+      }
+    } catch (_e2) {}
+  }
+
+  function markDeviceClasses() {
+    if (!document.body || !global.matchMedia) return;
+    var coarse = false;
+    var noHover = false;
+    try { coarse = !!global.matchMedia('(pointer: coarse)').matches; } catch (_e0) {}
+    try { noHover = !!global.matchMedia('(hover: none)').matches; } catch (_e1) {}
+    document.body.classList.toggle('is-coarse-pointer', coarse);
+    document.body.classList.toggle('is-no-hover', noHover);
+  }
+
+  function resetStatCardMotion(card) {
+    if (!card || !card.style) return;
+    card.style.setProperty('--rx', '0deg');
+    card.style.setProperty('--ry', '0deg');
+    card.style.setProperty('--ix', '0px');
+    card.style.setProperty('--iy', '0px');
+    card.style.setProperty('--orb-x', '0px');
+    card.style.setProperty('--orb-y', '0px');
+  }
+
+  function initSingleStatCardMotion(card) {
+    if (!card || card.getAttribute('data-motion-bound') === '1') return;
+    card.setAttribute('data-motion-bound', '1');
+    resetStatCardMotion(card);
+
+    var rafId = 0;
+    var px = 0;
+    var py = 0;
+    var rect = null;
+
+    function applyMotion() {
+      rafId = 0;
+      if (!rect) rect = card.getBoundingClientRect();
+      var width = Math.max(rect.width, 1);
+      var height = Math.max(rect.height, 1);
+      var rxRatio = Math.min(1, Math.max(0, (px - rect.left) / width));
+      var ryRatio = Math.min(1, Math.max(0, (py - rect.top) / height));
+
+      var rotX = (0.5 - ryRatio) * 8;
+      var rotY = (rxRatio - 0.5) * 10;
+      var iconX = (rxRatio - 0.5) * 10;
+      var iconY = (ryRatio - 0.5) * 8;
+      var orbX = (rxRatio - 0.5) * 18;
+      var orbY = (ryRatio - 0.5) * 14;
+
+      card.style.setProperty('--rx', rotX.toFixed(2) + 'deg');
+      card.style.setProperty('--ry', rotY.toFixed(2) + 'deg');
+      card.style.setProperty('--ix', iconX.toFixed(2) + 'px');
+      card.style.setProperty('--iy', iconY.toFixed(2) + 'px');
+      card.style.setProperty('--orb-x', orbX.toFixed(2) + 'px');
+      card.style.setProperty('--orb-y', orbY.toFixed(2) + 'px');
+    }
+
+    function queueApply() {
+      if (rafId) return;
+      if (typeof global.requestAnimationFrame === 'function') {
+        rafId = global.requestAnimationFrame(applyMotion);
+        return;
+      }
+      rafId = setTimeout(applyMotion, 16);
+    }
+
+    function onMove(e) {
+      if (!e) return;
+      if (prefersReducedMotion()) return;
+      px = Number(e.clientX || 0);
+      py = Number(e.clientY || 0);
+      rect = card.getBoundingClientRect();
+      queueApply();
+    }
+
+    function onEnter(e) {
+      rect = card.getBoundingClientRect();
+      onMove(e);
+    }
+
+    function onLeave() {
+      if (rafId) {
+        if (typeof global.cancelAnimationFrame === 'function') {
+          global.cancelAnimationFrame(rafId);
+        } else {
+          clearTimeout(rafId);
+        }
+        rafId = 0;
+      }
+      rect = null;
+      resetStatCardMotion(card);
+    }
+
+    card.addEventListener('pointerenter', onEnter, { passive: true });
+    card.addEventListener('pointermove', onMove, { passive: true });
+    card.addEventListener('pointerleave', onLeave, { passive: true });
+    card.addEventListener('blur', onLeave, true);
+  }
+
+  function initStatCardMotion() {
+    if (!document || !document.body) return;
+    if (prefersReducedMotion()) return;
+    if (global.matchMedia && !global.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+
+    var row = document.getElementById('statsRow');
+    if (!row) return;
+
+    var cards = row.querySelectorAll('.stat-card');
+    for (var i = 0; i < cards.length; i++) {
+      initSingleStatCardMotion(cards[i]);
+    }
+
+    if (statCardObserver || typeof MutationObserver !== 'function') return;
+    statCardObserver = new MutationObserver(function () {
+      var latest = row.querySelectorAll('.stat-card');
+      for (var j = 0; j < latest.length; j++) {
+        initSingleStatCardMotion(latest[j]);
+      }
+    });
+    statCardObserver.observe(row, { childList: true });
   }
 
   function markPageReady() {
@@ -358,6 +520,18 @@
     } catch (_err) {}
   }
 
+  function applyThemePreset() {
+    if (!document.body) return;
+    var preset = 'apple-glass';
+    try {
+      var cfg = global.DOC_CONTROL_CONFIG;
+      if (cfg && typeof cfg === 'object' && typeof cfg.themePreset === 'string' && cfg.themePreset.trim()) {
+        preset = cfg.themePreset.trim();
+      }
+    } catch (_err) {}
+    document.body.setAttribute('data-theme-preset', preset);
+  }
+
   function toggleTheme() {
     var icon = document.getElementById('theme-icon');
     try {
@@ -674,7 +848,10 @@
   function bootstrapLegacyTheme() {
     ensureCalendarDom();
     ensureThemeToggleButton();
+    applyThemePreset();
     initTheme();
+    bindViewportHeightVar();
+    markDeviceClasses();
     ensureDeviceKey();
     syncCurrentUrlSessionKeys();
     bindPageLoaderLinks();
@@ -682,6 +859,7 @@
     bindPageTransitionLifecycle();
     ensurePageLoader();
     initDateDisplays();
+    initStatCardMotion();
     resetPageLoading();
   }
 
@@ -704,6 +882,9 @@
   global.navigateWithLoader = navigateWithLoader;
   global.initTheme = initTheme;
   global.toggleTheme = toggleTheme;
+  global.applyThemePreset = applyThemePreset;
+  global.setViewportHeightVar = setViewportHeightVar;
+  global.initStatCardMotion = initStatCardMotion;
   global.openCalendar = openCalendar;
   global.closeCalendar = closeCalendar;
   global.calPrev = calPrev;

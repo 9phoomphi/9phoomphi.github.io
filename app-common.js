@@ -40,9 +40,11 @@
     return {
       appName: safeTrim(cfg.appName),
       subtitle: safeTrim(cfg.subtitle),
+      themePreset: safeTrim(cfg.themePreset || 'apple-glass'),
       scriptUrl: normalizeScriptUrl(cfg.scriptUrl),
       deviceKey: safeTrim(cfg.deviceKey),
       lockSettings: !!cfg.lockSettings,
+      requestTimeoutMs: Number(cfg.requestTimeoutMs || 22000),
       links: {
         webApp: safeUrl(links.webApp),
         spreadsheet: safeUrl(links.spreadsheet),
@@ -104,10 +106,14 @@
     }
 
     var s = settings || ensureSettingsOrThrow();
+    var timeoutMs = Number((s.config && s.config.requestTimeoutMs) || s.requestTimeoutMs || 22000);
+    if (!isFinite(timeoutMs) || timeoutMs <= 0) timeoutMs = 22000;
+    if (timeoutMs < 5000) timeoutMs = 5000;
+    if (timeoutMs > 120000) timeoutMs = 120000;
     return new global.DocumentControlApi({
       scriptUrl: s.scriptUrl,
       deviceKey: s.deviceKey,
-      timeoutMs: 20000
+      timeoutMs: timeoutMs
     });
   }
 

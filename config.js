@@ -5,6 +5,7 @@
   global.DOC_CONTROL_CONFIG = {
     appName: 'ระบบทะเบียนคุมเอกสาร',
     subtitle: 'พร้อมใช้งานกับ Apps Script API',
+    themePreset: 'apple-glass',
 
     // จำเป็น: ใส่ URL Web App ที่ลงท้ายด้วย /exec
     scriptUrl: 'https://script.google.com/macros/s/AKfycbyDGKl_BUtYcGnbdOO0jLfC2OEpCIqP-57jvzG_lx7acq6tnTl-AfBV9WgYmFQBcYjB/exec',
@@ -14,6 +15,7 @@
 
     // ถ้า true จะซ่อนปุ่มตั้งค่า API บนหน้าเว็บ และบังคับใช้ค่าจากไฟล์นี้
     lockSettings: true,
+    requestTimeoutMs: 22000,
 
     // ใส่เฉพาะลิงก์ที่ต้องการแสดงบนหน้าเว็บ
     links: {
