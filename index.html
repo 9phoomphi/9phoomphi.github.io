@@ -338,6 +338,9 @@
     }
 
     .login-input {
+      display: block;
+      width: 100% !important;
+      min-width: 0;
       height: 58px !important;
       border-radius: 24px !important;
       border: 1px solid rgba(148, 163, 184, 0.42) !important;
@@ -360,6 +363,7 @@
 
     .pass-wrap {
       position: relative;
+      width: 100%;
     }
 
     .pass-wrap .login-input {
@@ -447,6 +451,90 @@
     body.login-mode #errorBox {
       border-radius: 14px;
       background: rgba(220, 38, 38, 0.1);
+    }
+
+    /* login-mode: lock contrast and spacing so theme override does not wash text out */
+    body.login-mode #loginCard.login-wrap {
+      background: rgba(255, 255, 255, 0.62) !important;
+      border-color: rgba(255, 255, 255, 0.78) !important;
+      box-shadow: 0 34px 78px rgba(15, 23, 42, 0.2) !important;
+    }
+
+    body.login-mode #loginCard .login-kicker,
+    body.login-mode #loginCard .login-subtitle,
+    body.login-mode #loginCard .login-form label,
+    body.login-mode #loginCard .login-foot {
+      color: #5f6b7d !important;
+    }
+
+    body.login-mode #loginCard .login-title {
+      color: #0f172a !important;
+    }
+
+    body.login-mode #loginCard .login-input {
+      background: rgba(255, 255, 255, 0.88) !important;
+      border-color: rgba(148, 163, 184, 0.5) !important;
+      color: #111827 !important;
+    }
+
+    body.login-mode #loginCard .login-input::placeholder {
+      color: rgba(100, 116, 139, 0.86) !important;
+    }
+
+    body.login-mode #loginCard .pass-eye {
+      color: #6b7280 !important;
+    }
+
+    body.login-mode #loginCard .pass-eye:hover {
+      background: rgba(10, 132, 255, 0.12) !important;
+      color: #0a84ff !important;
+    }
+
+    body.login-mode.dark-mode #loginCard.login-wrap {
+      background: rgba(13, 21, 33, 0.74) !important;
+      border-color: rgba(148, 163, 184, 0.34) !important;
+      box-shadow: 0 36px 88px rgba(2, 8, 20, 0.62) !important;
+    }
+
+    body.login-mode.dark-mode #loginCard .login-kicker,
+    body.login-mode.dark-mode #loginCard .login-subtitle,
+    body.login-mode.dark-mode #loginCard .login-form label,
+    body.login-mode.dark-mode #loginCard .login-foot {
+      color: rgba(226, 232, 240, 0.84) !important;
+    }
+
+    body.login-mode.dark-mode #loginCard .login-title {
+      color: #f8fafc !important;
+    }
+
+    body.login-mode.dark-mode #loginCard .login-input {
+      background: rgba(15, 23, 42, 0.84) !important;
+      border-color: rgba(148, 163, 184, 0.5) !important;
+      color: #f8fafc !important;
+    }
+
+    body.login-mode.dark-mode #loginCard .login-input::placeholder {
+      color: rgba(203, 213, 225, 0.72) !important;
+    }
+
+    body.login-mode.dark-mode #loginCard .pass-eye {
+      color: rgba(226, 232, 240, 0.86) !important;
+    }
+
+    body.login-mode.dark-mode #loginCard .pass-eye:hover {
+      background: rgba(125, 211, 252, 0.2) !important;
+      color: #8dd8ff !important;
+    }
+
+    body.login-mode.dark-mode #settingsCard {
+      background: rgba(15, 23, 42, 0.64) !important;
+      border-color: rgba(148, 163, 184, 0.34) !important;
+    }
+
+    body.login-mode.dark-mode #errorBox {
+      background: rgba(127, 29, 29, 0.38) !important;
+      border-color: rgba(248, 113, 113, 0.5) !important;
+      color: #fecaca !important;
     }
 
     .empty {
