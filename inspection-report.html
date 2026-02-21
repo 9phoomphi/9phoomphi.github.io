@@ -3,18 +3,19 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <title>เครื่องมือตรวจสอบผลงาน</title>
+  <title>ตรวจสอบผลงาน</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <link rel="stylesheet" href="./theme-legacy.css?v=20260220-5">
+  <link rel="stylesheet" href="./theme-legacy.css?v=20260221-1">
   <style>
     .insp-page {
       max-width: 1080px;
       margin: 0 auto;
       padding: 16px;
+      --ins-control-height: 52px;
     }
 
     .insp-top {
@@ -50,34 +51,44 @@
 
     .hero {
       text-align: center;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
 
     .hero-icon {
-      width: 62px;
-      height: 62px;
-      border-radius: 18px;
+      width: 66px;
+      height: 66px;
+      border-radius: 20px;
       margin: 0 auto 12px;
-      background: linear-gradient(180deg, #2f97ff, #0a84ff, #0071e3);
+      background: linear-gradient(145deg, #66baff 0%, #3196fb 42%, #1f79f0 100%);
       display: flex;
       align-items: center;
       justify-content: center;
       color: #fff;
       font-size: 1.7rem;
-      box-shadow: 0 16px 34px rgba(10, 132, 255, 0.28);
+      box-shadow: 0 18px 36px rgba(10, 132, 255, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.38);
     }
 
     .hero h1 {
       margin: 0;
-      font-size: 1.26rem;
-      font-weight: 860;
+      font-size: 1.42rem;
+      font-weight: 840;
       color: var(--text-color);
+    }
+
+    .hero-sub {
+      margin: 4px 0 0;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 620;
     }
 
     .inspector-card {
       padding: 16px;
       margin-bottom: 12px;
       border-radius: 22px;
+      border: 1px solid rgba(148, 163, 184, 0.32);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.82), rgba(248, 252, 255, 0.68));
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.84), 0 14px 28px rgba(15, 23, 42, 0.08);
     }
 
     .filter-title {
@@ -96,7 +107,7 @@
     }
 
     .row.three {
-      grid-template-columns: 2fr 1fr auto;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) 184px;
       align-items: end;
     }
 
@@ -108,18 +119,22 @@
       color: var(--text-muted);
     }
 
-    .form-control,
-    .form-select {
+    .page-inspector .form-control,
+    .page-inspector .form-select {
       width: 100%;
-      min-height: 42px;
-      border-radius: 14px;
-      border: 1px solid var(--input-border);
-      background: var(--input-bg);
+      min-height: var(--ins-control-height);
+      height: var(--ins-control-height);
+      border-radius: 16px;
+      border: 1px solid rgba(148, 163, 184, 0.34);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.76));
       color: var(--text-color);
       font: inherit;
-      padding: 8px 12px;
+      font-size: 1rem;
+      line-height: 1.2;
+      padding: 0 16px;
       transition: border-color 0.2s ease, box-shadow 0.2s ease;
-      font-weight: 550;
+      font-weight: 600;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.86);
     }
 
     .form-control:focus,
@@ -129,14 +144,36 @@
       box-shadow: 0 0 0 3px var(--primary-color-soft);
     }
 
-    .search-btn,
-    .print-btn,
-    .adv-btn,
-    .light-btn {
-      border: none;
+    .page-inspector .form-select {
+      appearance: none;
+      -webkit-appearance: none;
+      padding-right: 42px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%235f6b7a' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2.5 5.5L8 11l5.5-5.5'/%3E%3C/svg%3E"), linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.76));
+      background-repeat: no-repeat, no-repeat;
+      background-position: right 14px center, 0 0;
+      background-size: 14px 14px, 100% 100%;
+    }
+
+    .page-inspector input[type="number"] {
+      -moz-appearance: textfield;
+      appearance: textfield;
+    }
+
+    .page-inspector input[type="number"]::-webkit-outer-spin-button,
+    .page-inspector input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .page-inspector .search-btn,
+    .page-inspector .print-btn,
+    .page-inspector .adv-btn,
+    .page-inspector .light-btn {
+      border: 1px solid rgba(148, 163, 184, 0.34);
       border-radius: 999px;
-      min-height: 42px;
-      padding: 0 16px;
+      min-height: var(--ins-control-height) !important;
+      height: var(--ins-control-height) !important;
+      padding: 0 18px;
       font: inherit;
       font-weight: 820;
       cursor: pointer;
@@ -144,14 +181,23 @@
       align-items: center;
       justify-content: center;
       gap: 7px;
-      transition: transform 0.2s ease, box-shadow 0.24s ease;
+      transition: transform 0.24s ease, box-shadow 0.28s ease, border-color 0.22s ease;
+      backdrop-filter: blur(14px) saturate(170%);
+      -webkit-backdrop-filter: blur(14px) saturate(170%);
     }
 
-    .search-btn {
+    .page-inspector .search-btn {
       color: #fff;
-      background: linear-gradient(180deg, #2f97ff, #0a84ff, #0071e3);
+      border-color: rgba(10, 132, 255, 0.34);
+      background: linear-gradient(180deg, rgba(68, 165, 255, 0.96), rgba(10, 132, 255, 0.96), rgba(0, 113, 227, 0.96));
       box-shadow: 0 12px 28px rgba(10, 132, 255, 0.26);
-      min-width: 126px;
+      min-width: 0;
+      width: 100%;
+      border-radius: 16px !important;
+    }
+
+    .page-inspector .row.three > .search-btn {
+      align-self: end;
     }
 
     .search-btn:hover,
@@ -170,8 +216,9 @@
 
     .adv-btn {
       border: 1px solid rgba(37, 99, 235, 0.42);
-      background: rgba(37, 99, 235, 0.12);
-      color: #1d4ed8;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.84), rgba(228, 242, 255, 0.72));
+      color: #0c4a6e;
+      box-shadow: 0 10px 22px rgba(10, 132, 255, 0.14);
     }
 
     .adv-badge {
@@ -188,7 +235,7 @@
     .stat-box {
       border-radius: 18px;
       padding: 16px;
-      background: linear-gradient(145deg, rgba(10, 132, 255, 0.14), rgba(10, 132, 255, 0.06));
+      background: linear-gradient(145deg, rgba(10, 132, 255, 0.16), rgba(10, 132, 255, 0.07));
       border: 1px solid rgba(10, 132, 255, 0.22);
       text-align: center;
     }
@@ -230,20 +277,82 @@
 
     .print-btn {
       color: #fff;
-      background: linear-gradient(180deg, #34d399, #30d158, #24b74a);
+      border-color: rgba(34, 197, 94, 0.34);
+      background: linear-gradient(180deg, rgba(80, 214, 138, 0.95), rgba(48, 209, 88, 0.95), rgba(30, 186, 75, 0.95));
       box-shadow: 0 12px 28px rgba(48, 209, 88, 0.26);
     }
 
     .light-btn {
-      color: #475569;
-      background: rgba(148, 163, 184, 0.18);
+      color: #334155;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.84), rgba(243, 248, 255, 0.74));
       border: 1px solid rgba(100, 116, 139, 0.28);
+    }
+
+    .ins-adv-popup {
+      width: min(680px, calc(100vw - 24px)) !important;
+    }
+
+    .ins-adv-popup-title {
+      font-size: clamp(1.48rem, 3.2vw, 2rem) !important;
+      margin-bottom: 2px !important;
+    }
+
+    .ins-adv-popup-html {
+      margin: 0 !important;
+    }
+
+    .ins-adv-wrap {
+      display: grid;
+      gap: 12px;
+      text-align: left;
+    }
+
+    .ins-adv-note {
+      margin: 0;
+      font-size: 0.86rem;
+      font-weight: 620;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .ins-adv-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .ins-adv-field {
+      display: grid;
+      gap: 6px;
+      min-width: 0;
+    }
+
+    .ins-adv-label {
+      margin: 0;
+      font-size: 0.83rem;
+      font-weight: 760;
+      color: var(--text-muted);
+    }
+
+    .ins-adv-actions {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 2px;
+    }
+
+    .ins-adv-btn {
+      width: 100%;
+      min-height: 50px !important;
+      height: 50px !important;
+      border-radius: 16px !important;
+      justify-content: center;
     }
 
     .doc-item {
       border-radius: 16px;
       border: 1px solid rgba(148, 163, 184, 0.26);
-      background: var(--card-bg);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.84), rgba(250, 253, 255, 0.72));
       padding: 12px;
       margin-bottom: 10px;
       text-decoration: none;
@@ -368,7 +477,7 @@
       padding: 42px 14px;
       border: 1px dashed rgba(148, 163, 184, 0.34);
       border-radius: 16px;
-      background: rgba(255, 255, 255, 0.3);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.58), rgba(245, 250, 255, 0.42));
       font-weight: 620;
       line-height: 1.45;
     }
@@ -397,6 +506,37 @@
       animation: spin 0.72s linear infinite;
     }
 
+    body.dark-mode .inspector-card {
+      border-color: rgba(148, 163, 184, 0.36);
+      background: linear-gradient(180deg, rgba(19, 30, 45, 0.82), rgba(14, 23, 35, 0.7));
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 16px 34px rgba(2, 8, 20, 0.36);
+    }
+
+    body.dark-mode .page-inspector .form-control,
+    body.dark-mode .page-inspector .form-select {
+      border-color: rgba(148, 163, 184, 0.38);
+      background: linear-gradient(180deg, rgba(15, 24, 36, 0.86), rgba(15, 24, 36, 0.72));
+      color: #e2e8f0;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    body.dark-mode .page-inspector .form-select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%23c9d3df' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M2.5 5.5L8 11l5.5-5.5'/%3E%3C/svg%3E"), linear-gradient(180deg, rgba(15, 24, 36, 0.86), rgba(15, 24, 36, 0.72));
+    }
+
+    body.dark-mode .adv-btn,
+    body.dark-mode .light-btn {
+      color: #dbe7f5;
+      border-color: rgba(148, 163, 184, 0.36);
+      background: linear-gradient(180deg, rgba(23, 34, 49, 0.9), rgba(19, 29, 43, 0.82));
+    }
+
+    body.dark-mode .doc-item {
+      border-color: rgba(148, 163, 184, 0.34);
+      background: linear-gradient(180deg, rgba(19, 30, 45, 0.84), rgba(14, 23, 35, 0.72));
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    }
+
     @media (max-width: 980px) {
       .row.three {
         grid-template-columns: 1fr;
@@ -410,6 +550,7 @@
     @media (max-width: 760px) {
       .insp-page {
         padding: 12px;
+        --ins-control-height: 50px;
       }
 
       .insp-top {
@@ -430,7 +571,11 @@
       }
 
       .hero h1 {
-        font-size: 1.08rem;
+        font-size: 1.18rem;
+      }
+
+      .hero-sub {
+        font-size: 0.84rem;
       }
 
       .inspector-card {
@@ -442,6 +587,11 @@
       .adv-btn,
       .light-btn {
         width: 100%;
+      }
+
+      .ins-adv-grid,
+      .ins-adv-actions {
+        grid-template-columns: 1fr;
       }
 
       .adv-row {
@@ -465,6 +615,7 @@
     @media (max-width: 520px) {
       .insp-page {
         padding: 8px;
+        --ins-control-height: 48px;
       }
 
       .inspector-card {
@@ -498,7 +649,8 @@
 
     <div class="hero">
       <div class="hero-icon"><i class="bi bi-clipboard-check-fill"></i></div>
-      <h1>เครื่องมือตรวจสอบผลงาน</h1>
+      <h1>ตรวจสอบผลงาน</h1>
+      <p class="hero-sub">เลือกตัวกรอง แล้วกดค้นหาเพื่อแสดงผล</p>
     </div>
 
     <div class="inspector-card" id="filterCard">
@@ -572,6 +724,7 @@
         members: [],
         memberImgMap: {},
         currentData: [],
+        hasSearched: false,
         reportReqId: 0,
         reportTimeout: null,
         advFilters: {
@@ -675,6 +828,7 @@
         var fy = C.safeTrim(els.mainFiscal.value || '');
         state.advFilters.officer = officer;
         state.advFilters.selectedFiscalYears = fy ? [fy] : [];
+        state.hasSearched = true;
 
         updateActiveFilterBadge();
         loadReport();
@@ -682,28 +836,39 @@
 
       function openAdvancedFilter() {
         var htmlContent = ''
-          + '<div class="text-start">'
-          + '<label class="form-label">ช่วงวันที่ตรวจสอบ</label>'
-          + '<div style="display:flex;gap:8px;margin-bottom:10px;">'
-          + '<div class="thai-date-input" style="flex:1;" onclick="openCalendar(\'inspStart\')">'
+          + '<div class="ins-adv-wrap">'
+          + '<p class="ins-adv-note">เลือกช่วงวันที่ที่ต้องการสำหรับการกรองรายงาน</p>'
+          + '<div class="ins-adv-grid">'
+          + '<div class="ins-adv-field">'
+          + '<label class="ins-adv-label">จากวันที่</label>'
+          + '<div class="thai-date-input" onclick="openCalendar(\'inspStart\')">'
           + '<input type="hidden" id="inspStart" value="">'
-          + '<div id="inspStartDisplay" class="form-control" style="font-weight:650;">เริ่ม...</div>'
+          + '<div id="inspStartDisplay" class="form-control" style="font-weight:650;">เลือกวันที่...</div>'
           + '<i class="bi bi-calendar3 cal-icon"></i>'
           + '</div>'
-          + '<div class="thai-date-input" style="flex:1;" onclick="openCalendar(\'inspEnd\')">'
+          + '</div>'
+          + '<div class="ins-adv-field">'
+          + '<label class="ins-adv-label">ถึงวันที่</label>'
+          + '<div class="thai-date-input" onclick="openCalendar(\'inspEnd\')">'
           + '<input type="hidden" id="inspEnd" value="">'
-          + '<div id="inspEndDisplay" class="form-control" style="font-weight:650;">ถึง...</div>'
+          + '<div id="inspEndDisplay" class="form-control" style="font-weight:650;">เลือกวันที่...</div>'
           + '<i class="bi bi-calendar3 cal-icon"></i>'
           + '</div>'
           + '</div>'
-          + '<div style="display:flex;gap:8px;">'
-          + '<button type="button" id="btnClearDateFilter" class="light-btn" style="flex:1;"><i class="bi bi-x-circle"></i>ล้าง</button>'
-          + '<button type="button" id="btnApplyDateFilter" class="search-btn" style="flex:1;"><i class="bi bi-plus-circle"></i>เพิ่มตัวกรอง</button>'
+          + '</div>'
+          + '<div class="ins-adv-actions">'
+          + '<button type="button" id="btnClearDateFilter" class="light-btn ins-adv-btn"><i class="bi bi-x-circle"></i>ล้าง</button>'
+          + '<button type="button" id="btnApplyDateFilter" class="search-btn ins-adv-btn"><i class="bi bi-plus-circle"></i>เพิ่มตัวกรอง</button>'
           + '</div>'
           + '</div>';
 
         Swal.fire({
           title: 'ตัวกรองขั้นสูง',
+          customClass: {
+            popup: 'ins-adv-popup',
+            title: 'ins-adv-popup-title',
+            htmlContainer: 'ins-adv-popup-html'
+          },
           html: htmlContent,
           showConfirmButton: false,
           showCloseButton: true,
@@ -734,7 +899,7 @@
                   window.updDD('inspEnd');
                 }
                 updateActiveFilterBadge();
-                if (state.advFilters.officer) loadReport();
+                if (state.hasSearched && state.advFilters.officer) loadReport();
               });
             }
 
@@ -760,12 +925,12 @@
 
                 var sdTxt = (document.getElementById('inspStartDisplay') || {}).textContent || '';
                 var edTxt = (document.getElementById('inspEndDisplay') || {}).textContent || '';
-                state.advFilters.startDateText = (sd && sdTxt && sdTxt !== 'เริ่ม...' && sdTxt !== 'เลือกวันที่...') ? sdTxt : '';
-                state.advFilters.endDateText = (ed && edTxt && edTxt !== 'ถึง...' && edTxt !== 'เลือกวันที่...') ? edTxt : '';
+                state.advFilters.startDateText = (sd && sdTxt && sdTxt !== 'เลือกวันที่...') ? sdTxt : '';
+                state.advFilters.endDateText = (ed && edTxt && edTxt !== 'เลือกวันที่...') ? edTxt : '';
 
                 Swal.close();
                 updateActiveFilterBadge();
-                if (state.advFilters.officer) loadReport();
+                if (state.hasSearched && state.advFilters.officer) loadReport();
               });
             }
           }
@@ -1053,16 +1218,13 @@
         try {
           var ok = await initData();
           if (!ok) return;
-
-          if (state.advFilters.officer) {
-            loadReport();
-          }
         } catch (err) {
-          Swal.fire('เกิดข้อผิดพลาด', (err && err.message) ? err.message : 'โหลดข้อมูลหน้าเครื่องมือตรวจสอบไม่สำเร็จ', 'error');
+          Swal.fire('เกิดข้อผิดพลาด', (err && err.message) ? err.message : 'โหลดข้อมูลหน้าตรวจสอบผลงานไม่สำเร็จ', 'error');
         }
       }
 
       window.__reloadInspectorReport = function () {
+        if (!state.hasSearched) return;
         loadReport();
       };
 

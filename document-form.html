@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <link rel="stylesheet" href="./theme-legacy.css?v=20260220-5">
+  <link rel="stylesheet" href="./theme-legacy.css?v=20260221-1">
   <style>
     .form-page {
       max-width: 980px;
@@ -48,61 +48,90 @@
       box-shadow: 0 12px 30px rgba(15, 23, 42, 0.15);
     }
 
-    .main-card {
+    .page-doc-form .main-card {
       overflow: hidden;
+      border: 1px solid rgba(148, 163, 184, 0.34) !important;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.76), rgba(246, 251, 255, 0.62)) !important;
+      box-shadow: 0 30px 56px rgba(15, 23, 42, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
     }
 
     .header-bg {
-      background: linear-gradient(180deg, #2f97ff 0%, #0a84ff 62%, #0071e3 100%);
+      background: linear-gradient(145deg, #66baff 0%, #3196fb 42%, #1f79f0 100%);
       color: #fff;
       text-align: center;
-      padding: 22px 16px;
+      padding: 24px 16px 26px;
       position: relative;
       overflow: hidden;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.28);
+    }
+
+    .header-bg::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0));
+      pointer-events: none;
     }
 
     .header-bg::after {
       content: "";
       position: absolute;
-      width: 180px;
-      height: 180px;
+      width: 220px;
+      height: 220px;
       border-radius: 999px;
-      right: -70px;
-      top: -80px;
+      right: -78px;
+      top: -92px;
       background: rgba(255, 255, 255, 0.18);
       pointer-events: none;
     }
 
     .header-bg i {
-      font-size: 2rem;
-      margin-bottom: 6px;
-      display: inline-block;
+      font-size: 2.1rem;
+      margin-bottom: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.58);
+      background: rgba(255, 255, 255, 0.1);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
     }
 
     .header-bg h3 {
       margin: 0;
-      font-size: 1.2rem;
-      font-weight: 880;
-      letter-spacing: 0.01em;
+      font-size: 2rem;
+      line-height: 1.08;
+      font-weight: 830;
+      letter-spacing: 0;
+      color: rgba(255, 255, 255, 0.98);
+      text-shadow: 0 1px 0 rgba(0, 0, 0, 0.08);
     }
 
     .header-bg small {
       display: block;
-      margin-top: 4px;
-      opacity: 0.92;
-      font-weight: 640;
-      font-size: 0.84rem;
+      margin-top: 8px;
+      font-weight: 610;
+      font-size: 1.04rem;
+      letter-spacing: 0.002em;
+      color: rgba(242, 248, 255, 0.96) !important;
+      text-shadow: 0 1px 0 rgba(0, 0, 0, 0.08);
     }
 
     .card-body {
       padding: 16px;
       display: grid;
       gap: 12px;
+      background: linear-gradient(180deg, rgba(235, 245, 255, 0.32), rgba(235, 245, 255, 0.16));
     }
 
     .form-section {
       padding: 14px;
       border-radius: 18px;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.84), rgba(250, 253, 255, 0.7));
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.82), 0 12px 26px rgba(15, 23, 42, 0.06);
     }
 
     .form-section-title {
@@ -132,23 +161,43 @@
       color: var(--text-muted);
     }
 
-    .form-control,
-    .form-select,
-    textarea.form-control {
+    .page-doc-form .form-control,
+    .page-doc-form .form-select {
       width: 100%;
-      min-height: 42px;
-      border-radius: 14px;
-      border: 1px solid var(--input-border);
-      background: var(--input-bg);
+      height: 52px;
+      min-height: 52px;
+      border-radius: 16px !important;
+      border: 1px solid rgba(148, 163, 184, 0.34) !important;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.76)) !important;
       color: var(--text-color);
       font: inherit;
-      padding: 8px 12px;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
-      font-weight: 550;
+      font-size: 1rem;
+      line-height: 1.2;
+      padding: 0 16px;
+      transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+      font-weight: 600;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.88);
     }
 
-    textarea.form-control {
-      min-height: 88px;
+    .page-doc-form .form-select {
+      padding-right: 42px !important;
+    }
+
+    .page-doc-form input[type="number"] {
+      -moz-appearance: textfield;
+      appearance: textfield;
+    }
+
+    .page-doc-form input[type="number"]::-webkit-outer-spin-button,
+    .page-doc-form input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    .page-doc-form textarea.form-control {
+      height: auto;
+      min-height: 104px;
+      padding: 12px 16px;
       resize: vertical;
     }
 
@@ -172,8 +221,10 @@
     .thai-date-input .form-control {
       display: flex;
       align-items: center;
-      min-height: 42px;
-      padding-right: 36px;
+      min-height: 52px;
+      height: 52px;
+      padding-right: 44px !important;
+      padding-left: 16px !important;
       font-weight: 650;
       white-space: nowrap;
       overflow: hidden;
@@ -188,7 +239,8 @@
     }
 
     .thai-time-wrap .form-select {
-      min-height: 42px;
+      min-height: 52px;
+      height: 52px;
     }
 
     .thai-time-sep,
@@ -204,6 +256,29 @@
       font-size: 0.78rem;
       font-weight: 600;
       line-height: 1.45;
+    }
+
+    body.dark-mode .page-doc-form .main-card {
+      border-color: rgba(148, 163, 184, 0.4) !important;
+      background: linear-gradient(180deg, rgba(16, 26, 40, 0.78), rgba(12, 20, 32, 0.68)) !important;
+      box-shadow: 0 34px 64px rgba(2, 8, 20, 0.56), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+    }
+
+    body.dark-mode .page-doc-form .card-body {
+      background: linear-gradient(180deg, rgba(16, 26, 40, 0.28), rgba(16, 26, 40, 0.14));
+    }
+
+    body.dark-mode .page-doc-form .form-section {
+      border-color: rgba(148, 163, 184, 0.32);
+      background: linear-gradient(180deg, rgba(19, 30, 45, 0.82), rgba(15, 24, 36, 0.7));
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 16px 34px rgba(2, 8, 20, 0.34);
+    }
+
+    body.dark-mode .page-doc-form .form-control,
+    body.dark-mode .page-doc-form .form-select {
+      border-color: rgba(148, 163, 184, 0.38) !important;
+      background: linear-gradient(180deg, rgba(15, 24, 36, 0.86), rgba(15, 24, 36, 0.72)) !important;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
     }
 
     #planFieldsWrap {
@@ -333,11 +408,13 @@
       }
 
       .header-bg i {
-        font-size: 1.65rem;
+        width: 50px;
+        height: 50px;
+        font-size: 1.7rem;
       }
 
       .header-bg h3 {
-        font-size: 1.05rem;
+        font-size: 1.5rem;
       }
 
       .card-body {
@@ -358,10 +435,21 @@
         grid-column: 1 / -1;
       }
 
-      .form-control,
-      .form-select,
-      textarea.form-control {
+      .page-doc-form .form-control,
+      .page-doc-form .form-select {
+        height: 50px;
+        min-height: 50px;
         font-size: 16px;
+      }
+
+      .thai-date-input .form-control,
+      .thai-time-wrap .form-select {
+        height: 50px;
+        min-height: 50px;
+      }
+
+      .page-doc-form textarea.form-control {
+        min-height: 98px;
       }
     }
 
@@ -375,7 +463,7 @@
       }
 
       .header-bg small {
-        font-size: 0.78rem;
+        font-size: 0.94rem;
       }
 
       .card-body {
@@ -737,6 +825,57 @@
         els.budgetType.innerHTML = budgetHtml;
       }
 
+      function pickDocValue(doc, keys) {
+        if (!doc || !Array.isArray(keys)) return '';
+        for (var i = 0; i < keys.length; i++) {
+          var key = keys[i];
+          if (!Object.prototype.hasOwnProperty.call(doc, key)) continue;
+          var value = doc[key];
+          if (value === null || typeof value === 'undefined') continue;
+          if (String(value).trim() === '') continue;
+          return value;
+        }
+        return '';
+      }
+
+      function normalizeNumberInputValue(value) {
+        var raw = String(value == null ? '' : value).trim();
+        if (!raw) return '';
+
+        var thaiDigits = '๐๑๒๓๔๕๖๗๘๙';
+        raw = raw.replace(/[๐-๙]/g, function (ch) {
+          var idx = thaiDigits.indexOf(ch);
+          return idx >= 0 ? String(idx) : ch;
+        });
+
+        raw = raw.replace(/−/g, '-').replace(/\s+/g, '');
+        raw = raw.replace(/[^0-9,.\-]/g, '');
+
+        if (raw.indexOf('.') === -1 && raw.indexOf(',') !== -1) {
+          raw = raw.replace(',', '.');
+        } else {
+          raw = raw.replace(/,/g, '');
+        }
+
+        var sign = '';
+        if (raw.charAt(0) === '-') {
+          sign = '-';
+          raw = raw.slice(1);
+        }
+        raw = raw.replace(/\-/g, '');
+
+        var parts = raw.split('.');
+        if (parts.length > 2) {
+          raw = parts[0] + '.' + parts.slice(1).join('');
+        }
+        if (raw.charAt(0) === '.') raw = '0' + raw;
+        raw = sign + raw;
+
+        var num = Number(raw);
+        if (!isFinite(num)) return '';
+        return String(num);
+      }
+
       function setFormData(doc) {
         if (!doc) return;
 
@@ -763,8 +902,12 @@
         els.subjectL.value = doc.subjectL || '';
         els.subjectM.value = doc.subjectM || '';
         els.subjectN.value = doc.subjectN || '';
-        els.amount.value = doc.amount || '';
-        els.difference.value = doc.difference || '';
+        els.amount.value = normalizeNumberInputValue(
+          pickDocValue(doc, ['amount', 'amountDisplay', 'amountText', 'amt', 'totalAmount'])
+        );
+        els.difference.value = normalizeNumberInputValue(
+          pickDocValue(doc, ['difference', 'differenceDisplay', 'differenceText', 'diff', 'balanceDifference'])
+        );
         els.budgetType.value = doc.budgetType || '';
         els.prod.value = doc.prod || '';
         els.mainAct.value = doc.mainAct || '';
@@ -796,8 +939,8 @@
           subjectL: C.safeTrim(els.subjectL.value || ''),
           subjectM: C.safeTrim(els.subjectM.value || ''),
           subjectN: C.safeTrim(els.subjectN.value || ''),
-          amount: C.safeTrim(els.amount.value || ''),
-          difference: C.safeTrim(els.difference.value || ''),
+          amount: normalizeNumberInputValue(els.amount.value || ''),
+          difference: normalizeNumberInputValue(els.difference.value || ''),
           prod: C.safeTrim(els.prod.value || ''),
           mainAct: C.safeTrim(els.mainAct.value || ''),
           subProject: C.safeTrim(els.subProject.value || ''),
