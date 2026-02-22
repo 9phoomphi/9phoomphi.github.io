@@ -693,6 +693,8 @@
       var q = C.parseQuery();
       var isEdit = C.safeTrim(q.mode || '').toLowerCase() === 'edit';
       var editId = C.safeTrim(q.id || '');
+      var copyFromId = C.safeTrim(q.copyFrom || '');
+      var isCopy = !isEdit && !!copyFromId;
       var APP_BROWSER_NAME = 'ระบบทะเบียนคุมเอกสาร';
 
       var state = {
@@ -701,7 +703,8 @@
         user: null,
         options: null,
         nextNos: {},
-        doc: null
+        doc: null,
+        copyDoc: null
       };
 
       var els = {
@@ -757,9 +760,14 @@
 
       function updateBrowserTitle(idValue) {
         var id = C.safeTrim(idValue || '');
-        var page = isEdit
-          ? (id ? ('แก้ไขเอกสาร • ' + id) : 'แก้ไขเอกสาร')
-          : 'เพิ่มเอกสารใหม่';
+        var page = '';
+        if (isEdit) {
+          page = id ? ('แก้ไขเอกสาร • ' + id) : 'แก้ไขเอกสาร';
+        } else if (isCopy) {
+          page = id ? ('เพิ่มเอกสารจากสำเนา • ' + id) : 'เพิ่มเอกสารจากสำเนา';
+        } else {
+          page = 'เพิ่มเอกสารใหม่';
+        }
         document.title = page + ' | ' + APP_BROWSER_NAME;
       }
 
@@ -849,6 +857,27 @@
         els.budgetType.innerHTML = budgetHtml;
       }
 
+      function ensureSelectOption(selectEl, value) {
+        if (!selectEl) return;
+        var next = C.safeTrim(value || '');
+        if (!next) return;
+        var found = false;
+        var options = selectEl.options || [];
+        for (var i = 0; i < options.length; i++) {
+          if (C.safeTrim(options[i].value || '') === next) {
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          var opt = document.createElement('option');
+          opt.value = next;
+          opt.textContent = next;
+          selectEl.appendChild(opt);
+        }
+        selectEl.value = next;
+      }
+
       function pickDocValue(doc, keys) {
         if (!doc || !Array.isArray(keys)) return '';
         for (var i = 0; i < keys.length; i++) {
@@ -920,9 +949,9 @@
         }
 
         els.docNoSdh.value = doc.docNoSdh || '';
-        els.group.value = doc.group || '';
+        ensureSelectOption(els.group, doc.group || '');
         els.sender.value = doc.sender || '';
-        els.purpose.value = doc.purpose || '';
+        ensureSelectOption(els.purpose, doc.purpose || '');
         els.subjectK.value = doc.subjectK || '';
         els.subjectL.value = doc.subjectL || '';
         els.subjectM.value = doc.subjectM || '';
@@ -933,13 +962,39 @@
         els.difference.value = normalizeNumberInputValue(
           pickDocValue(doc, ['difference', 'differenceDisplay', 'differenceText', 'diff', 'balanceDifference'])
         );
-        els.budgetType.value = doc.budgetType || '';
+        ensureSelectOption(els.budgetType, doc.budgetType || '');
         els.prod.value = doc.prod || '';
         els.mainAct.value = doc.mainAct || '';
         els.subProject.value = doc.subProject || '';
         els.activity.value = doc.activity || '';
         els.amDocNo.value = doc.amDocNo || '';
         els.statusRemark.value = doc.statusRemark || '';
+
+        togglePlanFields();
+        refreshDateDisplays();
+      }
+
+      function setCopyFormData(doc) {
+        if (!doc) return;
+        updateBrowserTitle(doc.docId || copyFromId);
+
+        // คัดลอกเฉพาะส่วน: ข้อมูลเอกสาร, รายละเอียดเรื่อง, ประเภทเงินงบประมาณ
+        els.docNoSdh.value = C.safeText(doc.docNoSdh || '');
+        els.dated.value = C.safeTrim(pickDocValue(doc, ['datedInput', 'dated']) || '');
+        ensureSelectOption(els.group, doc.group || '');
+        els.sender.value = C.safeText(doc.sender || '');
+        ensureSelectOption(els.purpose, doc.purpose || '');
+
+        els.subjectK.value = C.safeText(doc.subjectK || doc.subject || '');
+        els.subjectL.value = C.safeText(doc.subjectL || '');
+        els.subjectM.value = C.safeText(doc.subjectM || '');
+        els.subjectN.value = C.safeText(doc.subjectN || '');
+
+        ensureSelectOption(els.budgetType, doc.budgetType || '');
+        els.prod.value = C.safeText(doc.prod || '');
+        els.mainAct.value = C.safeText(doc.mainAct || '');
+        els.subProject.value = C.safeText(doc.subProject || '');
+        els.activity.value = C.safeText(doc.activity || '');
 
         togglePlanFields();
         refreshDateDisplays();
@@ -1019,6 +1074,50 @@
         return '';
       }
 
+      function withTimeout(promise, timeoutMs, timeoutMessage) {
+        var ms = Number(timeoutMs);
+        if (!isFinite(ms) || ms <= 0) ms = 45000;
+        return new Promise(function (resolve, reject) {
+          var done = false;
+          var timer = setTimeout(function () {
+            if (done) return;
+            done = true;
+            reject(new Error(timeoutMessage || 'การเชื่อมต่อใช้เวลานานเกินไป กรุณาลองใหม่'));
+          }, ms);
+
+          Promise.resolve(promise).then(function (value) {
+            if (done) return;
+            done = true;
+            clearTimeout(timer);
+            resolve(value);
+          }).catch(function (err) {
+            if (done) return;
+            done = true;
+            clearTimeout(timer);
+            reject(err);
+          });
+        });
+      }
+
+      function humanizeSaveErrorMessage(message) {
+        var msg = C.safeTrim(message || '');
+        if (!msg) return 'บันทึกไม่สำเร็จ';
+        if (msg.indexOf('เลขที่เอกสารซ้ำ') !== -1) {
+          return msg + '\nกรุณาแก้ไขช่อง "เลขที่ สธ. (กลุ่มงาน)" แล้วบันทึกใหม่';
+        }
+        if (msg.indexOf('เลขที่หนังสือส่งกองคลังซ้ำ') !== -1) {
+          return msg + '\nกรุณาแก้ไขช่อง "เลขที่หนังสือ (AK)" หรือเว้นว่างไว้ก่อน';
+        }
+        if (
+          msg.indexOf('missing_device_key') !== -1 ||
+          msg.indexOf('กรุณาระบุ deviceKey') !== -1 ||
+          msg.indexOf('not_logged_in') !== -1
+        ) {
+          return 'session หมดอายุ กรุณากลับไปหน้าแรกแล้วเข้าสู่ระบบใหม่';
+        }
+        return msg;
+      }
+
       async function submitDoc() {
         showError('');
         var formData = buildFormData();
@@ -1031,12 +1130,21 @@
         setSaving(true);
         var nextId = '';
         var title = isEdit ? 'บันทึกการแก้ไขสำเร็จ' : 'เพิ่มเอกสารสำเร็จ';
+        var saveErrorMessage = '';
         try {
           var res;
           if (isEdit) {
-            res = await state.api.docUpdate(editId, formData);
+            res = await withTimeout(
+              state.api.docUpdate(editId, formData, { noPageLoader: true }),
+              45000,
+              'บันทึกการแก้ไขใช้เวลานานเกินไป กรุณาลองใหม่'
+            );
           } else {
-            res = await state.api.docCreate(formData);
+            res = await withTimeout(
+              state.api.docCreate(formData, { noPageLoader: true }),
+              45000,
+              'การเพิ่มเอกสารใช้เวลานานเกินไป กรุณาลองใหม่'
+            );
           }
 
           if (!res || res.success === false) {
@@ -1045,10 +1153,14 @@
 
           nextId = C.safeTrim((res && res.docId) || formData.amDocNo || formData.docNoSdh || editId || '');
         } catch (err) {
-          await Swal.fire('เกิดข้อผิดพลาด', (err && err.message) ? err.message : 'บันทึกไม่สำเร็จ', 'error');
-          return;
+          saveErrorMessage = humanizeSaveErrorMessage((err && err.message) ? err.message : 'บันทึกไม่สำเร็จ');
         } finally {
           setSaving(false);
+        }
+
+        if (saveErrorMessage) {
+          await Swal.fire('เกิดข้อผิดพลาด', saveErrorMessage, 'error');
+          return;
         }
 
         await Swal.fire({
@@ -1073,12 +1185,13 @@
           state.api.call('docs.next_receive_nos', { deviceKey: state.settings.deviceKey })
         ];
         if (isEdit) calls.push(state.api.docDetail(editId));
+        if (isCopy) calls.push(state.api.docDetail(copyFromId));
 
         var result = await Promise.all(calls);
         var meRes = result[0] || {};
         var infoRes = result[1] || {};
         var nextNosRes = result[2] || {};
-        var docRes = isEdit ? (result[3] || {}) : null;
+        var docRes = (isEdit || isCopy) ? (result[3] || {}) : null;
 
         if (!meRes || meRes.success === false || !meRes.user) {
           C.redirect('index.html', {}, true);
@@ -1108,6 +1221,18 @@
           state.doc = docRes.doc;
         }
 
+        if (isCopy) {
+          if (!docRes || docRes.success === false || !docRes.doc) {
+            C.redirect('not-found.html', {
+              message: 'ไม่พบเอกสารต้นฉบับสำหรับคัดลอก',
+              detail: copyFromId,
+              back: 'index.html'
+            }, true);
+            return false;
+          }
+          state.copyDoc = docRes.doc;
+        }
+
         return true;
       }
 
@@ -1115,6 +1240,8 @@
         els.btnBack.addEventListener('click', function () {
           if (isEdit && editId) {
             C.redirect('document-view.html', { id: editId });
+          } else if (isCopy && copyFromId) {
+            C.redirect('document-view.html', { id: copyFromId });
           } else {
             C.redirect('index.html');
           }
@@ -1137,6 +1264,13 @@
           els.btnSubmitText.textContent = 'บันทึกการแก้ไข';
           els.fiscalRow.style.display = 'none';
           els.receiveNoReadOnlyRow.style.display = 'block';
+        } else if (isCopy) {
+          els.pageIcon.className = 'bi bi-files';
+          els.pageTitle.textContent = 'เพิ่มเอกสารจากสำเนา';
+          els.pageSub.textContent = copyFromId ? ('คัดลอกจากเอกสาร: ' + copyFromId) : 'คัดลอกข้อมูลจากเอกสารเดิม';
+          els.btnSubmitText.textContent = 'เพิ่มเอกสารชุดใหม่';
+          els.fiscalRow.style.display = 'grid';
+          els.receiveNoReadOnlyRow.style.display = 'none';
         } else {
           els.pageIcon.className = 'bi bi-plus-circle';
           els.pageTitle.textContent = 'เพิ่มเอกสารใหม่';
@@ -1145,7 +1279,7 @@
           els.fiscalRow.style.display = 'grid';
           els.receiveNoReadOnlyRow.style.display = 'none';
         }
-        updateBrowserTitle(editId);
+        updateBrowserTitle(isEdit ? editId : copyFromId);
       }
 
       function setDefaultDates() {
@@ -1193,6 +1327,9 @@
           } else {
             updateReceiveNo();
             setDefaultDates();
+            if (isCopy && state.copyDoc) {
+              setCopyFormData(state.copyDoc);
+            }
           }
 
           togglePlanFields();

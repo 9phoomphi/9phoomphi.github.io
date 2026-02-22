@@ -1408,6 +1408,13 @@
         C.redirect('document-form.html', { mode: 'edit', id: state.doc.docId || docId });
       }
 
+      function goDuplicate() {
+        if (!state.doc) return;
+        var sourceId = C.safeTrim(state.doc.docId || docId || '');
+        if (!sourceId) return;
+        C.redirect('document-form.html', { copyFrom: sourceId });
+      }
+
       function goStatus() {
         if (!state.doc) return;
         C.redirect('document-status.html', { id: state.doc.docId || docId });
@@ -1443,12 +1450,14 @@
 
         var html = '';
         html += '<button type="button" class="btn outline" id="btnGoEdit"><i class="bi bi-pencil"></i>แก้ไข</button>';
+        html += '<button type="button" class="btn primary" id="btnGoDuplicate"><i class="bi bi-files"></i>คัดลอกสำเนา</button>';
         html += '<button type="button" class="btn green" id="btnGoStatus"><i class="bi bi-list-check"></i>จัดการสถานะ</button>';
         html += '<button type="button" class="btn gray" id="btnChangeMainStatus"><i class="bi bi-arrow-repeat"></i>เปลี่ยนสถานะ</button>';
 
         els.actionButtons.innerHTML = html;
 
         document.getElementById('btnGoEdit').addEventListener('click', goEdit);
+        document.getElementById('btnGoDuplicate').addEventListener('click', goDuplicate);
         document.getElementById('btnGoStatus').addEventListener('click', goStatus);
         document.getElementById('btnChangeMainStatus').addEventListener('click', changeMainStatus);
       }
