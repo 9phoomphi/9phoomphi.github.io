@@ -1563,7 +1563,7 @@
       }
     }
   </style>
-  <link rel="stylesheet" href="./theme-legacy.css?v=20260221-16">
+  <link rel="stylesheet" href="./theme-legacy.css?v=20260221-17">
 </head>
 <body class="app-home-page">
   <div class="shell">
@@ -1808,7 +1808,7 @@
   <button id="btnAddFab" class="fab hidden" type="button" title="เพิ่มเอกสาร"><i class="bi bi-plus-lg"></i></button>
 
   <script src="./config.js"></script>
-  <script src="./api-client.js?v=20260221-4"></script>
+  <script src="./api-client.js?v=20260221-6"></script>
   <script src="./theme-legacy.js?v=20260221-3"></script>
   <script src="./app-common.js?v=20260221-2"></script>
   <script>
@@ -2341,8 +2341,8 @@
         for (var i = 0; i < state.boxSummary.length; i++) {
           var box = state.boxSummary[i] || {};
           totalDocs += Number(box.count || 0);
-          var url = C.buildPageUrl('storage-box-view.html', { box: box.name });
-          html += '<a class="box-card d-block text-decoration-none" href="' + C.escapeHtml(url) + '"><i class="bi bi-archive box-icon"></i><div class="box-name">' + C.escapeHtml(box.name || '-') + '</div><div class="box-count">' + Number(box.count || 0) + ' รายการ</div><div class="box-hint"><i class="bi bi-arrow-right-circle me-1"></i>กดเพื่อดูรายละเอียดและ QR ในกล่อง</div></a>';
+          var url = C.buildPageUrl('storage-box-view.html', { box: box.name, boxName: box.name });
+          html += '<a class="box-card d-block text-decoration-none" data-box-name="' + C.escapeHtml(box.name || '') + '" href="' + C.escapeHtml(url) + '"><i class="bi bi-archive box-icon"></i><div class="box-name">' + C.escapeHtml(box.name || '-') + '</div><div class="box-count">' + Number(box.count || 0) + ' รายการ</div><div class="box-hint"><i class="bi bi-arrow-right-circle me-1"></i>กดเพื่อดูรายละเอียดและ QR ในกล่อง</div></a>';
         }
 
         els.boxSummaryLabel.textContent = 'รวม ' + state.boxSummary.length + ' กล่อง | เอกสารที่จัดเก็บแล้ว ' + totalDocs + ' รายการ';
@@ -3018,6 +3018,18 @@
           });
         }
 
+        if (els.boxesWrap) {
+          els.boxesWrap.addEventListener('click', function (e) {
+            var target = e && e.target && e.target.closest ? e.target.closest('a.box-card[data-box-name]') : null;
+            if (!target) return;
+            var rememberedBox = C.safeTrim(target.getAttribute('data-box-name') || '');
+            if (!rememberedBox) return;
+            try { sessionStorage.setItem('docControlLastBoxNameV1', rememberedBox); } catch (_e1) {}
+            try { localStorage.setItem('docControlLastBoxNameV1', rememberedBox); } catch (_e2) {}
+            try { window.__docControlLastBoxName = rememberedBox; } catch (_e3) {}
+          });
+        }
+
         if (els.btnReloadBoxes) {
           els.btnReloadBoxes.addEventListener('click', function () {
             loadBoxes();
@@ -3032,9 +3044,48 @@
       }
 
       function handleLegacyRoute() {
-        var mode = C.safeTrim(routeQuery.mode || '').toLowerCase();
-        var id = C.safeTrim(routeQuery.id || '');
-        var box = C.safeTrim(routeQuery.box || '');
+        function pickRouteQueryValueCaseInsensitive(key) {
+          if (!routeQuery || typeof routeQuery !== 'object') return '';
+          if (Object.prototype.hasOwnProperty.call(routeQuery, key)) return routeQuery[key];
+          var want = String(key || '').toLowerCase();
+          for (var k in routeQuery) {
+            if (!Object.prototype.hasOwnProperty.call(routeQuery, k)) continue;
+            if (String(k).toLowerCase() === want) return routeQuery[k];
+          }
+          return '';
+        }
+
+        function cleanBoxRouteValue(value) {
+          var text = C.safeTrim(value || '');
+          var low = text.toLowerCase();
+          if (!text || text === '-' || low === 'undefined' || low === 'null') return '';
+          return text;
+        }
+
+        function resolveLegacyBoxFromRouteQuery() {
+          var keys = ['box', 'boxName', 'boxname', 'box_id', 'boxId', 'name', 'location', 'loc', 'detail'];
+          for (var i = 0; i < keys.length; i++) {
+            var val = cleanBoxRouteValue(pickRouteQueryValueCaseInsensitive(keys[i]));
+            if (val) return val;
+          }
+
+          // Fallback: เผื่อ routeQuery ถูก parse ไม่ครบ
+          try {
+            if (typeof window !== 'undefined' && window.location && window.location.search) {
+              var sp = new URLSearchParams(String(window.location.search || ''));
+              for (var j = 0; j < keys.length; j++) {
+                var raw = sp.get(keys[j]);
+                var cleaned = cleanBoxRouteValue(raw);
+                if (cleaned) return cleaned;
+              }
+            }
+          } catch (_ignore) {}
+          return '';
+        }
+
+        var mode = C.safeTrim(pickRouteQueryValueCaseInsensitive('mode') || '').toLowerCase();
+        var id = C.safeTrim(pickRouteQueryValueCaseInsensitive('id') || pickRouteQueryValueCaseInsensitive('docId') || '');
+        var box = resolveLegacyBoxFromRouteQuery();
 
         if (mode === 'logout') {
           if (state.api) {
@@ -3077,13 +3128,21 @@
           return true;
         }
 
+        if (mode === 'box') {
+          var modeBox = box || id;
+          if (modeBox) {
+            C.redirect('storage-box-view.html', { box: modeBox, boxName: modeBox }, true);
+            return true;
+          }
+        }
+
         if (id) {
           C.redirect('document-view.html', { id: id }, true);
           return true;
         }
 
         if (box) {
-          C.redirect('storage-box-view.html', { box: box }, true);
+          C.redirect('storage-box-view.html', { box: box, boxName: box }, true);
           return true;
         }
 

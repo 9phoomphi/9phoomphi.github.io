@@ -611,10 +611,22 @@
   };
 
   DocumentControlApi.prototype.boxDetail = function (boxName, opts) {
+    var normalizedBox = safeTrim(boxName || '');
     return this.call('box.detail', {
       deviceKey: this.defaultDeviceKey,
       clientIpKey: this.defaultIpKey,
-      boxName: safeTrim(boxName || '')
+      boxName: normalizedBox,
+      box: normalizedBox,
+      boxId: normalizedBox,
+      box_name: normalizedBox,
+      id: normalizedBox,
+      name: normalizedBox,
+      location: normalizedBox,
+      loc: normalizedBox,
+      detail: normalizedBox,
+      selectedLocation: normalizedBox,
+      storedLoc: normalizedBox,
+      newLoc: normalizedBox
     }, opts);
   };
 

@@ -138,23 +138,39 @@
   }
 
   function parseQuery(search) {
-    var source = typeof search === 'string' ? search : (global.location ? global.location.search : '');
-    var query = source.replace(/^\?/, '');
     var out = {};
-    if (!query) return out;
 
-    var parts = query.split('&');
-    for (var i = 0; i < parts.length; i++) {
-      var p = parts[i];
-      if (!p) continue;
-      var idx = p.indexOf('=');
-      var k = idx >= 0 ? p.substring(0, idx) : p;
-      var v = idx >= 0 ? p.substring(idx + 1) : '';
-      try { k = decodeURIComponent(k.replace(/\+/g, ' ')); } catch (_e1) {}
-      try { v = decodeURIComponent(v.replace(/\+/g, ' ')); } catch (_e2) {}
-      if (!k) continue;
-      if (!Object.prototype.hasOwnProperty.call(out, k)) out[k] = v;
+    function mergeQuery(source) {
+      var query = safeText(source || '').replace(/^\?/, '');
+      if (!query) return;
+      var parts = query.split('&');
+      for (var i = 0; i < parts.length; i++) {
+        var p = parts[i];
+        if (!p) continue;
+        var idx = p.indexOf('=');
+        var k = idx >= 0 ? p.substring(0, idx) : p;
+        var v = idx >= 0 ? p.substring(idx + 1) : '';
+        try { k = decodeURIComponent(k.replace(/\+/g, ' ')); } catch (_e1) {}
+        try { v = decodeURIComponent(v.replace(/\+/g, ' ')); } catch (_e2) {}
+        if (!k) continue;
+        if (!Object.prototype.hasOwnProperty.call(out, k)) out[k] = v;
+      }
     }
+
+    if (typeof search === 'string') {
+      mergeQuery(search);
+      return out;
+    }
+
+    mergeQuery(global.location ? global.location.search : '');
+
+    // Fallback: บางลิงก์ฝัง query ไว้ใน hash เช่น "#/path?box=..."
+    if (global.location && global.location.hash && Object.keys(out).length === 0) {
+      var hash = String(global.location.hash || '');
+      var qIdx = hash.indexOf('?');
+      if (qIdx >= 0) mergeQuery(hash.substring(qIdx + 1));
+    }
+
     return out;
   }
 

@@ -9,13 +9,14 @@
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <link rel="stylesheet" href="./theme-legacy.css?v=20260221-16">
+  <link rel="stylesheet" href="./theme-legacy.css?v=20260221-17">
   <style>
     .insp-page {
       max-width: 1080px;
       margin: 0 auto;
       padding: 16px;
       --ins-control-height: 52px;
+      --ins-adv-control-height: 60px;
     }
 
     .insp-top {
@@ -172,8 +173,8 @@
     .page-inspector .light-btn {
       border: 1px solid rgba(148, 163, 184, 0.34);
       border-radius: 999px;
-      min-height: var(--ins-control-height) !important;
-      height: var(--ins-control-height) !important;
+      min-height: var(--ins-control-height);
+      height: var(--ins-control-height);
       padding: 0 18px;
       font: inherit;
       font-weight: 820;
@@ -289,29 +290,80 @@
       border: 1px solid rgba(100, 116, 139, 0.28);
     }
 
-    .ins-adv-popup {
-      width: min(680px, calc(100vw - 24px)) !important;
+    .swal2-popup.ins-adv-popup {
+      width: min(860px, calc(100vw - 30px)) !important;
+      max-width: min(860px, calc(100vw - 30px)) !important;
+      padding: 0 !important;
+      border-radius: 30px !important;
+      overflow: hidden !important;
+      box-sizing: border-box !important;
     }
 
+    .swal2-popup.ins-adv-popup .swal2-title,
     .ins-adv-popup-title {
-      font-size: clamp(1.48rem, 3.2vw, 2rem) !important;
-      margin-bottom: 2px !important;
+      margin: 0 !important;
+      padding: 22px 24px 10px !important;
+      font-size: clamp(1.46rem, 3vw, 2rem) !important;
+      font-weight: 860 !important;
+      line-height: 1.18 !important;
+      letter-spacing: -0.01em !important;
+      color: var(--text-color) !important;
     }
 
+    .swal2-popup.ins-adv-popup .swal2-close {
+      width: 42px !important;
+      height: 42px !important;
+      margin: 12px 14px 0 0 !important;
+      border-radius: 14px !important;
+      color: var(--text-muted) !important;
+      background: rgba(255, 255, 255, 0.74) !important;
+      border: 1px solid rgba(148, 163, 184, 0.34) !important;
+      transition: transform 0.2s ease, border-color 0.2s ease, color 0.2s ease !important;
+    }
+
+    .swal2-popup.ins-adv-popup .swal2-close:hover {
+      transform: translateY(-1px);
+      color: #0f172a !important;
+      border-color: rgba(10, 132, 255, 0.45) !important;
+    }
+
+    .swal2-popup.ins-adv-popup .ins-adv-popup-html,
     .ins-adv-popup-html {
       margin: 0 !important;
+      padding: 0 24px 24px !important;
+      width: 100% !important;
+      box-sizing: border-box !important;
     }
 
     .ins-adv-wrap {
       display: grid;
-      gap: 12px;
+      gap: 14px;
       text-align: left;
+      width: 100%;
+      max-width: 100%;
+    }
+
+    .ins-adv-intro {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 0;
+      border: none;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    .ins-adv-intro i {
+      font-size: 1.02rem;
+      color: #1d4ed8;
+      margin-top: 1px;
+      flex: 0 0 auto;
     }
 
     .ins-adv-note {
       margin: 0;
-      font-size: 0.86rem;
-      font-weight: 620;
+      font-size: 0.9rem;
+      font-weight: 760;
       color: var(--text-muted);
       line-height: 1.4;
     }
@@ -319,35 +371,125 @@
     .ins-adv-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
+      gap: 16px;
+      width: 100%;
+      align-items: start;
     }
 
     .ins-adv-field {
-      display: grid;
-      gap: 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
       min-width: 0;
+      width: 100%;
+      padding: 0;
+      border: none;
+      background: transparent;
+      box-shadow: none;
+      box-sizing: border-box;
     }
 
     .ins-adv-label {
       margin: 0;
-      font-size: 0.83rem;
-      font-weight: 760;
+      font-size: 0.9rem;
+      font-weight: 790;
       color: var(--text-muted);
+      line-height: 1.2;
+    }
+
+    .ins-adv-field .thai-date-input {
+      position: relative;
+      width: 100%;
+      min-width: 0;
+      max-width: 100%;
+      cursor: pointer;
+      box-sizing: border-box;
+      display: block;
+    }
+
+    .ins-adv-date-display {
+      width: 100%;
+      min-height: var(--ins-adv-control-height) !important;
+      border-radius: 16px !important;
+      border: 1px solid rgba(148, 163, 184, 0.34) !important;
+      background: #ffffff !important;
+      color: var(--text-muted);
+      padding: 14px 42px 14px 16px !important;
+      display: flex;
+      align-items: center;
+      font-size: 1.08rem;
+      font-weight: 740;
+      line-height: 1.4;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      box-sizing: border-box !important;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.94);
+      transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .ins-adv-field .thai-date-input:hover .ins-adv-date-display {
+      border-color: rgba(10, 132, 255, 0.46) !important;
+      box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.14) !important;
+    }
+
+    .ins-adv-field .thai-date-input .cal-icon {
+      position: absolute;
+      right: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 1.18rem;
+      pointer-events: none;
     }
 
     .ins-adv-actions {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
-      margin-top: 2px;
+      gap: 16px;
+      width: 100%;
     }
 
     .ins-adv-btn {
       width: 100%;
-      min-height: 50px !important;
-      height: 50px !important;
-      border-radius: 16px !important;
+      max-width: 100%;
+      min-height: var(--ins-adv-control-height) !important;
+      height: var(--ins-adv-control-height) !important;
+      border-radius: 999px !important;
       justify-content: center;
+      margin: 0 !important;
+      font-size: clamp(1.08rem, 1.8vw, 1.2rem) !important;
+      line-height: 1.2 !important;
+      font-weight: 820 !important;
+    }
+
+    body.dark-mode .swal2-popup.ins-adv-popup .swal2-close {
+      background: rgba(19, 29, 43, 0.9) !important;
+      border-color: rgba(148, 163, 184, 0.32) !important;
+      color: #cbd5e1 !important;
+    }
+
+    body.dark-mode .ins-adv-intro,
+    body.dark-mode .ins-adv-field {
+      border: none;
+      background: transparent;
+      box-shadow: none;
+    }
+
+    body.dark-mode .ins-adv-intro i {
+      color: #60a5fa;
+    }
+
+    body.dark-mode .ins-adv-date-display {
+      border-color: rgba(148, 163, 184, 0.4) !important;
+      background: rgba(15, 24, 36, 0.9) !important;
+      color: #9fb0c6;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    body.dark-mode .ins-adv-field .thai-date-input:hover .ins-adv-date-display {
+      border-color: rgba(56, 189, 248, 0.56) !important;
+      box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.16) !important;
     }
 
     .doc-item {
@@ -555,6 +697,28 @@
       .insp-page {
         padding: 12px;
         --ins-control-height: 50px;
+        --ins-adv-control-height: 56px;
+      }
+
+      .swal2-popup.ins-adv-popup {
+        width: calc(100vw - 18px) !important;
+        max-width: calc(100vw - 18px) !important;
+        border-radius: 22px !important;
+      }
+
+      .swal2-popup.ins-adv-popup .swal2-title {
+        padding: 18px 14px 10px !important;
+        font-size: 1.42rem !important;
+      }
+
+      .swal2-popup.ins-adv-popup .ins-adv-popup-html {
+        padding: 0 14px 16px !important;
+      }
+
+      .ins-adv-grid,
+      .ins-adv-actions {
+        grid-template-columns: 1fr;
+        gap: 12px;
       }
 
       .insp-top {
@@ -593,11 +757,6 @@
         width: 100%;
       }
 
-      .ins-adv-grid,
-      .ins-adv-actions {
-        grid-template-columns: 1fr;
-      }
-
       .adv-row {
         display: grid;
         grid-template-columns: 1fr;
@@ -620,6 +779,27 @@
       .insp-page {
         padding: 8px;
         --ins-control-height: 48px;
+        --ins-adv-control-height: 54px;
+      }
+
+      .swal2-popup.ins-adv-popup {
+        width: calc(100vw - 12px) !important;
+        max-width: calc(100vw - 12px) !important;
+        border-radius: 20px !important;
+      }
+
+      .swal2-popup.ins-adv-popup .swal2-title {
+        padding: 16px 10px 8px !important;
+        font-size: 1.3rem !important;
+      }
+
+      .swal2-popup.ins-adv-popup .ins-adv-popup-html {
+        padding: 0 10px 12px !important;
+      }
+
+      .ins-adv-field {
+        padding: 0;
+        border-radius: 0;
       }
 
       .inspector-card {
@@ -713,7 +893,7 @@
   </div>
 
   <script src="./config.js"></script>
-  <script src="./api-client.js?v=20260221-4"></script>
+  <script src="./api-client.js?v=20260221-6"></script>
   <script src="./theme-legacy.js?v=20260221-3"></script>
   <script src="./app-common.js?v=20260221-2"></script>
   <script>
@@ -841,13 +1021,13 @@
       function openAdvancedFilter() {
         var htmlContent = ''
           + '<div class="ins-adv-wrap">'
-          + '<p class="ins-adv-note">เลือกช่วงวันที่ที่ต้องการสำหรับการกรองรายงาน</p>'
+          + '<div class="ins-adv-intro"><i class="bi bi-sliders2"></i><p class="ins-adv-note">กำหนดช่วงวันที่ที่ต้องการ แล้วกดเพิ่มตัวกรองเพื่อใช้งานทันที</p></div>'
           + '<div class="ins-adv-grid">'
           + '<div class="ins-adv-field">'
           + '<label class="ins-adv-label">จากวันที่</label>'
           + '<div class="thai-date-input" onclick="openCalendar(\'inspStart\')">'
           + '<input type="hidden" id="inspStart" value="">'
-          + '<div id="inspStartDisplay" class="form-control" style="font-weight:650;">เลือกวันที่...</div>'
+          + '<div id="inspStartDisplay" class="ins-adv-date-display">เลือกวันที่...</div>'
           + '<i class="bi bi-calendar3 cal-icon"></i>'
           + '</div>'
           + '</div>'
@@ -855,7 +1035,7 @@
           + '<label class="ins-adv-label">ถึงวันที่</label>'
           + '<div class="thai-date-input" onclick="openCalendar(\'inspEnd\')">'
           + '<input type="hidden" id="inspEnd" value="">'
-          + '<div id="inspEndDisplay" class="form-control" style="font-weight:650;">เลือกวันที่...</div>'
+          + '<div id="inspEndDisplay" class="ins-adv-date-display">เลือกวันที่...</div>'
           + '<i class="bi bi-calendar3 cal-icon"></i>'
           + '</div>'
           + '</div>'

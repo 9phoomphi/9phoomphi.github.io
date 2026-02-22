@@ -9,7 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <link rel="stylesheet" href="./theme-legacy.css?v=20260221-16">
+  <link rel="stylesheet" href="./theme-legacy.css?v=20260221-17">
   <style>
     .box-page {
       max-width: 1140px;
@@ -633,7 +633,7 @@
   </div>
 
   <script src="./config.js"></script>
-  <script src="./api-client.js?v=20260221-4"></script>
+  <script src="./api-client.js?v=20260221-6"></script>
   <script src="./theme-legacy.js?v=20260221-3"></script>
   <script src="./app-common.js?v=20260221-2"></script>
   <script>
@@ -642,8 +642,9 @@
 
       var C = window.DocFrontendCommon;
       var q = C.parseQuery();
-      var boxName = C.safeTrim(q.box || '');
+      var boxName = resolveBoxNameFromQuery(q);
       var APP_BROWSER_NAME = 'ระบบทะเบียนคุมเอกสาร';
+      var LAST_BOX_NAME_KEY = 'docControlLastBoxNameV1';
 
       var state = {
         settings: null,
@@ -666,6 +667,105 @@
         btnPrintQr: document.getElementById('btnPrintQr'),
         btnPrintList: document.getElementById('btnPrintList')
       };
+
+      function pickQueryValueCaseInsensitive(obj, key) {
+        if (!obj || typeof obj !== 'object') return '';
+        if (Object.prototype.hasOwnProperty.call(obj, key)) return obj[key];
+        var want = String(key || '').toLowerCase();
+        for (var k in obj) {
+          if (!Object.prototype.hasOwnProperty.call(obj, k)) continue;
+          if (String(k).toLowerCase() === want) return obj[k];
+        }
+        return '';
+      }
+
+      function cleanBoxNameValue(value) {
+        var text = C.safeTrim(value || '');
+        var low = text.toLowerCase();
+        if (!text || text === '-' || low === 'undefined' || low === 'null') return '';
+        return text;
+      }
+
+      function rememberLastBoxName(name) {
+        var value = cleanBoxNameValue(name);
+        if (!value) return;
+        try { sessionStorage.setItem(LAST_BOX_NAME_KEY, value); } catch (_e1) {}
+        try { localStorage.setItem(LAST_BOX_NAME_KEY, value); } catch (_e2) {}
+        try { window.__docControlLastBoxName = value; } catch (_e3) {}
+      }
+
+      function readLastBoxName() {
+        var fromWindow = cleanBoxNameValue(window.__docControlLastBoxName || '');
+        if (fromWindow) return fromWindow;
+        try {
+          var fromSession = cleanBoxNameValue(sessionStorage.getItem(LAST_BOX_NAME_KEY) || '');
+          if (fromSession) return fromSession;
+        } catch (_e1) {}
+        try {
+          var fromLocal = cleanBoxNameValue(localStorage.getItem(LAST_BOX_NAME_KEY) || '');
+          if (fromLocal) return fromLocal;
+        } catch (_e2) {}
+        return '';
+      }
+
+      function pickBoxValueFromSearchParams(searchParams, keys) {
+        if (!searchParams || !keys || !keys.length) return '';
+        for (var i = 0; i < keys.length; i++) {
+          var raw = searchParams.get(keys[i]);
+          var value = cleanBoxNameValue(raw);
+          if (value) return value;
+        }
+        return '';
+      }
+
+      function resolveBoxNameFromQuery(queryObj) {
+        var keys = ['box', 'boxName', 'boxname', 'box_id', 'boxId', 'name', 'location', 'loc', 'detail', 'box_name', 'id'];
+        for (var i = 0; i < keys.length; i++) {
+          var val = cleanBoxNameValue(pickQueryValueCaseInsensitive(queryObj, keys[i]));
+          if (val) return val;
+        }
+        // fallback: URLSearchParams เผื่อบางกรณี parseQuery ไม่ได้ค่าครบ
+        try {
+          if (typeof window !== 'undefined' && window.location && window.location.search) {
+            var sp = new URLSearchParams(String(window.location.search || ''));
+            var fromSearch = pickBoxValueFromSearchParams(sp, keys);
+            if (fromSearch) return fromSearch;
+          }
+        } catch (_ignore) {}
+
+        // fallback: query ที่ฝังอยู่ใน hash เช่น "#/path?box=..."
+        try {
+          if (typeof window !== 'undefined' && window.location && window.location.hash) {
+            var hash = String(window.location.hash || '');
+            var qIdx = hash.indexOf('?');
+            if (qIdx >= 0) {
+              var hashSearch = new URLSearchParams(hash.substring(qIdx + 1));
+              var fromHash = pickBoxValueFromSearchParams(hashSearch, keys);
+              if (fromHash) return fromHash;
+            }
+          }
+        } catch (_ignore2) {}
+
+        // fallback: อ่านจาก referrer เผื่อบางเบราว์เซอร์ส่ง query มาไม่ครบ
+        try {
+          if (typeof document !== 'undefined' && document.referrer) {
+            var refUrl = new URL(document.referrer, window.location.href);
+            var fromRef = pickBoxValueFromSearchParams(refUrl.searchParams, keys);
+            if (fromRef) return fromRef;
+            var refHash = String(refUrl.hash || '');
+            var refQIdx = refHash.indexOf('?');
+            if (refQIdx >= 0) {
+              var refHashSearch = new URLSearchParams(refHash.substring(refQIdx + 1));
+              var fromRefHash = pickBoxValueFromSearchParams(refHashSearch, keys);
+              if (fromRefHash) return fromRefHash;
+            }
+          }
+        } catch (_ignore3) {}
+
+        var remembered = readLastBoxName();
+        if (remembered) return remembered;
+        return '';
+      }
 
       function showError(message) {
         var msg = C.safeTrim(message || '');
@@ -736,6 +836,10 @@
         var detail = state.detail || {};
         var docs = Array.isArray(detail.docs) ? detail.docs : [];
         var resolvedBoxName = C.safeTrim(detail.boxName || boxName || '-');
+        if (resolvedBoxName && resolvedBoxName !== '-') {
+          boxName = resolvedBoxName;
+          rememberLastBoxName(resolvedBoxName);
+        }
         updateBrowserTitle(resolvedBoxName);
 
         els.boxTitle.innerHTML = '<i class="bi bi-archive-fill me-2"></i>' + C.escapeHtml(resolvedBoxName);
@@ -900,6 +1004,13 @@
       async function loadDetail() {
         showError('');
 
+        if (!boxName) {
+          boxName = readLastBoxName();
+        }
+        if (!boxName) {
+          return { success: false, error: 'ไม่พบชื่อกล่อง' };
+        }
+
         var res = await Promise.all([
           state.api.boxDetail(boxName),
           state.api.me()
@@ -945,6 +1056,9 @@
 
       async function init() {
         if (!boxName) {
+          boxName = readLastBoxName();
+        }
+        if (!boxName) {
           C.redirect('not-found.html', {
             message: 'ไม่พบชื่อกล่อง',
             detail: '',
@@ -952,6 +1066,7 @@
           }, true);
           return;
         }
+        rememberLastBoxName(boxName);
 
         try {
           state.settings = C.ensureSettingsOrThrow();
