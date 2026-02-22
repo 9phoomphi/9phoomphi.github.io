@@ -18,6 +18,7 @@
       --success: #15803d;
       --warning: #b45309;
       --shadow: 0 16px 38px rgba(15, 23, 42, 0.10);
+      --home-topbar-top-offset: 10px;
     }
 
     * { box-sizing: border-box; }
@@ -639,7 +640,7 @@
 
     #homeTopbar.is-fixed {
       position: fixed !important;
-      top: 0;
+      top: calc(env(safe-area-inset-top, 0px) + var(--home-topbar-top-offset));
       left: 0;
       right: 0;
       width: min(1220px, calc(100vw - 32px));
@@ -819,6 +820,35 @@
       font-size: 0.82rem !important;
     }
 
+    body.app-home-page #homeTopbar .dash-search-wrap {
+      transition:
+        transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
+        filter 240ms ease;
+      will-change: transform;
+    }
+
+    body.app-home-page #homeTopbar .search-box {
+      transition:
+        border-color 260ms ease,
+        background 260ms ease,
+        box-shadow 280ms cubic-bezier(0.22, 1, 0.36, 1),
+        transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    body.app-home-page #homeTopbar.is-sticky .dash-search-wrap {
+      transform: translateY(-1px);
+      filter: saturate(1.03);
+    }
+
+    body.app-home-page #homeTopbar.is-sticky .search-box {
+      background: rgba(255, 255, 255, 0.9) !important;
+      border-color: rgba(148, 163, 184, 0.46) !important;
+      box-shadow:
+        0 14px 30px rgba(15, 23, 42, 0.11),
+        inset 0 1px 0 rgba(255, 255, 255, 0.86) !important;
+      transform: translateY(-1px);
+    }
+
     .search-panel {
       margin-bottom: 12px;
       padding: 12px !important;
@@ -984,6 +1014,18 @@
       background: rgba(15, 23, 42, 0.76);
       border-color: rgba(148, 163, 184, 0.42);
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    }
+
+    body.dark-mode.app-home-page #homeTopbar.is-sticky .dash-search-wrap {
+      filter: saturate(1.06);
+    }
+
+    body.dark-mode.app-home-page #homeTopbar.is-sticky .search-box {
+      background: rgba(15, 23, 42, 0.86) !important;
+      border-color: rgba(125, 211, 252, 0.44) !important;
+      box-shadow:
+        0 18px 38px rgba(2, 8, 20, 0.44),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
     }
 
     body.dark-mode .search-main .search-icon {
@@ -3198,111 +3240,53 @@
           var spacer = document.getElementById('topbarSpacer');
           if (!topbar) return;
 
-          var targetProgress = 0;
-          var currentProgress = 0;
-          var isAnimating = false;
-          var reduceMotion = false;
-          try {
-            reduceMotion = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
-          } catch (_e) {}
-
-          function clamp(value, min, max) {
-            if (value < min) return min;
-            if (value > max) return max;
-            return value;
+          function readTopbarOffset() {
+            if (!window.getComputedStyle) return 0;
+            var raw = window.getComputedStyle(document.documentElement).getPropertyValue('--home-topbar-top-offset');
+            var n = parseFloat(raw);
+            return isFinite(n) ? Math.max(0, n) : 0;
           }
 
-          function applySpacerHeight(enabled) {
+          function applyPinnedState() {
+            var isVisible = !topbar.classList.contains('hidden');
+            topbar.classList.toggle('is-fixed', isVisible);
+            topbar.classList.toggle('is-sticky', isVisible);
+            topbar.style.setProperty('--follow-progress', isVisible ? '0.12' : '0');
+
             if (!spacer) return;
-            if (!enabled) {
+            if (!isVisible) {
               spacer.style.height = '0px';
+              topbar.style.left = '';
+              topbar.style.right = '';
+              topbar.style.width = '';
               return;
             }
+
+            var rect = spacer.getBoundingClientRect();
+            var offset = readTopbarOffset();
             var h = topbar.getBoundingClientRect().height;
-            spacer.style.height = Math.max(0, Math.round(h)) + 'px';
-          }
+            spacer.style.height = Math.max(0, Math.round(h + offset)) + 'px';
 
-          function computeTargetProgress() {
-            if (topbar.classList.contains('hidden')) return 0;
-            var y = window.pageYOffset || document.documentElement.scrollTop || 0;
-            var start = 6;
-            var end = 92;
-            return clamp((y - start) / (end - start), 0, 1);
-          }
-
-          function applyProgress(progress) {
-            var p = clamp(progress, 0, 1);
-            var keepFixed = !topbar.classList.contains('hidden');
-            topbar.classList.toggle('is-fixed', keepFixed);
-            applySpacerHeight(keepFixed);
-            topbar.classList.toggle('is-sticky', p > 0.04);
-            topbar.style.setProperty('--follow-progress', p.toFixed(3));
-          }
-
-          function animate() {
-            if (reduceMotion) {
-              currentProgress = targetProgress;
-              applyProgress(currentProgress);
-              isAnimating = false;
-              return;
+            if (rect && rect.width > 0) {
+              topbar.style.left = rect.left + 'px';
+              topbar.style.right = 'auto';
+              topbar.style.width = rect.width + 'px';
+            } else {
+              topbar.style.left = '';
+              topbar.style.right = '';
+              topbar.style.width = '';
             }
-
-            var delta = targetProgress - currentProgress;
-            if (Math.abs(delta) < 0.002) {
-              currentProgress = targetProgress;
-              applyProgress(currentProgress);
-              isAnimating = false;
-              return;
-            }
-
-            currentProgress += delta * 0.18;
-            applyProgress(currentProgress);
-            window.requestAnimationFrame(animate);
-          }
-
-          function queueAnimate() {
-            if (isAnimating) return;
-            isAnimating = true;
-            window.requestAnimationFrame(animate);
-          }
-
-          function updateTarget() {
-            targetProgress = computeTargetProgress();
-            if (reduceMotion) {
-              currentProgress = targetProgress;
-              applyProgress(currentProgress);
-              isAnimating = false;
-              return;
-            }
-            queueAnimate();
-          }
-
-          function onScroll() {
-            updateTarget();
-          }
-
-          function recalc() {
-            if (topbar.classList.contains('hidden')) {
-              topbar.classList.remove('is-fixed');
-              applySpacerHeight(false);
-              targetProgress = 0;
-              currentProgress = 0;
-              applyProgress(0);
-              return;
-            }
-            updateTarget();
           }
 
           if (typeof MutationObserver === 'function') {
             var observer = new MutationObserver(function () {
-              recalc();
+              applyPinnedState();
             });
             observer.observe(topbar, { attributes: true, attributeFilter: ['class'] });
           }
 
-          window.addEventListener('scroll', onScroll, { passive: true });
-          window.addEventListener('resize', recalc, { passive: true });
-          setTimeout(recalc, 0);
+          window.addEventListener('resize', applyPinnedState, { passive: true });
+          setTimeout(applyPinnedState, 0);
         }
 
         state.config = C.readConfig();

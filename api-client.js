@@ -54,6 +54,23 @@
     return '';
   }
 
+  function isJsonpTransportError(err) {
+    var message = safeTrim(err && err.message || '');
+    return (
+      message.indexOf('jsonp_timeout') === 0 ||
+      message.indexOf('jsonp_no_callback') === 0 ||
+      message.indexOf('jsonp_failed') === 0
+    );
+  }
+
+  function isJsonpRetryableError(err) {
+    var message = safeTrim(err && err.message || '');
+    return (
+      message.indexOf('jsonp_timeout') === 0 ||
+      message.indexOf('jsonp_no_callback') === 0
+    );
+  }
+
   function getTransportStorageKey(scriptUrl) {
     var normalized = safeTrim(scriptUrl || '').split('#')[0].split('?')[0].toLowerCase();
     if (!normalized) return '';
@@ -122,7 +139,12 @@
     this.defaultDeviceKey = safeTrim(options.deviceKey || '') || randomDeviceKey();
     this.defaultIpKey = safeTrim(options.ipKey || '');
     this.timeoutMs = normalizeTimeoutMs(options.timeoutMs, 15000);
-    this.transportMode = readStoredTransportMode(this.scriptUrl) || 'auto';
+    var storedMode = readStoredTransportMode(this.scriptUrl) || '';
+    if (typeof fetch === 'function') {
+      this.transportMode = storedMode === 'fetch' ? 'fetch' : 'auto';
+    } else {
+      this.transportMode = storedMode || 'jsonp';
+    }
     this.cachePrefix = 'docControlApiCacheV1:' + normalizeCachePrefix(this.scriptUrl);
   }
 
@@ -381,8 +403,42 @@
       : (requestedMode || normalizeTransportMode(this.transportMode) || 'auto');
 
     if (transportMode === 'jsonp') {
-      requestPromise = this._callJsonp(action, requestPayload, opts);
-      this._rememberTransportMode('jsonp');
+      requestPromise = this._callJsonp(action, requestPayload, opts)
+        .then(function (response) {
+          self._rememberTransportMode('jsonp');
+          return response;
+        })
+        .catch(function (err) {
+          if (useJsonpOnly || !isJsonpTransportError(err)) {
+            throw err;
+          }
+          var retryPromise = Promise.reject(err);
+          if (isJsonpRetryableError(err)) {
+            var retryOpts = {};
+            var sourceOpts = opts || {};
+            for (var key in sourceOpts) {
+              if (!Object.prototype.hasOwnProperty.call(sourceOpts, key)) continue;
+              retryOpts[key] = sourceOpts[key];
+            }
+            retryOpts.timeoutMs = normalizeTimeoutMs(
+              Number((sourceOpts && sourceOpts.timeoutMs) || self.timeoutMs || 15000) * 1.5,
+              self.timeoutMs || 15000
+            );
+            retryPromise = self._callJsonp(action, requestPayload, retryOpts).then(function (response) {
+              self._rememberTransportMode('jsonp');
+              return response;
+            });
+          }
+
+          return retryPromise.catch(function () {
+            return self._callFetch(action, requestPayload, opts).then(function (response) {
+              self._rememberTransportMode('fetch');
+              return response;
+            }).catch(function (fetchErr) {
+              throw err || fetchErr;
+            });
+          });
+        });
     } else if (transportMode === 'fetch') {
       requestPromise = this._callFetch(action, requestPayload, opts)
         .then(function (response) {
