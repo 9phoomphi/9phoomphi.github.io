@@ -812,8 +812,17 @@
       }
 
       function getBoxQrData() {
-        var base = C.normalizeScriptUrl(state.settings.scriptUrl || '').split('?')[0];
-        var target = base + '?box=' + encodeURIComponent((state.detail && state.detail.boxName) || boxName || '');
+        var targetBox = C.safeTrim((state.detail && state.detail.boxName) || boxName || '');
+        var target = C.buildPageUrl('storage-box-view.html', {
+          box: targetBox,
+          boxName: targetBox
+        });
+
+        // ทำให้ QR เปิดหน้าเว็บ frontend โดยตรง ไม่ชี้เข้า Apps Script API
+        try {
+          target = new URL(target, window.location.href).toString();
+        } catch (_ignore) {}
+
         if (typeof window.appendSessionKeysToUrl === 'function') {
           target = window.appendSessionKeysToUrl(target);
         } else if (state.settings && C.safeTrim(state.settings.deviceKey || '')) {
