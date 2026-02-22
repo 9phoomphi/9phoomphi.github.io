@@ -399,6 +399,58 @@
       letter-spacing: 0.01em !important;
     }
 
+    .scan-storage-popup {
+      width: min(660px, calc(100vw - 24px)) !important;
+      border-radius: 22px !important;
+      padding: 1.2em 1.2em 1.05em !important;
+    }
+
+    .scan-storage-title {
+      margin-bottom: 0.22em !important;
+      font-size: clamp(1.1rem, 2.5vw, 1.26rem) !important;
+      font-weight: 860 !important;
+      line-height: 1.34 !important;
+    }
+
+    .scan-storage-html {
+      margin: 0.34em 0 0 !important;
+    }
+
+    .scan-storage-form {
+      text-align: left;
+    }
+
+    .scan-storage-label {
+      display: block;
+      margin: 0 0 6px;
+      font-size: 0.94rem;
+      font-weight: 780;
+      color: #475569;
+      letter-spacing: 0.01em;
+    }
+
+    .scan-storage-select.swal2-select {
+      width: 100% !important;
+      min-height: 58px !important;
+      margin: 0 0 16px !important;
+      border-radius: 16px !important;
+      padding: 0 52px 0 16px !important;
+      font-size: 1.28rem !important;
+      line-height: 1.35 !important;
+      font-weight: 760 !important;
+      letter-spacing: 0.01em !important;
+      background-position: right 16px center !important;
+      background-size: 16px 11px !important;
+    }
+
+    .scan-storage-form .scan-storage-label:last-of-type {
+      margin-top: 2px;
+    }
+
+    .scan-storage-form .scan-storage-select:last-of-type {
+      margin-bottom: 2px !important;
+    }
+
     .camera-actions {
       display: grid;
       grid-template-columns: 1fr;
@@ -680,6 +732,20 @@
 
     body.dark-mode .scan-success-html {
       color: #cbd5e1 !important;
+    }
+
+    body.dark-mode .scan-storage-title {
+      color: #f8fafc !important;
+    }
+
+    body.dark-mode .scan-storage-label {
+      color: #cbd5e1;
+    }
+
+    body.dark-mode .scan-storage-select.swal2-select {
+      background: rgba(15, 23, 42, 0.72) !important;
+      border-color: rgba(148, 163, 184, 0.5) !important;
+      color: #f8fafc !important;
     }
 
     body.dark-mode .status-message {
@@ -1382,16 +1448,22 @@
 
         var result = await Swal.fire({
           title: 'เลือกปีงบประมาณและกล่องเอกสาร',
-          html: '<div class="text-start">'
-            + '<label class="form-label small fw-bold">ปีงบประมาณ</label>'
-            + '<select id="swalFiscal" class="swal2-select" style="width:100%;margin:6px 0 14px"></select>'
-            + '<label class="form-label small fw-bold">กล่องเอกสาร</label>'
-            + '<select id="swalBox" class="swal2-select" style="width:100%;margin:6px 0 0"></select>'
+          html: '<div class="scan-storage-form">'
+            + '<label class="scan-storage-label">ปีงบประมาณ</label>'
+            + '<select id="swalFiscal" class="swal2-select scan-storage-select"></select>'
+            + '<label class="scan-storage-label">กล่องเอกสาร</label>'
+            + '<select id="swalBox" class="swal2-select scan-storage-select"></select>'
             + '</div>',
           showCancelButton: true,
           confirmButtonText: 'เพิ่มเข้ารายการ',
           cancelButtonText: 'ยกเลิก',
           allowOutsideClick: false,
+          customClass: {
+            container: 'scan-success-backdrop',
+            popup: 'scan-storage-popup',
+            title: 'scan-storage-title',
+            htmlContainer: 'scan-storage-html'
+          },
           didOpen: function () {
             var popup = Swal.getPopup();
             if (!popup) return;
