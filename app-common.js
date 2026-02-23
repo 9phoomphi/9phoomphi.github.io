@@ -71,6 +71,9 @@
     var savedUrl = '';
     var savedDevice = '';
     var runtimeDevice = '';
+    var query = parseQuery();
+    var queryUrl = normalizeScriptUrl(query.su || query.scriptUrl || query.script || '');
+    var queryDevice = safeTrim(query.dk || query.deviceKey || query.device || '');
 
     try {
       savedUrl = normalizeScriptUrl(localStorage.getItem(STORAGE_SCRIPT_URL) || '');
@@ -79,8 +82,12 @@
 
     runtimeDevice = getRuntimeDeviceKey();
 
-    var scriptUrl = cfg.scriptUrl || savedUrl;
-    var deviceKey = cfg.deviceKey || savedDevice || runtimeDevice || randomDeviceKey();
+    var scriptUrl = cfg.scriptUrl || queryUrl || savedUrl;
+    var deviceKey = cfg.deviceKey || queryDevice || savedDevice || runtimeDevice || randomDeviceKey();
+
+    if (scriptUrl) {
+      try { localStorage.setItem(STORAGE_SCRIPT_URL, scriptUrl); } catch (_e0) {}
+    }
 
     if (deviceKey) {
       try { localStorage.setItem(STORAGE_DEVICE_KEY, deviceKey); } catch (_e2) {}
