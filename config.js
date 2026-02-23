@@ -8,10 +8,10 @@
     themePreset: 'apple-glass',
 
     // จำเป็น: ใส่ URL Web App ที่ลงท้ายด้วย /exec
-    scriptUrl: 'https://script.google.com/macros/s/AKfycbwWZmS0EVZki9Awd4Xk8GgLqGtzWlMfGkhBdBDz7a4lLQYcexnss9QKhGcaOGhwYLeZ/exec',
+    scriptUrl: '',
 
     // ไม่จำเป็น: ถ้าเว้นว่าง ระบบจะสร้างและจำค่าให้เองในเบราว์เซอร์
-    deviceKey: '',
+    deviceKey: 'https://script.google.com/macros/s/AKfycbwWZmS0EVZki9Awd4Xk8GgLqGtzWlMfGkhBdBDz7a4lLQYcexnss9QKhGcaOGhwYLeZ/exec',
 
     // ถ้า true จะซ่อนปุ่มตั้งค่า API บนหน้าเว็บ และบังคับใช้ค่าจากไฟล์นี้
     lockSettings: true,
