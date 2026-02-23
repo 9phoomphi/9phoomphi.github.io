@@ -113,9 +113,170 @@
       padding: 10px 12px;
     }
 
+    .desc-note.emphasis {
+      color: #334155;
+      background: rgba(10, 132, 255, 0.08);
+      border-color: rgba(10, 132, 255, 0.28);
+      font-weight: 700;
+    }
+
+    .round-meta {
+      font-size: 0.83rem;
+      font-weight: 700;
+    }
+
+    .round-history {
+      display: grid;
+      gap: 10px;
+    }
+
+    .history-empty {
+      border: 1px dashed rgba(148, 163, 184, 0.58);
+      border-radius: 14px;
+      padding: 12px;
+      color: var(--text-muted);
+      font-size: 0.83rem;
+      background: rgba(255, 255, 255, 0.38);
+    }
+
+    .history-card {
+      border: 1px solid var(--input-border);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.62);
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+      padding: 10px;
+    }
+
+    .history-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 8px;
+    }
+
+    .history-round-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(10, 132, 255, 0.35);
+      background: rgba(10, 132, 255, 0.12);
+      color: #0a63cf;
+      font-weight: 820;
+      font-size: 0.78rem;
+      padding: 4px 10px;
+      white-space: nowrap;
+    }
+
+    .history-meta {
+      color: var(--text-muted);
+      font-size: 0.76rem;
+      font-weight: 650;
+      text-align: right;
+      line-height: 1.3;
+    }
+
+    .history-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .history-step {
+      border: 1px solid rgba(148, 163, 184, 0.36);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.5);
+      padding: 8px 9px;
+    }
+
+    .history-step.on {
+      border-color: rgba(34, 197, 94, 0.35);
+      background: rgba(34, 197, 94, 0.1);
+    }
+
+    .history-step.off {
+      opacity: 0.8;
+      background: rgba(148, 163, 184, 0.08);
+    }
+
+    .history-step-title {
+      font-size: 0.79rem;
+      font-weight: 760;
+      color: var(--text-color);
+      margin: 0 0 4px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      line-height: 1.3;
+    }
+
+    .history-step-line {
+      margin: 0;
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      line-height: 1.32;
+      word-break: break-word;
+    }
+
+    .history-remark {
+      margin-top: 8px;
+      border: 1px dashed rgba(10, 132, 255, 0.34);
+      border-radius: 12px;
+      background: rgba(10, 132, 255, 0.08);
+      padding: 8px 9px;
+      font-size: 0.8rem;
+      line-height: 1.4;
+      color: #0f3f7f;
+    }
+
     body.dark-mode .desc-note {
       background: rgba(9, 20, 40, 0.55);
       border-color: rgba(78, 112, 156, 0.5);
+    }
+
+    body.dark-mode .desc-note.emphasis {
+      color: #dbe7f8;
+      background: rgba(10, 90, 170, 0.3);
+      border-color: rgba(100, 167, 242, 0.44);
+    }
+
+    body.dark-mode .history-empty {
+      background: rgba(11, 24, 44, 0.46);
+      border-color: rgba(89, 120, 160, 0.45);
+    }
+
+    body.dark-mode .history-card {
+      background: rgba(11, 24, 44, 0.56);
+      border-color: rgba(73, 102, 139, 0.46);
+      box-shadow: 0 12px 26px rgba(2, 8, 20, 0.46);
+    }
+
+    body.dark-mode .history-round-chip {
+      color: #bfdbfe;
+      border-color: rgba(118, 178, 252, 0.48);
+      background: rgba(13, 90, 170, 0.36);
+    }
+
+    body.dark-mode .history-step {
+      border-color: rgba(89, 120, 160, 0.42);
+      background: rgba(11, 24, 44, 0.44);
+    }
+
+    body.dark-mode .history-step.on {
+      border-color: rgba(74, 222, 128, 0.42);
+      background: rgba(20, 126, 82, 0.32);
+    }
+
+    body.dark-mode .history-step.off {
+      background: rgba(39, 57, 84, 0.34);
+    }
+
+    body.dark-mode .history-remark {
+      color: #cfe4ff;
+      border-color: rgba(116, 174, 247, 0.5);
+      background: rgba(13, 90, 170, 0.32);
     }
 
     .steps-toolbar {
@@ -376,6 +537,10 @@
       border-color: rgba(73, 102, 139, 0.45);
     }
 
+    .status-field.remark-field {
+      padding: 10px;
+    }
+
     .form-control,
     .form-select {
       width: 100%;
@@ -412,6 +577,14 @@
       outline: none;
       border-color: var(--primary-color);
       box-shadow: 0 0 0 3px var(--primary-color-soft);
+    }
+
+    textarea.form-control {
+      min-height: 112px;
+      height: auto;
+      padding: 11px 12px;
+      line-height: 1.42;
+      resize: vertical;
     }
 
     .thai-date-input .form-control {
@@ -540,6 +713,10 @@
 
     @media (max-width: 900px) {
       .status-detail {
+        grid-template-columns: 1fr;
+      }
+
+      .history-grid {
         grid-template-columns: 1fr;
       }
 
@@ -706,11 +883,19 @@
 
       <div class="status-body">
         <p class="desc-note"><i class="bi bi-info-circle me-1"></i>เปิด-ปิดสวิตช์เพื่อบันทึกสถานะแต่ละขั้นตอน วันที่จะเติมอัตโนมัติเมื่อเปิดสวิตช์</p>
+        <p class="desc-note emphasis"><i class="bi bi-shield-lock me-1"></i>ทุกครั้งที่บันทึก ระบบจะสร้าง "รอบใหม่" และล็อกข้อมูลรอบเดิม ไม่สามารถแก้ไขย้อนหลังได้</p>
+        <div id="roundMeta" class="desc-note round-meta">กำลังเตรียมข้อมูลรอบสถานะ...</div>
+        <div id="roundHistory" class="round-history"></div>
         <div class="steps-toolbar">
           <button id="btnEnableAll" type="button" class="toolbar-btn primary"><i class="bi bi-check2-square"></i>เปิดทุกสถานะ</button>
           <button id="btnDisableAll" type="button" class="toolbar-btn"><i class="bi bi-x-square"></i>ปิดทั้งหมด</button>
         </div>
         <div id="stepsWrap"></div>
+
+        <section class="status-field remark-field">
+          <label class="form-label" for="statusRemark"><i class="bi bi-chat-left-text me-1"></i>หมายเหตุสถานะ (คอลัมน์ AM)</label>
+          <textarea id="statusRemark" class="form-control" rows="4" placeholder="กรอกหมายเหตุเพิ่มเติม (ถ้ามี)"></textarea>
+        </section>
 
         <div id="loadingMsg" class="loading-row">
           <div class="spinner"></div>
@@ -741,8 +926,11 @@
         user: null,
         doc: null,
         statusData: {},
+        statusRounds: [],
+        nextRoundNo: 1,
         members: [],
-        memberImgMap: {}
+        memberImgMap: {},
+        currentRoundData: null
       };
 
       var steps = [
@@ -761,6 +949,9 @@
         btnEnableAll: document.getElementById('btnEnableAll'),
         btnDisableAll: document.getElementById('btnDisableAll'),
         stepsWrap: document.getElementById('stepsWrap'),
+        roundMeta: document.getElementById('roundMeta'),
+        roundHistory: document.getElementById('roundHistory'),
+        statusRemark: document.getElementById('statusRemark'),
         btnSubmit: document.getElementById('btnSubmit'),
         loadingMsg: document.getElementById('loadingMsg')
       };
@@ -878,6 +1069,98 @@
         return '';
       }
 
+      function buildEmptyRoundData() {
+        return {
+          returnCheck: false,
+          returnDate: '',
+          returnUser: '',
+          receiveBackCheck: false,
+          receiveBackDate: '',
+          receiveBackUser: '',
+          verifyCheck: false,
+          verifyDate: '',
+          verifyUser: '',
+          bossCheck: false,
+          bossDate: '',
+          bossUser: '',
+          signCheck: false,
+          signDate: '',
+          signUser: '',
+          statusRemark: ''
+        };
+      }
+
+      function formatRoundTimestamp(isoText) {
+        var iso = C.safeTrim(isoText || '');
+        if (!iso) return 'ไม่ระบุเวลา';
+        var d = new Date(iso);
+        if (isNaN(d.getTime())) return iso;
+        return d.toLocaleString('th-TH');
+      }
+
+      function escapePlainText(value) {
+        return C.escapeHtml(C.safeText(value || '').replace(/\s+/g, ' ').trim());
+      }
+
+      function renderRoundHistory() {
+        var rounds = Array.isArray(state.statusRounds) ? state.statusRounds : [];
+        var nextRoundNo = Number(state.nextRoundNo || 1);
+        if (!isFinite(nextRoundNo) || nextRoundNo < 1) nextRoundNo = 1;
+
+        if (els.roundMeta) {
+          els.roundMeta.innerHTML = '<i class="bi bi-arrow-repeat me-1"></i>พร้อมบันทึกรอบใหม่: <strong>รอบที่ ' + String(nextRoundNo) + '</strong>';
+        }
+
+        if (!els.roundHistory) return;
+        if (!rounds.length) {
+          els.roundHistory.innerHTML = '<div class="history-empty"><i class="bi bi-clock-history me-1"></i>ยังไม่มีประวัติรอบสถานะ ระบบจะเริ่มที่รอบที่ 1 เมื่อบันทึกครั้งแรก</div>';
+          return;
+        }
+
+        var html = '';
+        for (var i = 0; i < rounds.length; i++) {
+          var r = rounds[i] || {};
+          var rd = (r && r.statusData && typeof r.statusData === 'object') ? r.statusData : {};
+          var roundNo = Number(r.roundNo || (i + 1));
+          if (!isFinite(roundNo) || roundNo < 1) roundNo = i + 1;
+
+          html += '<article class="history-card">';
+          html += '<div class="history-head">';
+          html += '<span class="history-round-chip"><i class="bi bi-lock-fill"></i>รอบที่ ' + String(roundNo) + '</span>';
+          html += '<div class="history-meta">บันทึกเมื่อ: ' + C.escapeHtml(formatRoundTimestamp(r.createdAtIso || ''));
+          html += '<br>ผู้บันทึก: ' + C.escapeHtml(C.safeTrim(r.recordedBy || '-') || '-') + '</div>';
+          html += '</div>';
+          html += '<div class="history-grid">';
+
+          for (var j = 0; j < steps.length; j++) {
+            var step = steps[j];
+            var checked = !!rd[step.key + 'Check'];
+            var stepDate = checked
+              ? (C.safeTrim(rd[step.key + 'DateDisplay'] || '') || C.safeTrim(rd[step.key + 'Date'] || '') || '-')
+              : '-';
+            var stepUser = checked ? (C.safeTrim(rd[step.key + 'User'] || '') || '-') : '-';
+
+            html += '<div class="history-step ' + (checked ? 'on' : 'off') + '">';
+            html += '<p class="history-step-title"><i class="bi ' + C.escapeHtml(step.icon) + '"></i>' + C.escapeHtml(step.label) + '</p>';
+            html += '<p class="history-step-line">สถานะ: ' + (checked ? 'เสร็จสิ้น' : 'ไม่ถูกเลือก') + '</p>';
+            html += '<p class="history-step-line">วันที่: ' + C.escapeHtml(stepDate) + '</p>';
+            html += '<p class="history-step-line">ผู้ดำเนินการ: ' + C.escapeHtml(stepUser) + '</p>';
+            html += '</div>';
+          }
+
+          html += '</div>';
+
+          var remark = C.safeTrim(rd.statusRemark || '');
+          if (remark) {
+            html += '<div class="history-remark"><strong>หมายเหตุรอบ:</strong> ' + escapePlainText(remark) + '</div>';
+          }
+
+          html += '</article>';
+        }
+
+        els.roundHistory.innerHTML = html;
+      }
+
       function memberSelectHtml(fieldId, currentVal, disabled) {
         var html = '<option value="">เลือกชื่อ...</option>';
         var selected = C.safeTrim(currentVal || '');
@@ -904,7 +1187,7 @@
       }
 
       function renderSteps() {
-        var s = state.statusData || {};
+        var s = state.currentRoundData || buildEmptyRoundData();
         var html = '';
 
         for (var i = 0; i < steps.length; i++) {
@@ -914,6 +1197,12 @@
           var displayText = 'เลือกวันที่...';
           var displayColor = 'var(--text-muted)';
           var userVal = C.safeTrim(s[step.key + 'User'] || '');
+
+          if (dateVal) {
+            var dateObj = new Date(dateVal);
+            displayText = isNaN(dateObj.getTime()) ? dateVal : dateObj.toLocaleDateString('th-TH');
+            displayColor = 'var(--text-color)';
+          }
 
           html += '<section id="' + step.key + 'Card" class="form-section status-step-card' + (checked ? ' active' : '') + '">';
           html += '<div class="step-head">';
@@ -1047,9 +1336,9 @@
         var value = C.safeTrim((input && input.value) || '');
         if (isIsoDateText(value)) return value;
         if (isEmptyDateToken(value)) return '';
-        var fromState = resolveStepDateValue(state.statusData || {}, stepKey);
+        var fromState = resolveStepDateValue(state.currentRoundData || {}, stepKey);
         if (fromState) return fromState;
-        var fallback = C.safeTrim(((state.statusData || {})[stepKey + 'Date']) || ((state.statusData || {})[stepKey + 'DateInput']) || '');
+        var fallback = C.safeTrim(((state.currentRoundData || {})[stepKey + 'Date']) || ((state.currentRoundData || {})[stepKey + 'DateInput']) || '');
         return isIsoDateText(fallback) ? fallback : '';
       }
 
@@ -1091,7 +1380,10 @@
           bossUser: C.safeTrim((document.getElementById('bossUser') || {}).value || ''),
           signCheck: !!(document.getElementById('signCheck') || {}).checked,
           signDate: getDateForSubmit('sign'),
-          signUser: C.safeTrim((document.getElementById('signUser') || {}).value || '')
+          signUser: C.safeTrim((document.getElementById('signUser') || {}).value || ''),
+          statusRemark: C.safeText((els.statusRemark && els.statusRemark.value) || '').trim(),
+          mode: 'append_round',
+          roundNo: Number(state.nextRoundNo || 1)
         };
       }
 
@@ -1117,10 +1409,11 @@
 
         setSaving(true);
         var nextDocId = state.doc.docId || docId;
+        var saveResult = null;
         try {
-          var res = await state.api.docUpdateStatus(nextDocId, statusData);
-          if (!res || res.success === false) {
-            throw new Error((res && res.error) ? res.error : 'ไม่สามารถบันทึกสถานะได้');
+          saveResult = await state.api.docUpdateStatus(nextDocId, statusData);
+          if (!saveResult || saveResult.success === false) {
+            throw new Error((saveResult && saveResult.error) ? saveResult.error : 'ไม่สามารถบันทึกรอบสถานะได้');
           }
         } catch (err) {
           await Swal.fire('เกิดข้อผิดพลาด', (err && err.message) ? err.message : 'บันทึกไม่สำเร็จ', 'error');
@@ -1129,15 +1422,42 @@
           setSaving(false);
         }
 
-        await Swal.fire({
+        if (saveResult && Array.isArray(saveResult.rounds)) {
+          state.statusRounds = saveResult.rounds;
+        } else if (saveResult && saveResult.statusData) {
+          state.statusRounds = (Array.isArray(state.statusRounds) ? state.statusRounds : []).concat([{
+            roundNo: Number(saveResult.roundNo || state.nextRoundNo || 1),
+            createdAtIso: new Date().toISOString(),
+            recordedBy: C.safeTrim((state.user && (state.user.displayName || state.user.username)) || ''),
+            source: 'status_page',
+            eventId: '',
+            statusData: saveResult.statusData
+          }]);
+        }
+        state.nextRoundNo = Number((saveResult && saveResult.nextRoundNo) || ((Number(state.nextRoundNo || 1)) + 1));
+        if (!isFinite(state.nextRoundNo) || state.nextRoundNo < 1) state.nextRoundNo = 1;
+        state.currentRoundData = buildEmptyRoundData();
+
+        renderRoundHistory();
+        renderSteps();
+        if (els.statusRemark) els.statusRemark.value = '';
+
+        var savedRoundNo = Number((saveResult && saveResult.roundNo) || (state.nextRoundNo - 1) || 1);
+        var action = await Swal.fire({
           icon: 'success',
-          title: 'บันทึกสถานะสำเร็จ',
-          confirmButtonText: 'ดูรายละเอียดเอกสาร',
+          title: 'บันทึกรอบสถานะสำเร็จ',
+          text: 'บันทึกรอบที่ ' + String(savedRoundNo) + ' แล้ว',
+          confirmButtonText: 'บันทึกรอบถัดไป',
+          showDenyButton: true,
+          denyButtonText: 'ดูรายละเอียดเอกสาร',
           confirmButtonColor: '#007AFF',
+          denyButtonColor: '#64748B',
           allowOutsideClick: false
         });
 
-        C.redirect('document-view.html', { id: nextDocId }, true);
+        if (action && action.isDenied) {
+          C.redirect('document-view.html', { id: nextDocId }, true);
+        }
       }
 
       async function loadData() {
@@ -1169,8 +1489,12 @@
         state.user = meRes.user;
         state.doc = docRes.doc;
         state.statusData = docRes.statusData || {};
+        state.statusRounds = Array.isArray(docRes.statusRounds) ? docRes.statusRounds : [];
+        state.nextRoundNo = Number(docRes.nextStatusRoundNo || (state.statusRounds.length + 1) || 1);
+        if (!isFinite(state.nextRoundNo) || state.nextRoundNo < 1) state.nextRoundNo = 1;
         state.members = (memberRes && Array.isArray(memberRes.data)) ? memberRes.data : [];
         state.memberImgMap = mapMemberImages(state.members);
+        state.currentRoundData = buildEmptyRoundData();
         updateBrowserTitle(state.doc.docId || docId);
 
         if (state.user.isReadOnly || state.user.canEdit === false) {
@@ -1183,7 +1507,9 @@
         var headText = (state.doc.docId || '-') + ' | เลขรับ ' + (state.doc.receiveNo || '-');
         els.docHead.textContent = headText;
 
+        renderRoundHistory();
         renderSteps();
+        if (els.statusRemark) els.statusRemark.value = '';
 
         els.mainCard.style.display = 'block';
         return true;
