@@ -1087,8 +1087,10 @@
         if (!iso) return 'ไม่ระบุเวลา';
 
         var normalized = iso;
+        var isDateOnlyInput = false;
         var ymd = normalized.match(/^(\d{4})-(\d{2})-(\d{2})$/);
         if (ymd) {
+          isDateOnlyInput = true;
           var yOnly = Number(ymd[1]);
           if (yOnly > 2400) yOnly -= 543;
           normalized = String(yOnly).padStart(4, '0') + '-' + ymd[2] + '-' + ymd[3] + 'T00:00:00+07:00';
@@ -1115,6 +1117,10 @@
           month: 'long',
           year: 'numeric'
         }).format(d);
+
+        if (isDateOnlyInput) {
+          return dateText + ' เวลาไม่ระบุ';
+        }
 
         var timeText = new Intl.DateTimeFormat('th-TH', {
           timeZone: 'Asia/Bangkok',
