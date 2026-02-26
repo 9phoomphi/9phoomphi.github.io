@@ -123,123 +123,174 @@
       font-weight: 680;
     }
 
-    .status-log-meta {
-      display: block;
-      padding: 0 !important;
-      border-radius: 0;
-      border: none !important;
-      background: transparent !important;
-      box-shadow: none !important;
-      color: var(--text-color);
-      font-size: 0.83rem;
-      font-weight: 680;
-    }
-
-    .status-log-history {
-      display: grid;
-      gap: 10px;
-    }
-
-    .history-empty {
-      border: none !important;
-      border-radius: 0;
-      padding: 0 !important;
-      color: var(--text-muted);
-      font-size: 0.83rem;
-      background: transparent !important;
-      box-shadow: none !important;
-    }
-
-    .history-card {
-      border: none;
-      border-left: 3px solid rgba(10, 132, 255, 0.28);
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.34);
-      box-shadow: none;
-      padding: 10px 10px 8px;
-    }
-
-    .history-head {
+    .status-log-head {
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 10px;
       flex-wrap: wrap;
-      margin-bottom: 8px;
     }
 
-    .history-round-chip {
+    .status-log-meta {
+      display: block;
+      margin: 0;
+      padding: 0 !important;
+      border-radius: 0;
+      border: none !important;
+      background: transparent !important;
+      box-shadow: none !important;
+      color: var(--text-color);
+      font-size: 0.86rem;
+      font-weight: 720;
+    }
+
+    .status-log-history {
+      display: grid;
+      gap: 8px;
+    }
+
+    .history-quick-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.3);
+      background: rgba(255, 255, 255, 0.42);
+      padding: 9px 10px;
+    }
+
+    .history-quick-main {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      flex: 1 1 auto;
+    }
+
+    .history-quick-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      border-radius: 999px;
-      border: none;
-      background: rgba(10, 132, 255, 0.12);
+      justify-content: center;
+      font-size: 0.9rem;
       color: #0a63cf;
-      font-weight: 820;
-      font-size: 0.78rem;
-      padding: 3px 9px;
+      background: rgba(10, 132, 255, 0.12);
+      flex: 0 0 auto;
+    }
+
+    .history-quick-text {
+      min-width: 0;
+    }
+
+    .history-quick-title {
+      margin: 0;
+      color: var(--text-color);
+      font-size: 0.88rem;
+      font-weight: 760;
+      line-height: 1.25;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+
+    .history-count-chip {
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 0.75rem;
+      font-weight: 760;
+      color: #0a63cf;
+      background: rgba(10, 132, 255, 0.12);
       white-space: nowrap;
     }
 
-    .history-meta {
-      color: var(--text-muted);
-      font-size: 0.74rem;
-      font-weight: 650;
-      text-align: right;
-      line-height: 1.3;
-    }
-
-    .history-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 6px;
-    }
-
-    .history-step {
-      border: none;
-      border-radius: 10px;
-      background: rgba(148, 163, 184, 0.1);
-      padding: 7px 8px;
-    }
-
-    .history-step.on {
-      background: rgba(34, 197, 94, 0.13);
-    }
-
-    .history-step.off {
-      opacity: 0.9;
-      background: rgba(148, 163, 184, 0.1);
-    }
-
-    .history-step-title {
+    .history-quick-last {
+      margin: 2px 0 0;
       font-size: 0.77rem;
+      color: var(--text-muted);
+      line-height: 1.3;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .history-quick-action {
+      flex: 0 0 auto;
+    }
+
+    .history-popup-btn {
+      border: 1px solid rgba(10, 132, 255, 0.3);
+      border-radius: 999px;
+      background: rgba(10, 132, 255, 0.1);
+      color: #0a63cf;
+      min-height: 32px;
+      padding: 0 12px;
+      font-size: 0.79rem;
       font-weight: 760;
-      color: var(--text-color);
-      margin: 0 0 4px;
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       gap: 6px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .history-popup-btn:hover {
+      border-color: rgba(10, 132, 255, 0.45);
+      background: rgba(10, 132, 255, 0.16);
+    }
+
+    .history-popup-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+    }
+
+    .history-empty {
+      color: var(--text-muted);
+      font-size: 0.83rem;
+      padding: 2px 0;
+    }
+
+    .history-popup-content {
+      text-align: left;
+      display: grid;
+      gap: 8px;
+      max-height: 60vh;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .history-popup-block {
+      border: 1px solid rgba(148, 163, 184, 0.28);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.5);
+      padding: 8px 10px;
+    }
+
+    .history-popup-title {
+      margin: 0 0 3px;
+      color: var(--text-color);
+      font-size: 0.83rem;
+      font-weight: 760;
       line-height: 1.3;
     }
 
-    .history-step-line {
+    .history-popup-line {
       margin: 0;
-      font-size: 0.75rem;
       color: var(--text-muted);
-      line-height: 1.32;
+      font-size: 0.76rem;
+      line-height: 1.34;
       word-break: break-word;
     }
 
-    .history-remark {
-      margin-top: 8px;
-      border: none;
-      border-radius: 10px;
-      background: rgba(10, 132, 255, 0.08);
-      padding: 8px 9px;
-      font-size: 0.8rem;
-      line-height: 1.4;
-      color: #0f3f7f;
+    .history-popup-empty {
+      color: var(--text-muted);
+      font-size: 0.83rem;
+      text-align: center;
+      padding: 8px 0;
     }
 
     body.dark-mode .desc-note {
@@ -256,46 +307,38 @@
     }
 
     body.dark-mode .status-log-meta {
-      background: transparent !important;
       color: #d0deef;
     }
 
-    body.dark-mode .history-empty {
-      background: transparent !important;
-      border: none;
-      box-shadow: none;
+    body.dark-mode .history-quick-item {
+      border-color: rgba(73, 102, 139, 0.45);
+      background: rgba(11, 24, 44, 0.42);
     }
 
-    body.dark-mode .history-card {
-      background: rgba(11, 24, 44, 0.34);
-      border: none;
-      border-left: 3px solid rgba(100, 167, 242, 0.34);
-      box-shadow: none;
-    }
-
-    body.dark-mode .history-round-chip {
+    body.dark-mode .history-quick-icon {
       color: #bfdbfe;
-      border: none;
       background: rgba(13, 90, 170, 0.36);
     }
 
-    body.dark-mode .history-step {
-      border: none;
-      background: rgba(39, 57, 84, 0.3);
+    body.dark-mode .history-count-chip {
+      color: #bfdbfe;
+      background: rgba(13, 90, 170, 0.36);
     }
 
-    body.dark-mode .history-step.on {
-      background: rgba(20, 126, 82, 0.32);
+    body.dark-mode .history-popup-btn {
+      color: #bfdbfe;
+      border-color: rgba(118, 178, 252, 0.44);
+      background: rgba(13, 90, 170, 0.28);
     }
 
-    body.dark-mode .history-step.off {
-      background: rgba(39, 57, 84, 0.24);
+    body.dark-mode .history-popup-btn:hover {
+      border-color: rgba(148, 196, 255, 0.62);
+      background: rgba(13, 90, 170, 0.38);
     }
 
-    body.dark-mode .history-remark {
-      color: #cfe4ff;
-      border: none;
-      background: rgba(13, 90, 170, 0.32);
+    body.dark-mode .history-popup-block {
+      border-color: rgba(89, 120, 160, 0.45);
+      background: rgba(39, 57, 84, 0.28);
     }
 
     .steps-toolbar {
@@ -417,6 +460,11 @@
       background: rgba(35, 92, 162, 0.34);
     }
 
+    body.dark-mode .step-count-chip {
+      color: #bfdbfe;
+      background: rgba(13, 90, 170, 0.36);
+    }
+
     .step-sub {
       margin: 4px 0 0 0;
       color: var(--text-muted);
@@ -444,6 +492,24 @@
 
     .step-title-wrap {
       min-width: 0;
+    }
+
+    .step-title-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .step-count-chip {
+      border-radius: 999px;
+      padding: 2px 8px;
+      font-size: 0.72rem;
+      font-weight: 760;
+      color: #0a63cf;
+      background: rgba(10, 132, 255, 0.12);
+      white-space: nowrap;
+      line-height: 1.3;
     }
 
     .switch {
@@ -741,8 +807,17 @@
         grid-template-columns: 1fr;
       }
 
-      .history-grid {
-        grid-template-columns: 1fr;
+      .history-quick-item {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .history-quick-action {
+        width: 100%;
+      }
+
+      .history-popup-btn {
+        width: 100%;
       }
 
       .step-head {
@@ -781,6 +856,14 @@
       .status-body {
         padding: 12px;
         gap: 10px;
+      }
+
+      .status-log-head {
+        align-items: stretch;
+      }
+
+      .status-log-head .history-popup-btn {
+        width: 100%;
       }
 
       #stepsWrap {
@@ -909,7 +992,10 @@
       <div class="status-body">
         <p class="desc-note"><i class="bi bi-info-circle me-1"></i>เปิด-ปิดสวิตช์เพื่อบันทึกสถานะแต่ละขั้นตอน วันที่จะเติมอัตโนมัติเมื่อเปิดสวิตช์</p>
         <p class="desc-note emphasis"><i class="bi bi-shield-lock me-1"></i>ทุกครั้งที่บันทึก ระบบจะเก็บเป็นรายสถานะแยกครั้ง (ครั้งที่ 1, 2, 3...) และไม่แก้ไขประวัติเดิมย้อนหลัง</p>
-        <div id="statusLogMeta" class="desc-note status-log-meta">กำลังเตรียมข้อมูลประวัติสถานะ...</div>
+        <div class="status-log-head">
+          <div id="statusLogMeta" class="status-log-meta">กำลังเตรียมข้อมูลประวัติสถานะ...</div>
+          <button id="btnShowHistoryAll" type="button" class="history-popup-btn"><i class="bi bi-clock-history"></i>ดูประวัติทั้งหมด</button>
+        </div>
         <div id="statusLogHistory" class="status-log-history"></div>
         <div class="steps-toolbar">
           <button id="btnEnableAll" type="button" class="toolbar-btn primary"><i class="bi bi-check2-square"></i>เปิดทุกสถานะ</button>
@@ -976,6 +1062,7 @@
         stepsWrap: document.getElementById('stepsWrap'),
         statusLogMeta: document.getElementById('statusLogMeta'),
         statusLogHistory: document.getElementById('statusLogHistory'),
+        btnShowHistoryAll: document.getElementById('btnShowHistoryAll'),
         statusRemark: document.getElementById('statusRemark'),
         btnSubmit: document.getElementById('btnSubmit'),
         loadingMsg: document.getElementById('loadingMsg')
@@ -1134,7 +1221,18 @@
         return Math.floor(count);
       }
 
-      function renderStatusLogHistory() {
+      function sortStepLogsDesc(list) {
+        return (Array.isArray(list) ? list.slice() : []).sort(function (a, b) {
+          var sa = Number(a && a.seqNo || 0);
+          var sb = Number(b && b.seqNo || 0);
+          if (sa !== sb) return sb - sa;
+          var ta = String(a && a.createdAtIso || '');
+          var tb = String(b && b.createdAtIso || '');
+          return tb.localeCompare(ta);
+        });
+      }
+
+      function groupedStatusLogsByStep() {
         var logs = Array.isArray(state.statusStepLogs) ? state.statusStepLogs : [];
         var grouped = {};
         for (var i = 0; i < steps.length; i++) grouped[steps[i].key] = [];
@@ -1145,76 +1243,149 @@
           if (!grouped[key]) grouped[key] = [];
           grouped[key].push(item);
         }
+        for (var k = 0; k < steps.length; k++) {
+          var stepKey = steps[k].key;
+          grouped[stepKey] = sortStepLogsDesc(grouped[stepKey]);
+        }
+        return grouped;
+      }
+
+      function buildHistoryPopupBody(step, list) {
+        var logs = sortStepLogsDesc(list);
+        if (!logs.length) {
+          return '<div class="history-popup-empty">ยังไม่เคยบันทึกสถานะนี้</div>';
+        }
+
+        var html = '<div class="history-popup-content">';
+        for (var i = 0; i < logs.length; i++) {
+          var item = logs[i] || {};
+          var seq = Number(item.seqNo || (logs.length - i));
+          if (!isFinite(seq) || seq < 1) seq = (logs.length - i);
+          var eventDate = C.safeTrim(item.stepDateDisplay || '') || C.safeTrim(item.stepDateIso || '') || '-';
+          var eventUser = C.safeTrim(item.stepUser || '') || '-';
+          html += '<div class="history-popup-block">';
+          html += '<p class="history-popup-title"><i class="bi ' + C.escapeHtml(step.icon) + '"></i> ' + C.escapeHtml(step.label) + ' • ครั้งที่ ' + String(seq) + '</p>';
+          html += '<p class="history-popup-line">วันที่สถานะ: ' + C.escapeHtml(eventDate) + '</p>';
+          html += '<p class="history-popup-line">ผู้ดำเนินการ: ' + C.escapeHtml(eventUser) + '</p>';
+          html += '<p class="history-popup-line">บันทึกเมื่อ: ' + C.escapeHtml(formatStatusLogTimestamp(item.createdAtIso || '')) + '</p>';
+          var note = C.safeTrim(item.statusRemark || '');
+          if (note) {
+            html += '<p class="history-popup-line">หมายเหตุ: ' + escapePlainText(note) + '</p>';
+          }
+          html += '</div>';
+        }
+        html += '</div>';
+        return html;
+      }
+
+      async function showStepHistoryPopup(stepKey) {
+        var key = C.safeTrim(stepKey || '');
+        if (!key) return;
+        var step = null;
+        for (var i = 0; i < steps.length; i++) {
+          if (steps[i].key === key) {
+            step = steps[i];
+            break;
+          }
+        }
+        if (!step) return;
+        var grouped = groupedStatusLogsByStep();
+        var list = Array.isArray(grouped[key]) ? grouped[key] : [];
+        await Swal.fire({
+          icon: 'info',
+          title: 'ประวัติสถานะ: ' + step.label,
+          html: buildHistoryPopupBody(step, list),
+          width: 760,
+          confirmButtonText: 'ปิด',
+          confirmButtonColor: '#0A84FF'
+        });
+      }
+
+      async function showAllHistoryPopup() {
+        var grouped = groupedStatusLogsByStep();
+        var html = '<div class="history-popup-content">';
+        for (var i = 0; i < steps.length; i++) {
+          var step = steps[i];
+          var list = Array.isArray(grouped[step.key]) ? grouped[step.key] : [];
+          var savedCount = getStepSavedCount(step.key);
+          if (savedCount < list.length) savedCount = list.length;
+          html += '<div class="history-popup-block">';
+          html += '<p class="history-popup-title"><i class="bi ' + C.escapeHtml(step.icon) + '"></i> ' + C.escapeHtml(step.label) + ' • บันทึกแล้ว ' + String(savedCount) + ' ครั้ง</p>';
+          if (!list.length) {
+            html += '<p class="history-popup-line">ยังไม่เคยบันทึกสถานะนี้</p>';
+          } else {
+            var latest = list[0] || {};
+            var latestDate = C.safeTrim(latest.stepDateDisplay || '') || C.safeTrim(latest.stepDateIso || '') || '-';
+            var latestUser = C.safeTrim(latest.stepUser || '') || '-';
+            html += '<p class="history-popup-line">ล่าสุด: ' + C.escapeHtml(latestDate) + ' • ' + C.escapeHtml(latestUser) + '</p>';
+          }
+          html += '</div>';
+        }
+        html += '</div>';
+
+        await Swal.fire({
+          icon: 'info',
+          title: 'สรุปประวัติสถานะทั้งหมด',
+          html: html,
+          width: 820,
+          confirmButtonText: 'ปิด',
+          confirmButtonColor: '#0A84FF'
+        });
+      }
+
+      function renderStatusLogHistory() {
+        var grouped = groupedStatusLogsByStep();
 
         var totalSaved = 0;
         for (var s = 0; s < steps.length; s++) {
-          totalSaved += getStepSavedCount(steps[s].key);
+          var stepKey = steps[s].key;
+          var stepCount = getStepSavedCount(stepKey);
+          var stepLogs = Array.isArray(grouped[stepKey]) ? grouped[stepKey] : [];
+          if (stepCount < stepLogs.length) stepCount = stepLogs.length;
+          totalSaved += stepCount;
         }
         if (els.statusLogMeta) {
-          els.statusLogMeta.innerHTML = '<i class="bi bi-journal-check me-1"></i>บันทึกสถานะสะสมทั้งหมด <strong>' + String(totalSaved) + '</strong> รายการ (แยกนับรายสถานะ)';
+          els.statusLogMeta.innerHTML = '<i class="bi bi-journal-check me-1"></i>บันทึกสถานะสะสมทั้งหมด <strong>' + String(totalSaved) + '</strong> รายการ (นับแยกตามแต่ละสถานะ)';
         }
 
         if (!els.statusLogHistory) return;
-        if (!logs.length) {
-          els.statusLogHistory.innerHTML = '<div class="history-empty"><i class="bi bi-clock-history me-1"></i>ยังไม่มีประวัติสถานะ ระบบจะนับครั้งแยกรายสถานะทันทีเมื่อบันทึก</div>';
-          return;
-        }
-
         var html = '';
         for (var k = 0; k < steps.length; k++) {
           var step = steps[k];
-          var list = Array.isArray(grouped[step.key]) ? grouped[step.key].slice() : [];
-          list.sort(function (a, b) {
-            var sa = Number(a && a.seqNo || 0);
-            var sb = Number(b && b.seqNo || 0);
-            if (sa !== sb) return sb - sa;
-            var ta = String(a && a.createdAtIso || '');
-            var tb = String(b && b.createdAtIso || '');
-            return tb.localeCompare(ta);
-          });
-
+          var list = Array.isArray(grouped[step.key]) ? grouped[step.key] : [];
           var savedCount = getStepSavedCount(step.key);
           if (savedCount < list.length) savedCount = list.length;
+          var latest = list.length ? (list[0] || {}) : null;
+          var latestDate = latest ? (C.safeTrim(latest.stepDateDisplay || '') || C.safeTrim(latest.stepDateIso || '') || '-') : '-';
+          var latestUser = latest ? (C.safeTrim(latest.stepUser || '') || '-') : '-';
+          var latestText = latest
+            ? ('ล่าสุด: ' + C.escapeHtml(latestDate) + ' • ' + C.escapeHtml(latestUser))
+            : 'ยังไม่เคยบันทึกสถานะนี้';
 
-          html += '<article class="history-card">';
-          html += '<div class="history-head">';
-          html += '<span class="history-round-chip"><i class="bi ' + C.escapeHtml(step.icon) + '"></i>' + C.escapeHtml(step.label) + ' • ' + String(savedCount) + ' ครั้ง</span>';
-          html += '<div class="history-meta">นับครั้งรายสถานะอัตโนมัติ</div>';
+          html += '<article class="history-quick-item">';
+          html += '<div class="history-quick-main">';
+          html += '<span class="history-quick-icon"><i class="bi ' + C.escapeHtml(step.icon) + '"></i></span>';
+          html += '<div class="history-quick-text">';
+          html += '<p class="history-quick-title">' + C.escapeHtml(step.label) + '<span class="history-count-chip">' + String(savedCount) + ' ครั้ง</span></p>';
+          html += '<p class="history-quick-last">' + latestText + '</p>';
           html += '</div>';
-
-          if (!list.length) {
-            html += '<div class="history-empty">ยังไม่เคยบันทึกสถานะนี้</div>';
-          } else {
-            var maxShow = 5;
-            var showList = list.slice(0, maxShow);
-            html += '<div class="history-grid">';
-            for (var m = 0; m < showList.length; m++) {
-              var e = showList[m] || {};
-              var seq = Number(e.seqNo || (savedCount - m));
-              if (!isFinite(seq) || seq < 1) seq = (savedCount - m);
-              var eventDate = C.safeTrim(e.stepDateDisplay || '') || C.safeTrim(e.stepDateIso || '') || '-';
-              var eventUser = C.safeTrim(e.stepUser || '') || '-';
-              html += '<div class="history-step on">';
-              html += '<p class="history-step-title"><i class="bi bi-hash"></i>ครั้งที่ ' + String(seq) + '</p>';
-              html += '<p class="history-step-line">วันที่สถานะ: ' + C.escapeHtml(eventDate) + '</p>';
-              html += '<p class="history-step-line">ผู้ดำเนินการ: ' + C.escapeHtml(eventUser) + '</p>';
-              html += '<p class="history-step-line">บันทึกเมื่อ: ' + C.escapeHtml(formatStatusLogTimestamp(e.createdAtIso || '')) + '</p>';
-              var note = C.safeTrim(e.statusRemark || '');
-              if (note) {
-                html += '<p class="history-step-line">หมายเหตุ: ' + escapePlainText(note) + '</p>';
-              }
-              html += '</div>';
-            }
-            html += '</div>';
-            if (list.length > maxShow) {
-              html += '<div class="history-meta" style="margin-top:8px;">แสดงล่าสุด ' + String(maxShow) + ' จากทั้งหมด ' + String(list.length) + ' รายการ</div>';
-            }
-          }
-
+          html += '</div>';
+          html += '<div class="history-quick-action">';
+          html += '<button type="button" class="history-popup-btn" data-history-step="' + C.escapeHtml(step.key) + '"><i class="bi bi-clock-history"></i>ดูประวัติ</button>';
+          html += '</div>';
           html += '</article>';
         }
-
+        if (!html) {
+          html = '<div class="history-empty">ยังไม่มีข้อมูลสถานะ</div>';
+        }
         els.statusLogHistory.innerHTML = html;
+
+        var popupButtons = els.statusLogHistory.querySelectorAll('button[data-history-step]');
+        for (var p = 0; p < popupButtons.length; p++) {
+          popupButtons[p].addEventListener('click', function () {
+            showStepHistoryPopup(this.getAttribute('data-history-step'));
+          });
+        }
       }
 
       function memberSelectHtml(fieldId, currentVal, disabled) {
@@ -1266,8 +1437,11 @@
           html += '<div class="step-head-main">';
           html += '<label class="switch"><input type="checkbox" id="' + step.key + 'Check"' + (checked ? ' checked' : '') + '><span class="slider"></span></label>';
           html += '<div class="step-title-wrap">';
+          html += '<div class="step-title-row">';
           html += '<h4 class="form-section-title"><span class="step-index-badge">' + String(i + 1) + '</span><i class="bi ' + C.escapeHtml(step.icon) + '"></i>' + C.escapeHtml(step.label) + '</h4>';
-          html += '<p class="step-sub">บันทึกแล้ว ' + String(stepSavedCount) + ' ครั้ง • เปิดสวิตช์เพื่อบันทึกรายการใหม่</p>';
+          html += '<span class="step-count-chip">บันทึกแล้ว ' + String(stepSavedCount) + ' ครั้ง</span>';
+          html += '</div>';
+          html += '<p class="step-sub">เปิดสวิตช์เพื่อเพิ่มการบันทึกสถานะครั้งใหม่</p>';
           html += '</div>';
           html += '</div>';
           html += '<span id="' + step.key + 'State" class="step-state' + (checked ? ' on' : '') + '">' + (checked ? 'เปิดแล้ว' : 'ปิดอยู่') + '</span>';
@@ -1594,6 +1768,12 @@
         if (els.btnDisableAll) {
           els.btnDisableAll.addEventListener('click', function () {
             setAllSteps(false);
+          });
+        }
+
+        if (els.btnShowHistoryAll) {
+          els.btnShowHistoryAll.addEventListener('click', function () {
+            showAllHistoryPopup();
           });
         }
 
