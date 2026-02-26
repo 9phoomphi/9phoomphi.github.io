@@ -1085,9 +1085,46 @@
       function formatStatusLogTimestamp(isoText) {
         var iso = C.safeTrim(isoText || '');
         if (!iso) return 'ไม่ระบุเวลา';
-        var d = new Date(iso);
+
+        var normalized = iso;
+        var ymd = normalized.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+        if (ymd) {
+          var yOnly = Number(ymd[1]);
+          if (yOnly > 2400) yOnly -= 543;
+          normalized = String(yOnly).padStart(4, '0') + '-' + ymd[2] + '-' + ymd[3] + 'T00:00:00+07:00';
+        } else {
+          var yearPrefix = normalized.match(/^(\d{4})([\s\S]*)$/);
+          if (yearPrefix) {
+            var y = Number(yearPrefix[1]);
+            if (y > 2400) {
+              normalized = String(y - 543) + yearPrefix[2];
+            }
+          }
+          if (/^\d{4}-\d{2}-\d{2}T/.test(normalized) && !/(Z|[+\-]\d{2}:?\d{2})$/.test(normalized)) {
+            normalized += '+07:00';
+          }
+        }
+
+        var d = new Date(normalized);
         if (isNaN(d.getTime())) return iso;
-        return d.toLocaleString('th-TH');
+
+        var dateText = new Intl.DateTimeFormat('th-TH-u-ca-buddhist', {
+          timeZone: 'Asia/Bangkok',
+          weekday: 'long',
+          day: 'numeric',
+          month: 'long',
+          year: 'numeric'
+        }).format(d);
+
+        var timeText = new Intl.DateTimeFormat('th-TH', {
+          timeZone: 'Asia/Bangkok',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit',
+          hour12: false
+        }).format(d);
+
+        return dateText + ' เวลา ' + timeText + ' น.';
       }
 
       function escapePlainText(value) {
