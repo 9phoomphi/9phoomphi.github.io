@@ -1149,8 +1149,9 @@
               if (!isFinite(seq) || seq < 1) seq = (list.length - r);
               var eventDate = C.safeTrim(item.stepDateDisplay || '') || C.safeTrim(item.stepDateIso || '') || '-';
               var eventUser = C.safeTrim(item.stepUser || '') || '-';
+              var recordedAtText = formatStatusLogTimestamp(item.createdAtIso || item.stepDateIso || '');
               html += '<p class="history-popup-line">ครั้งที่ ' + String(seq) + ' • วันที่: ' + C.escapeHtml(eventDate) + ' • ผู้ดำเนินการ: ' + C.escapeHtml(eventUser) + '</p>';
-              html += '<p class="history-popup-line">บันทึกเมื่อ: ' + C.escapeHtml(formatStatusLogTimestamp(item.createdAtIso || '')) + '</p>';
+              html += '<p class="history-popup-line">บันทึกเมื่อ: ' + C.escapeHtml(recordedAtText) + '</p>';
               var note = C.safeTrim(item.statusRemark || '');
               if (note) {
                 html += '<p class="history-popup-line">หมายเหตุ: ' + escapePlainText(note) + '</p>';
