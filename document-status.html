@@ -120,12 +120,12 @@
       font-weight: 700;
     }
 
-    .round-meta {
+    .status-log-meta {
       font-size: 0.83rem;
       font-weight: 700;
     }
 
-    .round-history {
+    .status-log-history {
       display: grid;
       gap: 10px;
     }
@@ -883,9 +883,9 @@
 
       <div class="status-body">
         <p class="desc-note"><i class="bi bi-info-circle me-1"></i>เปิด-ปิดสวิตช์เพื่อบันทึกสถานะแต่ละขั้นตอน วันที่จะเติมอัตโนมัติเมื่อเปิดสวิตช์</p>
-        <p class="desc-note emphasis"><i class="bi bi-shield-lock me-1"></i>ทุกครั้งที่บันทึก ระบบจะสร้าง "รอบใหม่" และล็อกข้อมูลรอบเดิม ไม่สามารถแก้ไขย้อนหลังได้</p>
-        <div id="roundMeta" class="desc-note round-meta">กำลังเตรียมข้อมูลรอบสถานะ...</div>
-        <div id="roundHistory" class="round-history"></div>
+        <p class="desc-note emphasis"><i class="bi bi-shield-lock me-1"></i>ทุกครั้งที่บันทึก ระบบจะเก็บเป็นรายสถานะแยกครั้ง (ครั้งที่ 1, 2, 3...) และไม่แก้ไขประวัติเดิมย้อนหลัง</p>
+        <div id="statusLogMeta" class="desc-note status-log-meta">กำลังเตรียมข้อมูลประวัติสถานะ...</div>
+        <div id="statusLogHistory" class="status-log-history"></div>
         <div class="steps-toolbar">
           <button id="btnEnableAll" type="button" class="toolbar-btn primary"><i class="bi bi-check2-square"></i>เปิดทุกสถานะ</button>
           <button id="btnDisableAll" type="button" class="toolbar-btn"><i class="bi bi-x-square"></i>ปิดทั้งหมด</button>
@@ -926,11 +926,11 @@
         user: null,
         doc: null,
         statusData: {},
-        statusRounds: [],
-        nextRoundNo: 1,
+        statusStepLogs: [],
+        statusStepStats: {},
         members: [],
         memberImgMap: {},
-        currentRoundData: null
+        statusDraftData: null
       };
 
       var steps = [
@@ -949,8 +949,8 @@
         btnEnableAll: document.getElementById('btnEnableAll'),
         btnDisableAll: document.getElementById('btnDisableAll'),
         stepsWrap: document.getElementById('stepsWrap'),
-        roundMeta: document.getElementById('roundMeta'),
-        roundHistory: document.getElementById('roundHistory'),
+        statusLogMeta: document.getElementById('statusLogMeta'),
+        statusLogHistory: document.getElementById('statusLogHistory'),
         statusRemark: document.getElementById('statusRemark'),
         btnSubmit: document.getElementById('btnSubmit'),
         loadingMsg: document.getElementById('loadingMsg')
@@ -1069,7 +1069,7 @@
         return '';
       }
 
-      function buildEmptyRoundData() {
+      function buildEmptyStatusDraft() {
         return {
           returnCheck: false,
           returnDate: '',
@@ -1090,7 +1090,7 @@
         };
       }
 
-      function formatRoundTimestamp(isoText) {
+      function formatStatusLogTimestamp(isoText) {
         var iso = C.safeTrim(isoText || '');
         if (!iso) return 'ไม่ระบุเวลา';
         var d = new Date(iso);
@@ -1102,63 +1102,94 @@
         return C.escapeHtml(C.safeText(value || '').replace(/\s+/g, ' ').trim());
       }
 
-      function renderRoundHistory() {
-        var rounds = Array.isArray(state.statusRounds) ? state.statusRounds : [];
-        var nextRoundNo = Number(state.nextRoundNo || 1);
-        if (!isFinite(nextRoundNo) || nextRoundNo < 1) nextRoundNo = 1;
+      function getStepSavedCount(stepKey) {
+        var stats = (state.statusStepStats && typeof state.statusStepStats === 'object') ? state.statusStepStats : {};
+        var count = Number(stats[stepKey] || 0);
+        if (!isFinite(count) || count < 0) count = 0;
+        return Math.floor(count);
+      }
 
-        if (els.roundMeta) {
-          els.roundMeta.innerHTML = '<i class="bi bi-arrow-repeat me-1"></i>พร้อมบันทึกรอบใหม่: <strong>รอบที่ ' + String(nextRoundNo) + '</strong>';
+      function renderStatusLogHistory() {
+        var logs = Array.isArray(state.statusStepLogs) ? state.statusStepLogs : [];
+        var grouped = {};
+        for (var i = 0; i < steps.length; i++) grouped[steps[i].key] = [];
+        for (var j = 0; j < logs.length; j++) {
+          var item = logs[j] || {};
+          var key = C.safeTrim(item.stepKey || '');
+          if (!key) continue;
+          if (!grouped[key]) grouped[key] = [];
+          grouped[key].push(item);
         }
 
-        if (!els.roundHistory) return;
-        if (!rounds.length) {
-          els.roundHistory.innerHTML = '<div class="history-empty"><i class="bi bi-clock-history me-1"></i>ยังไม่มีประวัติรอบสถานะ ระบบจะเริ่มที่รอบที่ 1 เมื่อบันทึกครั้งแรก</div>';
+        var totalSaved = 0;
+        for (var s = 0; s < steps.length; s++) {
+          totalSaved += getStepSavedCount(steps[s].key);
+        }
+        if (els.statusLogMeta) {
+          els.statusLogMeta.innerHTML = '<i class="bi bi-journal-check me-1"></i>บันทึกสถานะสะสมทั้งหมด <strong>' + String(totalSaved) + '</strong> รายการ (แยกนับรายสถานะ)';
+        }
+
+        if (!els.statusLogHistory) return;
+        if (!logs.length) {
+          els.statusLogHistory.innerHTML = '<div class="history-empty"><i class="bi bi-clock-history me-1"></i>ยังไม่มีประวัติสถานะ ระบบจะนับครั้งแยกรายสถานะทันทีเมื่อบันทึก</div>';
           return;
         }
 
         var html = '';
-        for (var i = 0; i < rounds.length; i++) {
-          var r = rounds[i] || {};
-          var rd = (r && r.statusData && typeof r.statusData === 'object') ? r.statusData : {};
-          var roundNo = Number(r.roundNo || (i + 1));
-          if (!isFinite(roundNo) || roundNo < 1) roundNo = i + 1;
+        for (var k = 0; k < steps.length; k++) {
+          var step = steps[k];
+          var list = Array.isArray(grouped[step.key]) ? grouped[step.key].slice() : [];
+          list.sort(function (a, b) {
+            var sa = Number(a && a.seqNo || 0);
+            var sb = Number(b && b.seqNo || 0);
+            if (sa !== sb) return sb - sa;
+            var ta = String(a && a.createdAtIso || '');
+            var tb = String(b && b.createdAtIso || '');
+            return tb.localeCompare(ta);
+          });
+
+          var savedCount = getStepSavedCount(step.key);
+          if (savedCount < list.length) savedCount = list.length;
 
           html += '<article class="history-card">';
           html += '<div class="history-head">';
-          html += '<span class="history-round-chip"><i class="bi bi-lock-fill"></i>รอบที่ ' + String(roundNo) + '</span>';
-          html += '<div class="history-meta">บันทึกเมื่อ: ' + C.escapeHtml(formatRoundTimestamp(r.createdAtIso || ''));
-          html += '<br>ผู้บันทึก: ' + C.escapeHtml(C.safeTrim(r.recordedBy || '-') || '-') + '</div>';
+          html += '<span class="history-round-chip"><i class="bi ' + C.escapeHtml(step.icon) + '"></i>' + C.escapeHtml(step.label) + ' • ' + String(savedCount) + ' ครั้ง</span>';
+          html += '<div class="history-meta">นับครั้งรายสถานะอัตโนมัติ</div>';
           html += '</div>';
-          html += '<div class="history-grid">';
 
-          for (var j = 0; j < steps.length; j++) {
-            var step = steps[j];
-            var checked = !!rd[step.key + 'Check'];
-            var stepDate = checked
-              ? (C.safeTrim(rd[step.key + 'DateDisplay'] || '') || C.safeTrim(rd[step.key + 'Date'] || '') || '-')
-              : '-';
-            var stepUser = checked ? (C.safeTrim(rd[step.key + 'User'] || '') || '-') : '-';
-
-            html += '<div class="history-step ' + (checked ? 'on' : 'off') + '">';
-            html += '<p class="history-step-title"><i class="bi ' + C.escapeHtml(step.icon) + '"></i>' + C.escapeHtml(step.label) + '</p>';
-            html += '<p class="history-step-line">สถานะ: ' + (checked ? 'เสร็จสิ้น' : 'ไม่ถูกเลือก') + '</p>';
-            html += '<p class="history-step-line">วันที่: ' + C.escapeHtml(stepDate) + '</p>';
-            html += '<p class="history-step-line">ผู้ดำเนินการ: ' + C.escapeHtml(stepUser) + '</p>';
+          if (!list.length) {
+            html += '<div class="history-empty">ยังไม่เคยบันทึกสถานะนี้</div>';
+          } else {
+            var maxShow = 5;
+            var showList = list.slice(0, maxShow);
+            html += '<div class="history-grid">';
+            for (var m = 0; m < showList.length; m++) {
+              var e = showList[m] || {};
+              var seq = Number(e.seqNo || (savedCount - m));
+              if (!isFinite(seq) || seq < 1) seq = (savedCount - m);
+              var eventDate = C.safeTrim(e.stepDateDisplay || '') || C.safeTrim(e.stepDateIso || '') || '-';
+              var eventUser = C.safeTrim(e.stepUser || '') || '-';
+              html += '<div class="history-step on">';
+              html += '<p class="history-step-title"><i class="bi bi-hash"></i>ครั้งที่ ' + String(seq) + '</p>';
+              html += '<p class="history-step-line">วันที่สถานะ: ' + C.escapeHtml(eventDate) + '</p>';
+              html += '<p class="history-step-line">ผู้ดำเนินการ: ' + C.escapeHtml(eventUser) + '</p>';
+              html += '<p class="history-step-line">บันทึกเมื่อ: ' + C.escapeHtml(formatStatusLogTimestamp(e.createdAtIso || '')) + '</p>';
+              var note = C.safeTrim(e.statusRemark || '');
+              if (note) {
+                html += '<p class="history-step-line">หมายเหตุ: ' + escapePlainText(note) + '</p>';
+              }
+              html += '</div>';
+            }
             html += '</div>';
-          }
-
-          html += '</div>';
-
-          var remark = C.safeTrim(rd.statusRemark || '');
-          if (remark) {
-            html += '<div class="history-remark"><strong>หมายเหตุรอบ:</strong> ' + escapePlainText(remark) + '</div>';
+            if (list.length > maxShow) {
+              html += '<div class="history-meta" style="margin-top:8px;">แสดงล่าสุด ' + String(maxShow) + ' จากทั้งหมด ' + String(list.length) + ' รายการ</div>';
+            }
           }
 
           html += '</article>';
         }
 
-        els.roundHistory.innerHTML = html;
+        els.statusLogHistory.innerHTML = html;
       }
 
       function memberSelectHtml(fieldId, currentVal, disabled) {
@@ -1187,7 +1218,7 @@
       }
 
       function renderSteps() {
-        var s = state.currentRoundData || buildEmptyRoundData();
+        var s = state.statusDraftData || buildEmptyStatusDraft();
         var html = '';
 
         for (var i = 0; i < steps.length; i++) {
@@ -1197,6 +1228,7 @@
           var displayText = 'เลือกวันที่...';
           var displayColor = 'var(--text-muted)';
           var userVal = C.safeTrim(s[step.key + 'User'] || '');
+          var stepSavedCount = getStepSavedCount(step.key);
 
           if (dateVal) {
             var dateObj = new Date(dateVal);
@@ -1210,7 +1242,7 @@
           html += '<label class="switch"><input type="checkbox" id="' + step.key + 'Check"' + (checked ? ' checked' : '') + '><span class="slider"></span></label>';
           html += '<div class="step-title-wrap">';
           html += '<h4 class="form-section-title"><span class="step-index-badge">' + String(i + 1) + '</span><i class="bi ' + C.escapeHtml(step.icon) + '"></i>' + C.escapeHtml(step.label) + '</h4>';
-          html += '<p class="step-sub">เปิดสวิตช์เพื่อกรอกวันที่และชื่อผู้ดำเนินการ</p>';
+          html += '<p class="step-sub">บันทึกแล้ว ' + String(stepSavedCount) + ' ครั้ง • เปิดสวิตช์เพื่อบันทึกรายการใหม่</p>';
           html += '</div>';
           html += '</div>';
           html += '<span id="' + step.key + 'State" class="step-state' + (checked ? ' on' : '') + '">' + (checked ? 'เปิดแล้ว' : 'ปิดอยู่') + '</span>';
@@ -1336,9 +1368,9 @@
         var value = C.safeTrim((input && input.value) || '');
         if (isIsoDateText(value)) return value;
         if (isEmptyDateToken(value)) return '';
-        var fromState = resolveStepDateValue(state.currentRoundData || {}, stepKey);
+        var fromState = resolveStepDateValue(state.statusDraftData || {}, stepKey);
         if (fromState) return fromState;
-        var fallback = C.safeTrim(((state.currentRoundData || {})[stepKey + 'Date']) || ((state.currentRoundData || {})[stepKey + 'DateInput']) || '');
+        var fallback = C.safeTrim(((state.statusDraftData || {})[stepKey + 'Date']) || ((state.statusDraftData || {})[stepKey + 'DateInput']) || '');
         return isIsoDateText(fallback) ? fallback : '';
       }
 
@@ -1382,8 +1414,7 @@
           signDate: getDateForSubmit('sign'),
           signUser: C.safeTrim((document.getElementById('signUser') || {}).value || ''),
           statusRemark: C.safeText((els.statusRemark && els.statusRemark.value) || '').trim(),
-          mode: 'append_round',
-          roundNo: Number(state.nextRoundNo || 1)
+          mode: 'append_step_events'
         };
       }
 
@@ -1413,7 +1444,7 @@
         try {
           saveResult = await state.api.docUpdateStatus(nextDocId, statusData);
           if (!saveResult || saveResult.success === false) {
-            throw new Error((saveResult && saveResult.error) ? saveResult.error : 'ไม่สามารถบันทึกรอบสถานะได้');
+            throw new Error((saveResult && saveResult.error) ? saveResult.error : 'ไม่สามารถบันทึกสถานะได้');
           }
         } catch (err) {
           await Swal.fire('เกิดข้อผิดพลาด', (err && err.message) ? err.message : 'บันทึกไม่สำเร็จ', 'error');
@@ -1422,32 +1453,38 @@
           setSaving(false);
         }
 
-        if (saveResult && Array.isArray(saveResult.rounds)) {
-          state.statusRounds = saveResult.rounds;
-        } else if (saveResult && saveResult.statusData) {
-          state.statusRounds = (Array.isArray(state.statusRounds) ? state.statusRounds : []).concat([{
-            roundNo: Number(saveResult.roundNo || state.nextRoundNo || 1),
-            createdAtIso: new Date().toISOString(),
-            recordedBy: C.safeTrim((state.user && (state.user.displayName || state.user.username)) || ''),
-            source: 'status_page',
-            eventId: '',
-            statusData: saveResult.statusData
-          }]);
+        if (saveResult && Array.isArray(saveResult.statusStepLogs)) {
+          state.statusStepLogs = saveResult.statusStepLogs;
+        } else if (saveResult && Array.isArray(saveResult.appended) && saveResult.appended.length) {
+          state.statusStepLogs = (Array.isArray(state.statusStepLogs) ? state.statusStepLogs : []).concat(saveResult.appended);
         }
-        state.nextRoundNo = Number((saveResult && saveResult.nextRoundNo) || ((Number(state.nextRoundNo || 1)) + 1));
-        if (!isFinite(state.nextRoundNo) || state.nextRoundNo < 1) state.nextRoundNo = 1;
-        state.currentRoundData = buildEmptyRoundData();
+        if (saveResult && saveResult.statusStepStats && typeof saveResult.statusStepStats === 'object') {
+          state.statusStepStats = saveResult.statusStepStats;
+        }
+        if (saveResult && saveResult.statusData) {
+          state.statusData = saveResult.statusData;
+        }
 
-        renderRoundHistory();
+        state.statusDraftData = buildEmptyStatusDraft();
+
+        renderStatusLogHistory();
         renderSteps();
         if (els.statusRemark) els.statusRemark.value = '';
 
-        var savedRoundNo = Number((saveResult && saveResult.roundNo) || (state.nextRoundNo - 1) || 1);
+        var appended = Array.isArray(saveResult && saveResult.appended) ? saveResult.appended : [];
+        var savedSummary = appended.map(function (item) {
+          var label = C.safeTrim((item && item.stepLabel) || '');
+          var seq = Number((item && item.seqNo) || 0);
+          if (!isFinite(seq) || seq < 1) return label || '-';
+          return (label || '-') + ' ครั้งที่ ' + String(seq);
+        }).join(' | ');
+        if (!savedSummary) savedSummary = 'บันทึกสถานะที่เลือกแล้ว';
+
         var action = await Swal.fire({
           icon: 'success',
-          title: 'บันทึกรอบสถานะสำเร็จ',
-          text: 'บันทึกรอบที่ ' + String(savedRoundNo) + ' แล้ว',
-          confirmButtonText: 'บันทึกรอบถัดไป',
+          title: 'บันทึกสถานะสำเร็จ',
+          text: savedSummary,
+          confirmButtonText: 'บันทึกต่อ',
           showDenyButton: true,
           denyButtonText: 'ดูรายละเอียดเอกสาร',
           confirmButtonColor: '#007AFF',
@@ -1489,12 +1526,11 @@
         state.user = meRes.user;
         state.doc = docRes.doc;
         state.statusData = docRes.statusData || {};
-        state.statusRounds = Array.isArray(docRes.statusRounds) ? docRes.statusRounds : [];
-        state.nextRoundNo = Number(docRes.nextStatusRoundNo || (state.statusRounds.length + 1) || 1);
-        if (!isFinite(state.nextRoundNo) || state.nextRoundNo < 1) state.nextRoundNo = 1;
+        state.statusStepLogs = Array.isArray(docRes.statusStepLogs) ? docRes.statusStepLogs : [];
+        state.statusStepStats = (docRes.statusStepStats && typeof docRes.statusStepStats === 'object') ? docRes.statusStepStats : {};
         state.members = (memberRes && Array.isArray(memberRes.data)) ? memberRes.data : [];
         state.memberImgMap = mapMemberImages(state.members);
-        state.currentRoundData = buildEmptyRoundData();
+        state.statusDraftData = buildEmptyStatusDraft();
         updateBrowserTitle(state.doc.docId || docId);
 
         if (state.user.isReadOnly || state.user.canEdit === false) {
@@ -1507,7 +1543,7 @@
         var headText = (state.doc.docId || '-') + ' | เลขรับ ' + (state.doc.receiveNo || '-');
         els.docHead.textContent = headText;
 
-        renderRoundHistory();
+        renderStatusLogHistory();
         renderSteps();
         if (els.statusRemark) els.statusRemark.value = '';
 
