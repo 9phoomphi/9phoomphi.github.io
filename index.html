@@ -1753,6 +1753,7 @@
 
       <div class="tabs-bar dashboard-tabs">
         <button id="tabDocs" class="tab-btn active" type="button"><i class="bi bi-file-text me-1"></i>รายการเอกสาร</button>
+        <button id="tabLoanRegister" class="tab-btn" type="button"><i class="bi bi-wallet2 me-1"></i>ทะเบียนคุมเงินยืม</button>
         <button id="tabBoxes" class="tab-btn" type="button"><i class="bi bi-archive me-1"></i>ตรวจสอบกล่อง</button>
         <button id="tabBoxScan" class="tab-btn" type="button"><i class="bi bi-qr-code-scan me-1"></i>สแกนจัดเก็บ</button>
         <button id="tabInspector" class="tab-btn" type="button"><i class="bi bi-clipboard-check me-1"></i>ตรวจสอบผลงาน</button>
@@ -1963,6 +1964,7 @@
         searchInput: document.getElementById('searchInput'),
         btnAddFab: document.getElementById('btnAddFab'),
         tabDocs: document.getElementById('tabDocs'),
+        tabLoanRegister: document.getElementById('tabLoanRegister'),
         tabBoxes: document.getElementById('tabBoxes'),
         tabBoxScan: document.getElementById('tabBoxScan'),
         tabInspector: document.getElementById('tabInspector'),
@@ -2040,7 +2042,8 @@
           els.btnPrev,
           els.btnNext,
           els.jumpPageInline,
-          els.btnAddFab
+          els.btnAddFab,
+          els.tabLoanRegister
         ];
 
         for (var i = 0; i < lockEls.length; i++) {
@@ -2918,6 +2921,10 @@
         C.redirect('inspection-report.html');
       }
 
+      function goLoanRegister() {
+        C.redirect('loan-register.html');
+      }
+
       function initEvents() {
         if (els.btnOpenSettings) {
           els.btnOpenSettings.addEventListener('click', function () {
@@ -3037,6 +3044,12 @@
         if (els.tabBoxes) {
           els.tabBoxes.addEventListener('click', function () {
             switchTab('boxes');
+          });
+        }
+
+        if (els.tabLoanRegister) {
+          els.tabLoanRegister.addEventListener('click', function () {
+            goLoanRegister();
           });
         }
 
@@ -3220,6 +3233,11 @@
 
         if (mode === 'inspector') {
           C.redirect('inspection-report.html', {}, true);
+          return true;
+        }
+
+        if (mode === 'loan' || mode === 'loanregister') {
+          C.redirect('loan-register.html', {}, true);
           return true;
         }
 
