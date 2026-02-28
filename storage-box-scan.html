@@ -1077,7 +1077,7 @@
           document.title = 'สแกนจัดเก็บเอกสารเงินยืม';
           if (els.scanPageTitle) els.scanPageTitle.textContent = 'สแกนจัดเก็บเอกสารเงินยืม';
           if (els.scanPageSubtitle) {
-            els.scanPageSubtitle.textContent = 'สแกน QR/รหัสเอกสารเงินยืม แล้วเลือกกล่องจัดเก็บเพื่อบันทึก';
+            els.scanPageSubtitle.textContent = 'สแกน QR/รหัสเอกสารเงินยืม แล้วเลือกปีงบประมาณและกล่องจัดเก็บเพื่อบันทึก';
           }
           return;
         }
@@ -1163,7 +1163,6 @@
       }
 
       function getFiscalYears() {
-        if (isLoanScope) return [];
         var years = (state.storageMaster && Array.isArray(state.storageMaster.fiscalYears)) ? state.storageMaster.fiscalYears : [];
         var out = [];
         for (var i = 0; i < years.length; i++) {
@@ -1181,13 +1180,14 @@
         if (!allBoxes.length && state.storageMaster && Array.isArray(state.storageMaster.boxes)) {
           allBoxes = state.storageMaster.boxes;
         }
-        if (allBoxes.length) return allBoxes;
 
         var map = (state.storageMaster && state.storageMaster.boxesByFiscalYear && typeof state.storageMaster.boxesByFiscalYear === 'object')
           ? state.storageMaster.boxesByFiscalYear
           : {};
 
         if (fy && Array.isArray(map[fy]) && map[fy].length) return map[fy];
+        if (!fy && allBoxes.length) return allBoxes;
+        if (fy && allBoxes.length) return allBoxes;
         if (Array.isArray(map.__all__) && map.__all__.length) return map.__all__;
 
         var out = [];
@@ -1402,14 +1402,18 @@
 
         for (var i = 0; i < state.queue.length; i++) {
           var item = state.queue[i] || {};
+          var queueMeta = '';
+          var queueFiscal = C.safeTrim(item.fiscalYear || '');
+          if (queueFiscal) {
+            queueMeta = 'ปี: ' + escHtml(queueFiscal) + ' | กล่อง: ' + escHtml(item.boxId || '-') + ' | ' + escHtml(item.timeText || '-');
+          } else {
+            queueMeta = 'กล่อง: ' + escHtml(item.boxId || '-') + ' | ' + escHtml(item.timeText || '-');
+          }
           html += '<div class="recent-item">';
           html += '<div class="recent-top">';
           html += '<div>';
           html += '<div class="recent-title">ID: ' + escHtml(item.docId || '-') + '</div>';
-          html += '<div class="recent-meta">' + (isLoanScope
-            ? ('กล่อง: ' + escHtml(item.boxId || '-') + ' | ' + escHtml(item.timeText || '-'))
-            : ('ปี: ' + escHtml(item.fiscalYear || '-') + ' | กล่อง: ' + escHtml(item.boxId || '-') + ' | ' + escHtml(item.timeText || '-'))
-          ) + '</div>';
+          html += '<div class="recent-meta">' + queueMeta + '</div>';
           html += '</div>';
           html += '<button type="button" class="queue-remove-btn" data-remove-index="' + i + '"><i class="bi bi-x-lg"></i>ยกเลิก</button>';
           html += '</div>';
@@ -1486,68 +1490,29 @@
         });
       }
 
-      async function showStoragePopup(docId) {
-        if (isLoanScope) {
-          var loanBoxes = getBoxesForFiscal('');
-          if (!loanBoxes.length) {
-            throw new Error('ไม่พบข้อมูลกล่องเอกสารเงินยืมในระบบ (กรุณาตรวจสอบข้อมูลคอลัมน์ B)');
+      function showSaveResultPopup(icon, title, text) {
+        try { Swal.close(); } catch (_e) {}
+        return Swal.fire({
+          icon: icon || 'info',
+          title: C.safeText(title || ''),
+          text: C.safeText(text || ''),
+          allowOutsideClick: false,
+          customClass: {
+            container: 'scan-success-backdrop',
+            popup: 'scan-success-popup',
+            title: 'scan-success-title',
+            htmlContainer: 'scan-success-html'
           }
+        });
+      }
 
-          var loanResult = await Swal.fire({
-            title: 'เลือกกล่องเอกสาร',
-            html: '<div class="scan-storage-form">'
-              + '<label class="scan-storage-label">กล่องเอกสาร</label>'
-              + '<select id="swalBox" class="swal2-select scan-storage-select"></select>'
-              + '</div>',
-            showCancelButton: true,
-            confirmButtonText: 'เพิ่มเข้ารายการ',
-            cancelButtonText: 'ยกเลิก',
-            allowOutsideClick: false,
-            customClass: {
-              container: 'scan-success-backdrop',
-              popup: 'scan-storage-popup',
-              title: 'scan-storage-title',
-              htmlContainer: 'scan-storage-html'
-            },
-            didOpen: function () {
-              var popup = Swal.getPopup();
-              if (!popup) return;
-              var boxEl = popup.querySelector('#swalBox');
-              if (!boxEl) return;
-              boxEl.innerHTML = '';
-              for (var b = 0; b < loanBoxes.length; b++) {
-                var boxName = C.safeTrim(loanBoxes[b] || '');
-                if (!boxName) continue;
-                var bOpt = document.createElement('option');
-                bOpt.value = boxName;
-                bOpt.textContent = boxName;
-                boxEl.appendChild(bOpt);
-              }
-            },
-            preConfirm: function () {
-              var popup = Swal.getPopup();
-              if (!popup) return false;
-              var boxEl = popup.querySelector('#swalBox');
-              var box = boxEl ? C.safeTrim(boxEl.value || '') : '';
-              if (!box) {
-                Swal.showValidationMessage('กรุณาเลือกกล่องเอกสาร');
-                return false;
-              }
-              return {
-                fiscalYear: '',
-                boxId: box,
-                docId: docId
-              };
-            }
-          });
-
-          if (!loanResult || !loanResult.isConfirmed || !loanResult.value) return null;
-          return loanResult.value;
-        }
-
+      async function showStoragePopup(docId) {
         var years = getFiscalYears();
 
         if (!years.length) {
+          if (isLoanScope) {
+            throw new Error('ไม่พบข้อมูลปีงบประมาณของกล่องเงินยืม (กรุณาตรวจสอบชีตข้อมูลคอลัมน์ B และ C)');
+          }
           throw new Error('ไม่พบข้อมูลกล่องเอกสารในระบบ (กรุณาตรวจสอบข้อมูลคอลัมน์ A/C)');
         }
 
@@ -1940,7 +1905,8 @@
           if (isLoanScope) {
             payload.push({
               docId: state.queue[i].docId,
-              boxId: state.queue[i].boxId
+              boxId: state.queue[i].boxId,
+              fiscalYear: state.queue[i].fiscalYear
             });
           } else {
             payload.push({
@@ -1996,14 +1962,14 @@
 
           if (!state.queue.length) {
             setStatusMessage('บันทึกสำเร็จทั้งหมด ' + okCount + ' รายการ');
-            Swal.fire('บันทึกสำเร็จ', 'บันทึกเอกสาร ' + okCount + ' รายการเรียบร้อย', 'success');
+            await showSaveResultPopup('success', 'บันทึกสำเร็จ', 'บันทึกเอกสาร ' + okCount + ' รายการเรียบร้อย');
           } else {
             var firstErr = C.safeTrim((state.queue[0] && state.queue[0].error) || '');
             var detail = 'สำเร็จ ' + okCount + ' รายการ / ไม่สำเร็จ ' + state.queue.length + ' รายการ';
             if (firstErr) detail += '\nตัวอย่างข้อผิดพลาด: ' + firstErr;
 
             setStatusMessage(detail);
-            Swal.fire('บันทึกบางรายการไม่สำเร็จ', detail, 'warning');
+            await showSaveResultPopup('warning', 'บันทึกบางรายการไม่สำเร็จ', detail);
           }
 
           setStatus(state.isScanning ? 'กำลังสแกน...' : 'พร้อมเริ่มสแกน', state.isScanning ? 'active' : 'idle');
@@ -2011,7 +1977,7 @@
           var msg = (err && err.message) ? err.message : 'เกิดข้อผิดพลาด';
           setStatus('บันทึกไม่สำเร็จ', 'error');
           setStatusMessage('ข้อผิดพลาด: ' + msg);
-          Swal.fire('เกิดข้อผิดพลาด', msg, 'error');
+          await showSaveResultPopup('error', 'เกิดข้อผิดพลาด', msg);
         } finally {
           state.saving = false;
           state.busy = false;
@@ -2042,19 +2008,9 @@
           return false;
         }
 
-        if (isLoanScope) {
-          var boxes = (storageRes && storageRes.data && Array.isArray(storageRes.data.boxes)) ? storageRes.data.boxes : [];
-          state.storageMaster = {
-            fiscalYears: [],
-            boxesByFiscalYear: {},
-            allBoxes: boxes.slice(),
-            boxes: boxes.slice()
-          };
-        } else {
-          state.storageMaster = (storageRes && storageRes.data && typeof storageRes.data === 'object')
-            ? storageRes.data
-            : { fiscalYears: [], boxesByFiscalYear: {}, allBoxes: [] };
-        }
+        state.storageMaster = (storageRes && storageRes.data && typeof storageRes.data === 'object')
+          ? storageRes.data
+          : { fiscalYears: [], boxesByFiscalYear: {}, allBoxes: [] };
 
         return true;
       }
