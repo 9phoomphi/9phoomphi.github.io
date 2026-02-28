@@ -470,6 +470,64 @@
       box-shadow: 0 10px 22px rgba(21, 128, 61, 0.22) !important;
     }
 
+    .advanced-filter-btn,
+    .print-all-report-btn {
+      cursor: pointer !important;
+    }
+
+    .advanced-filter-btn:disabled,
+    .print-all-report-btn:disabled {
+      cursor: not-allowed !important;
+    }
+
+    #filterModal #filterLocation.form-select,
+    #filterModal #filterLocation.form-select-sm {
+      min-height: 46px !important;
+      height: auto !important;
+      padding-top: 8px !important;
+      padding-bottom: 8px !important;
+      padding-left: 14px !important;
+      padding-right: 40px !important;
+      line-height: 1.3 !important;
+      font-size: 1.02rem !important;
+      font-weight: 700 !important;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    #filterModal select,
+    #filterModal .form-select {
+      cursor: pointer !important;
+    }
+
+    #filterModal select:disabled,
+    #filterModal .form-select:disabled {
+      cursor: not-allowed !important;
+    }
+
+    #filterModal #btnResetFilter,
+    #filterModal #btnApplyFilter,
+    #filterModal .filter-modal-footer .btn {
+      cursor: pointer !important;
+    }
+
+    #filterModal #btnResetFilter:disabled,
+    #filterModal #btnApplyFilter:disabled,
+    #filterModal .filter-modal-footer .btn:disabled {
+      cursor: not-allowed !important;
+    }
+
+    @media (max-width: 640px) {
+      #filterModal #filterLocation.form-select,
+      #filterModal #filterLocation.form-select-sm {
+        min-height: 44px !important;
+        padding-top: 7px !important;
+        padding-bottom: 7px !important;
+        font-size: 0.98rem !important;
+      }
+    }
+
     @media (hover: hover) and (pointer: fine) {
       .loan-dashboard-tabs .tab-btn:hover {
         transform: translateY(-1px) !important;
@@ -778,6 +836,101 @@
       border-top-color: rgba(148, 163, 184, 0.38);
     }
 
+    #boxesWrap.box-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    #boxesWrap .box-card {
+      position: relative;
+      overflow: hidden;
+      padding: 14px 14px 13px !important;
+      border-radius: 22px !important;
+      border: 1px solid rgba(148, 163, 184, 0.38) !important;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.68), rgba(255, 255, 255, 0.42)) !important;
+      box-shadow: 0 12px 26px rgba(15, 23, 42, 0.09) !important;
+      transform: translateY(0);
+      transition: transform 0.2s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.24s ease, border-color 0.2s ease, background-color 0.2s ease;
+    }
+
+    #boxesWrap .box-card::before {
+      content: "";
+      position: absolute;
+      right: -34px;
+      top: -36px;
+      width: 128px;
+      height: 128px;
+      border-radius: 50%;
+      background: rgba(59, 130, 246, 0.14);
+      transition: transform 0.22s ease;
+      z-index: 0;
+    }
+
+    #boxesWrap .box-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(59, 130, 246, 0.5) !important;
+      box-shadow: 0 16px 30px rgba(15, 23, 42, 0.13) !important;
+    }
+
+    #boxesWrap .box-card:hover::before {
+      transform: translate(-4px, 4px) scale(1.03);
+    }
+
+    #boxesWrap .box-name {
+      position: relative;
+      z-index: 1;
+      font-size: 1.08rem;
+      font-weight: 850;
+      color: #1d4ed8;
+      line-height: 1.2;
+      word-break: break-word;
+    }
+
+    #boxesWrap .box-count {
+      position: relative;
+      z-index: 1;
+      margin-top: 6px;
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: #475569;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    #boxesWrap .box-count i {
+      font-size: 0.85rem;
+      color: #64748b;
+    }
+
+    body.dark-mode #boxesWrap .box-card {
+      border-color: rgba(148, 163, 184, 0.4) !important;
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.76), rgba(15, 23, 42, 0.72)) !important;
+      box-shadow: 0 14px 30px rgba(2, 8, 20, 0.46) !important;
+    }
+
+    body.dark-mode #boxesWrap .box-card::before {
+      background: rgba(59, 130, 246, 0.24);
+    }
+
+    body.dark-mode #boxesWrap .box-card:hover {
+      border-color: rgba(96, 165, 250, 0.54) !important;
+      box-shadow: 0 20px 38px rgba(2, 8, 20, 0.54) !important;
+    }
+
+    body.dark-mode #boxesWrap .box-name {
+      color: #bfdbfe;
+    }
+
+    body.dark-mode #boxesWrap .box-count {
+      color: rgba(226, 232, 240, 0.84);
+    }
+
+    body.dark-mode #boxesWrap .box-count i,
+    body.dark-mode #boxesWrap .box-card-arrow {
+      color: rgba(191, 219, 254, 0.74);
+    }
+
     @media (max-width: 920px) {
       #statsRow,
       #statsRow.stats-grid,
@@ -878,7 +1031,9 @@
       <div id="docsTab">
         <div class="docs-toolbar">
           <div class="docs-toolbar-left">
-            <span class="small text-muted fw-bold">รายการตามสัญญา</span>
+            <button id="btnOpenFilter" class="btn advanced-filter-btn" type="button"><i class="bi bi-funnel-fill me-1"></i>ตัวกรองขั้นสูง</button>
+            <button id="btnPrintAll" class="btn print-all-report-btn" type="button"><i class="bi bi-printer-fill me-1"></i>พิมพ์รายงานทั้งหมด</button>
+            <span id="activeFilterBadge" class="badge hidden"></span>
           </div>
           <div class="docs-toolbar-right">
             <span class="small text-muted fw-bold">แสดง:</span>
@@ -887,6 +1042,140 @@
               <option value="30">30</option>
               <option value="50">50</option>
             </select>
+          </div>
+        </div>
+
+        <div id="filterModal" class="filter-modal">
+          <div class="filter-modal-backdrop" id="filterBackdrop"></div>
+          <div class="filter-modal-content">
+            <div class="filter-modal-header">
+              <h5><i class="bi bi-funnel-fill me-2"></i>ตัวกรองขั้นสูง (ทะเบียนคุมเงินยืม)</h5>
+              <button id="btnCloseFilter" class="filter-close-btn" type="button"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <div class="filter-modal-body">
+              <div class="filter-section">
+                <p class="filter-section-title"><i class="bi bi-tags me-1"></i>สถานะรายการเงินยืม</p>
+                <div class="filter-options">
+                  <label class="filter-option">
+                    <input type="checkbox" id="filterLoanUnpaid" value="unpaid">
+                    <span class="checkmark"></span>
+                    <span class="filter-label"><i class="bi bi-hourglass-split me-1" style="color:#5AC8FA"></i>ยังไม่ชำระ</span>
+                  </label>
+                  <label class="filter-option">
+                    <input type="checkbox" id="filterLoanDueSoon" value="due_soon">
+                    <span class="checkmark"></span>
+                    <span class="filter-label"><i class="bi bi-alarm-fill me-1" style="color:#F59E0B"></i>ใกล้ครบกำหนด</span>
+                  </label>
+                  <label class="filter-option">
+                    <input type="checkbox" id="filterLoanOverdue" value="overdue">
+                    <span class="checkmark"></span>
+                    <span class="filter-label"><i class="bi bi-exclamation-octagon-fill me-1" style="color:#FF3B30"></i>เลยกำหนด</span>
+                  </label>
+                  <label class="filter-option">
+                    <input type="checkbox" id="filterLoanPaid" value="paid">
+                    <span class="checkmark"></span>
+                    <span class="filter-label"><i class="bi bi-check-circle-fill me-1" style="color:#10B981"></i>ชำระแล้ว</span>
+                  </label>
+                  <label class="filter-option">
+                    <input type="checkbox" id="filterLoanPendingStorage" value="pending_storage">
+                    <span class="checkmark"></span>
+                    <span class="filter-label"><i class="bi bi-clock-history me-1" style="color:#F59E0B"></i>รอจัดเก็บ</span>
+                  </label>
+                  <label class="filter-option">
+                    <input type="checkbox" id="filterLoanStored" value="stored">
+                    <span class="checkmark"></span>
+                    <span class="filter-label"><i class="bi bi-archive-fill me-1" style="color:#007AFF"></i>จัดเก็บแล้ว</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="filter-section">
+                <p class="filter-section-title"><i class="bi bi-receipt-cutoff me-1"></i>ประเภทค่าใช้จ่าย</p>
+                <div id="filterExpenseOptions" class="filter-options compact"></div>
+              </div>
+
+              <div class="filter-section">
+                <p class="filter-section-title"><i class="bi bi-bank2 me-1"></i>แหล่งเงินยืม</p>
+                <div id="filterFundingOptions" class="filter-options compact"></div>
+              </div>
+
+              <div class="filter-section">
+                <p class="filter-section-title"><i class="bi bi-archive me-1"></i>สถานที่จัดเก็บ (กล่อง)</p>
+                <select id="filterLocation" class="form-select form-select-sm">
+                  <option value="">ทั้งหมด</option>
+                </select>
+              </div>
+
+              <div class="filter-section">
+                <p class="filter-section-title"><i class="bi bi-calendar2-check me-1"></i>ช่วงวันที่อนุมัติ</p>
+                <div class="filter-date-range">
+                  <div class="filter-date-item">
+                    <label class="filter-date-label">จากวันที่</label>
+                    <div class="thai-date-input" onclick="openCalendar('filterApproveDateFrom')">
+                      <input type="hidden" id="filterApproveDateFrom" value="">
+                      <div class="form-control filter-date-display" id="filterApproveDateFromDisplay">เลือกวันที่...</div>
+                      <i class="bi bi-calendar3 cal-icon"></i>
+                    </div>
+                  </div>
+                  <div class="filter-date-item">
+                    <label class="filter-date-label">ถึงวันที่</label>
+                    <div class="thai-date-input" onclick="openCalendar('filterApproveDateTo')">
+                      <input type="hidden" id="filterApproveDateTo" value="">
+                      <div class="form-control filter-date-display" id="filterApproveDateToDisplay">เลือกวันที่...</div>
+                      <i class="bi bi-calendar3 cal-icon"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="filter-section">
+                <p class="filter-section-title"><i class="bi bi-cash-coin me-1"></i>ช่วงวันที่ได้รับเงิน</p>
+                <div class="filter-date-range">
+                  <div class="filter-date-item">
+                    <label class="filter-date-label">จากวันที่</label>
+                    <div class="thai-date-input" onclick="openCalendar('filterReceiveDateFrom')">
+                      <input type="hidden" id="filterReceiveDateFrom" value="">
+                      <div class="form-control filter-date-display" id="filterReceiveDateFromDisplay">เลือกวันที่...</div>
+                      <i class="bi bi-calendar3 cal-icon"></i>
+                    </div>
+                  </div>
+                  <div class="filter-date-item">
+                    <label class="filter-date-label">ถึงวันที่</label>
+                    <div class="thai-date-input" onclick="openCalendar('filterReceiveDateTo')">
+                      <input type="hidden" id="filterReceiveDateTo" value="">
+                      <div class="form-control filter-date-display" id="filterReceiveDateToDisplay">เลือกวันที่...</div>
+                      <i class="bi bi-calendar3 cal-icon"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="filter-section">
+                <p class="filter-section-title"><i class="bi bi-calendar2-week me-1"></i>ช่วงวันครบกำหนดชำระคืน</p>
+                <div class="filter-date-range">
+                  <div class="filter-date-item">
+                    <label class="filter-date-label">จากวันที่</label>
+                    <div class="thai-date-input" onclick="openCalendar('filterDueDateFrom')">
+                      <input type="hidden" id="filterDueDateFrom" value="">
+                      <div class="form-control filter-date-display" id="filterDueDateFromDisplay">เลือกวันที่...</div>
+                      <i class="bi bi-calendar3 cal-icon"></i>
+                    </div>
+                  </div>
+                  <div class="filter-date-item">
+                    <label class="filter-date-label">ถึงวันที่</label>
+                    <div class="thai-date-input" onclick="openCalendar('filterDueDateTo')">
+                      <input type="hidden" id="filterDueDateTo" value="">
+                      <div class="form-control filter-date-display" id="filterDueDateToDisplay">เลือกวันที่...</div>
+                      <i class="bi bi-calendar3 cal-icon"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="filter-modal-footer">
+              <button id="btnResetFilter" class="btn secondary" type="button">รีเซ็ต</button>
+              <button id="btnApplyFilter" class="btn" type="button"><i class="bi bi-check-lg me-1"></i>ตกลง</button>
+            </div>
           </div>
         </div>
 
@@ -909,7 +1198,7 @@
           <div class="muted" id="boxSummaryLabel">กล่องเอกสารที่มีการจัดเก็บ</div>
           <button id="btnReloadBoxes" class="btn outline" type="button">รีโหลดข้อมูลกล่อง</button>
         </div>
-        <div id="boxesWrap" class="box-grid"><div class="empty" style="grid-column:1 / -1;">ยังไม่มีกล่องที่มีรายการจัดเก็บจริง</div></div>
+        <div id="boxesWrap" class="box-grid"></div>
       </div>
     </div>
   </div>
@@ -924,11 +1213,14 @@
       'use strict';
 
       var C = window.DocFrontendCommon;
+      var LOAN_LAST_BOX_NAME_KEY = 'loanControlLastBoxNameV1';
 
       var state = {
         settings: null,
         api: null,
         user: null,
+        members: [],
+        memberImgMap: {},
         isReadOnly: false,
         activeTab: 'docs',
         loading: false,
@@ -939,6 +1231,24 @@
         totalItems: 0,
         lastTotalPages: 1,
         searchText: '',
+        currentFilter: 'all',
+        selectedStatusFilters: [],
+        selectedExpenseTypes: [],
+        selectedFundingSources: [],
+        selectedLocation: '',
+        selectedApproveDateFrom: '',
+        selectedApproveDateTo: '',
+        selectedReceiveDateFrom: '',
+        selectedReceiveDateTo: '',
+        selectedDueDateFrom: '',
+        selectedDueDateTo: '',
+        expenseTypeOptions: [],
+        fundingSourceOptions: [],
+        locationOptions: [],
+        allLoanDocsCache: null,
+        allLoanDocsCacheAt: 0,
+        loadingAllLoanDocsPromise: null,
+        loadingLoanOptionsPromise: null,
         boxSummary: [],
         boxesLoaded: false
       };
@@ -956,7 +1266,30 @@
         tabLoanScan: document.getElementById('tabLoanScan'),
         btnAddFab: document.getElementById('btnAddFab'),
         searchInput: document.getElementById('searchInput'),
+        btnOpenFilter: document.getElementById('btnOpenFilter'),
+        btnPrintAll: document.getElementById('btnPrintAll'),
+        activeFilterBadge: document.getElementById('activeFilterBadge'),
         itemsPerPage: document.getElementById('itemsPerPage'),
+        filterModal: document.getElementById('filterModal'),
+        filterBackdrop: document.getElementById('filterBackdrop'),
+        btnCloseFilter: document.getElementById('btnCloseFilter'),
+        btnResetFilter: document.getElementById('btnResetFilter'),
+        btnApplyFilter: document.getElementById('btnApplyFilter'),
+        filterLoanUnpaid: document.getElementById('filterLoanUnpaid'),
+        filterLoanDueSoon: document.getElementById('filterLoanDueSoon'),
+        filterLoanOverdue: document.getElementById('filterLoanOverdue'),
+        filterLoanPaid: document.getElementById('filterLoanPaid'),
+        filterLoanPendingStorage: document.getElementById('filterLoanPendingStorage'),
+        filterLoanStored: document.getElementById('filterLoanStored'),
+        filterExpenseOptions: document.getElementById('filterExpenseOptions'),
+        filterFundingOptions: document.getElementById('filterFundingOptions'),
+        filterLocation: document.getElementById('filterLocation'),
+        filterApproveDateFrom: document.getElementById('filterApproveDateFrom'),
+        filterApproveDateTo: document.getElementById('filterApproveDateTo'),
+        filterReceiveDateFrom: document.getElementById('filterReceiveDateFrom'),
+        filterReceiveDateTo: document.getElementById('filterReceiveDateTo'),
+        filterDueDateFrom: document.getElementById('filterDueDateFrom'),
+        filterDueDateTo: document.getElementById('filterDueDateTo'),
         statsRow: document.getElementById('statsRow'),
         docsTab: document.getElementById('docsTab'),
         docsList: document.getElementById('docsList'),
@@ -1014,6 +1347,41 @@
         }
       }
 
+      function normalizeMemberKey(name) {
+        var text = C.safeTrim(name || '');
+        if (!text) return '';
+        return text.toLowerCase().replace(/\s+/g, '');
+      }
+
+      function mapMemberData(members) {
+        var list = Array.isArray(members) ? members : [];
+        var imgMap = {};
+        for (var i = 0; i < list.length; i++) {
+          var m = list[i] || {};
+          var name = C.safeTrim(m.name || m.displayName || '');
+          if (!name) continue;
+          var img = C.safeTrim(m.image || m.imageUrl || m.avatar || '');
+          if (!img) continue;
+          imgMap[name] = img;
+          imgMap[name.toLowerCase()] = img;
+          var compact = normalizeMemberKey(name);
+          if (compact) imgMap[compact] = img;
+        }
+        state.memberImgMap = imgMap;
+      }
+
+      function findMemberImageByName(name) {
+        var raw = C.safeTrim(name || '');
+        if (!raw) return '';
+        var compact = normalizeMemberKey(raw);
+        return C.safeTrim(
+          state.memberImgMap[raw]
+          || state.memberImgMap[raw.toLowerCase()]
+          || state.memberImgMap[compact]
+          || ''
+        );
+      }
+
       function renderLoadingList(message) {
         if (!els.docsList) return;
         var text = C.safeTrim(message || '') || 'กำลังโหลดข้อมูล...';
@@ -1029,8 +1397,26 @@
           els.tabLoanScan,
           els.btnReloadBoxes,
           els.btnAddFab,
+          els.btnOpenFilter,
+          els.btnPrintAll,
+          els.btnCloseFilter,
+          els.btnResetFilter,
+          els.btnApplyFilter,
           els.searchInput,
           els.itemsPerPage,
+          els.filterLoanUnpaid,
+          els.filterLoanDueSoon,
+          els.filterLoanOverdue,
+          els.filterLoanPaid,
+          els.filterLoanPendingStorage,
+          els.filterLoanStored,
+          els.filterLocation,
+          els.filterApproveDateFrom,
+          els.filterApproveDateTo,
+          els.filterReceiveDateFrom,
+          els.filterReceiveDateTo,
+          els.filterDueDateFrom,
+          els.filterDueDateTo,
           els.btnPrev,
           els.btnNext,
           els.jumpPageInline
@@ -1176,9 +1562,488 @@
         var storedPos = C.safeTrim((item && item.storedPosition) || '');
         var titleText = storedPos ? (storedUser + ' (' + storedPos + ')') : storedUser;
         var first = (storedUser.charAt(0) || '?').toUpperCase();
-        var avatar = '<span class="stored-user-avatar" title="ผู้จัดเก็บ: ' + C.escapeHtml(titleText) + '">' + C.escapeHtml(first) + '</span>';
+        var storedImg = findMemberImageByName(storedUser);
+        var avatar = storedImg
+          ? '<img src="' + C.escapeHtml(storedImg) + '" title="ผู้จัดเก็บ: ' + C.escapeHtml(titleText) + '" class="rounded-circle" width="22" height="22" style="border-radius:50%;object-fit:cover;border:1.5px solid rgba(255,255,255,0.8);box-shadow:0 1px 4px rgba(0,0,0,0.12);flex:0 0 22px">'
+          : '<span class="stored-user-avatar" title="ผู้จัดเก็บ: ' + C.escapeHtml(titleText) + '">' + C.escapeHtml(first) + '</span>';
         var text = storedPos ? (storedUser + ' (' + storedPos + ')') : storedUser;
         return '<span class="stored-user-chip" title="ผู้จัดเก็บ: ' + C.escapeHtml(titleText) + '">' + avatar + '<span class="stored-user-name">' + C.escapeHtml(text) + '</span></span>';
+      }
+
+      function sortThaiText(a, b) {
+        return String(a || '').localeCompare(String(b || ''), 'th');
+      }
+
+      function normalizeOptionArray(values) {
+        var arr = Array.isArray(values) ? values : [];
+        var out = [];
+        var seen = {};
+        for (var i = 0; i < arr.length; i++) {
+          var v = C.safeTrim(arr[i] || '');
+          if (!v) continue;
+          if (seen[v]) continue;
+          seen[v] = true;
+          out.push(v);
+        }
+        out.sort(sortThaiText);
+        return out;
+      }
+
+      function isInDateRange(dateValue, fromValue, toValue) {
+        var v = C.safeTrim(dateValue || '');
+        var from = C.safeTrim(fromValue || '');
+        var to = C.safeTrim(toValue || '');
+        if (!from && !to) return true;
+        if (!v) return false;
+        if (from && v < from) return false;
+        if (to && v > to) return false;
+        return true;
+      }
+
+      function getLoanSearchableText(item) {
+        var d = item || {};
+        return [
+          d.contractNo,
+          d.docNoSdh,
+          d.borrowerName,
+          d.groupCenter,
+          d.meetingTitle,
+          d.expenseType,
+          d.fundingSource,
+          d.statusDoc,
+          d.storedLoc,
+          d.dueDateDisplay,
+          d.responsible
+        ].join(' ').toLowerCase();
+      }
+
+      function matchesLoanSearch(item, queryLower) {
+        var query = C.safeTrim(queryLower || '').toLowerCase();
+        if (!query) return true;
+        return getLoanSearchableText(item).indexOf(query) > -1;
+      }
+
+      function matchesLoanStatusFilter(item, statusKey) {
+        var key = C.safeTrim(statusKey || '');
+        if (!key) return true;
+        if (key === 'unpaid') return !isPaidForStorage(item);
+        if (key === 'due_soon') {
+          var dueSoonState = C.safeTrim((item && item.dueState) || '');
+          return dueSoonState === 'due_soon' || dueSoonState === 'due_today';
+        }
+        if (key === 'overdue') return C.safeTrim((item && item.dueState) || '') === 'overdue';
+        if (key === 'paid') return isPaidForStorage(item);
+        if (key === 'pending_storage') return isPendingStorage(item);
+        if (key === 'stored') return !!C.safeTrim((item && item.storedLoc) || '');
+        return true;
+      }
+
+      function matchesLoanAdvancedFilter(item) {
+        var d = item || {};
+        var i;
+
+        if (state.selectedStatusFilters.length) {
+          var matchedStatus = false;
+          for (i = 0; i < state.selectedStatusFilters.length; i++) {
+            if (matchesLoanStatusFilter(d, state.selectedStatusFilters[i])) {
+              matchedStatus = true;
+              break;
+            }
+          }
+          if (!matchedStatus) return false;
+        }
+
+        if (state.selectedExpenseTypes.length) {
+          var expense = C.safeTrim(d.expenseType || '');
+          if (state.selectedExpenseTypes.indexOf(expense) === -1) return false;
+        }
+
+        if (state.selectedFundingSources.length) {
+          var funding = C.safeTrim(d.fundingSource || '');
+          if (state.selectedFundingSources.indexOf(funding) === -1) return false;
+        }
+
+        if (state.selectedLocation) {
+          if (C.safeTrim(d.storedLoc || '') !== state.selectedLocation) return false;
+        }
+
+        if (!isInDateRange(d.approveDateInput, state.selectedApproveDateFrom, state.selectedApproveDateTo)) return false;
+        if (!isInDateRange(d.receiveMoneyDateInput, state.selectedReceiveDateFrom, state.selectedReceiveDateTo)) return false;
+        if (!isInDateRange(d.dueDateInput, state.selectedDueDateFrom, state.selectedDueDateTo)) return false;
+
+        return true;
+      }
+
+      function hasAdvancedFilter() {
+        return !!(
+          state.selectedStatusFilters.length ||
+          state.selectedExpenseTypes.length ||
+          state.selectedFundingSources.length ||
+          state.selectedLocation ||
+          state.selectedApproveDateFrom ||
+          state.selectedApproveDateTo ||
+          state.selectedReceiveDateFrom ||
+          state.selectedReceiveDateTo ||
+          state.selectedDueDateFrom ||
+          state.selectedDueDateTo
+        );
+      }
+
+      function getActiveFilterCount() {
+        var count = 0;
+        count += state.selectedStatusFilters.length;
+        count += state.selectedExpenseTypes.length;
+        count += state.selectedFundingSources.length;
+        if (state.selectedLocation) count += 1;
+        if (state.selectedApproveDateFrom || state.selectedApproveDateTo) count += 1;
+        if (state.selectedReceiveDateFrom || state.selectedReceiveDateTo) count += 1;
+        if (state.selectedDueDateFrom || state.selectedDueDateTo) count += 1;
+        return count;
+      }
+
+      function updateFilterBadge() {
+        if (!els.activeFilterBadge) return;
+        var count = getActiveFilterCount();
+        if (!count) {
+          els.activeFilterBadge.classList.add('hidden');
+          els.activeFilterBadge.textContent = '';
+          return;
+        }
+        els.activeFilterBadge.textContent = count + ' ตัวกรอง';
+        els.activeFilterBadge.classList.remove('hidden');
+      }
+
+      function collectUniqueLoanValues(docs, getter) {
+        var rows = Array.isArray(docs) ? docs : [];
+        var out = [];
+        var seen = {};
+        for (var i = 0; i < rows.length; i++) {
+          var val = C.safeTrim(getter(rows[i] || {}) || '');
+          if (!val) continue;
+          if (seen[val]) continue;
+          seen[val] = true;
+          out.push(val);
+        }
+        out.sort(sortThaiText);
+        return out;
+      }
+
+      function renderFilterCheckboxOptions(container, options, selectedValues, allId, itemClassName) {
+        if (!container) return;
+        var selected = {};
+        var picked = Array.isArray(selectedValues) ? selectedValues : [];
+        for (var i = 0; i < picked.length; i++) selected[picked[i]] = true;
+
+        var html = '<label class="filter-option compact"><input type="checkbox" id="' + C.escapeHtml(allId) + '" ' + (picked.length === 0 ? 'checked' : '') + '><span class="checkmark"></span><span class="filter-label">ทั้งหมด</span></label>';
+        var list = Array.isArray(options) ? options : [];
+        for (var j = 0; j < list.length; j++) {
+          var val = C.safeText(list[j]);
+          var checked = selected[val] ? 'checked' : '';
+          html += '<label class="filter-option compact"><input type="checkbox" class="' + C.escapeHtml(itemClassName) + '" value="' + C.escapeHtml(val) + '" ' + checked + '><span class="checkmark"></span><span class="filter-label">' + C.escapeHtml(val) + '</span></label>';
+        }
+        container.innerHTML = html;
+      }
+
+      function renderLoanLocationOptions(options) {
+        if (!els.filterLocation) return;
+        var current = C.safeTrim(state.selectedLocation || '');
+        var html = '<option value="">ทั้งหมด</option>';
+        var list = Array.isArray(options) ? options : [];
+        for (var i = 0; i < list.length; i++) {
+          var value = C.safeText(list[i]);
+          var selected = current && current === value ? ' selected' : '';
+          html += '<option value="' + C.escapeHtml(value) + '"' + selected + '>' + C.escapeHtml(value) + '</option>';
+        }
+        els.filterLocation.innerHTML = html;
+      }
+
+      function refreshFilterOptions() {
+        renderFilterCheckboxOptions(els.filterExpenseOptions, state.expenseTypeOptions, state.selectedExpenseTypes, 'filterExpenseAll', 'filter-expense-option');
+        renderFilterCheckboxOptions(els.filterFundingOptions, state.fundingSourceOptions, state.selectedFundingSources, 'filterFundingAll', 'filter-funding-option');
+        renderLoanLocationOptions(state.locationOptions);
+
+        if (els.filterLoanUnpaid) els.filterLoanUnpaid.checked = state.selectedStatusFilters.indexOf('unpaid') > -1;
+        if (els.filterLoanDueSoon) els.filterLoanDueSoon.checked = state.selectedStatusFilters.indexOf('due_soon') > -1;
+        if (els.filterLoanOverdue) els.filterLoanOverdue.checked = state.selectedStatusFilters.indexOf('overdue') > -1;
+        if (els.filterLoanPaid) els.filterLoanPaid.checked = state.selectedStatusFilters.indexOf('paid') > -1;
+        if (els.filterLoanPendingStorage) els.filterLoanPendingStorage.checked = state.selectedStatusFilters.indexOf('pending_storage') > -1;
+        if (els.filterLoanStored) els.filterLoanStored.checked = state.selectedStatusFilters.indexOf('stored') > -1;
+
+        if (els.filterApproveDateFrom) els.filterApproveDateFrom.value = state.selectedApproveDateFrom || '';
+        if (els.filterApproveDateTo) els.filterApproveDateTo.value = state.selectedApproveDateTo || '';
+        if (els.filterReceiveDateFrom) els.filterReceiveDateFrom.value = state.selectedReceiveDateFrom || '';
+        if (els.filterReceiveDateTo) els.filterReceiveDateTo.value = state.selectedReceiveDateTo || '';
+        if (els.filterDueDateFrom) els.filterDueDateFrom.value = state.selectedDueDateFrom || '';
+        if (els.filterDueDateTo) els.filterDueDateTo.value = state.selectedDueDateTo || '';
+
+        if (window.updDD) {
+          window.updDD('filterApproveDateFrom');
+          window.updDD('filterApproveDateTo');
+          window.updDD('filterReceiveDateFrom');
+          window.updDD('filterReceiveDateTo');
+          window.updDD('filterDueDateFrom');
+          window.updDD('filterDueDateTo');
+        }
+      }
+
+      function mountFilterModalToBody() {
+        if (!els.filterModal || !document.body) return;
+        if (els.filterModal.parentNode !== document.body) {
+          document.body.appendChild(els.filterModal);
+        }
+      }
+
+      function ensureLoanOptionsLoaded(forceRefresh) {
+        if (!state.api) return Promise.resolve(null);
+        var force = !!forceRefresh;
+        if (state.loadingLoanOptionsPromise) return state.loadingLoanOptionsPromise;
+        state.loadingLoanOptionsPromise = state.api.loanOptions({
+          noPageLoader: true,
+          forceRefresh: force
+        }).then(function (res) {
+          state.loadingLoanOptionsPromise = null;
+          return res || null;
+        }).catch(function (err) {
+          state.loadingLoanOptionsPromise = null;
+          throw err;
+        });
+        return state.loadingLoanOptionsPromise;
+      }
+
+      function ensureAllLoanDocs(forceRefresh) {
+        if (!state.api) return Promise.resolve([]);
+
+        var force = !!forceRefresh;
+        var now = Date.now();
+        if (!force && Array.isArray(state.allLoanDocsCache) && (now - Number(state.allLoanDocsCacheAt || 0) < 60 * 1000)) {
+          return Promise.resolve(state.allLoanDocsCache.slice());
+        }
+        if (state.loadingAllLoanDocsPromise) return state.loadingAllLoanDocsPromise;
+
+        var allDocs = [];
+        var pageSize = 200;
+
+        function fetchPage(pageNo) {
+          return state.api.loanList({
+            page: pageNo,
+            itemsPerPage: pageSize,
+            searchQuery: ''
+          }, { noPageLoader: true }).then(function (res) {
+            if (!res || res.success === false) {
+              throw new Error((res && res.error) ? res.error : 'โหลดข้อมูลไม่สำเร็จ');
+            }
+
+            var docs = Array.isArray(res.docs) ? res.docs : [];
+            for (var i = 0; i < docs.length; i++) allDocs.push(docs[i]);
+
+            var pagination = res.pagination || {};
+            var totalPages = Number(pagination.totalPages || 1);
+            if (pageNo < totalPages) return fetchPage(pageNo + 1);
+            return allDocs;
+          });
+        }
+
+        state.loadingAllLoanDocsPromise = fetchPage(1).then(function (docs) {
+          state.loadingAllLoanDocsPromise = null;
+          state.allLoanDocsCache = Array.isArray(docs) ? docs.slice() : [];
+          state.allLoanDocsCacheAt = Date.now();
+          return state.allLoanDocsCache.slice();
+        }).catch(function (err) {
+          state.loadingAllLoanDocsPromise = null;
+          throw err;
+        });
+
+        return state.loadingAllLoanDocsPromise;
+      }
+
+      function ensureFilterDataLoaded(forceRefresh) {
+        return Promise.all([
+          ensureAllLoanDocs(forceRefresh),
+          ensureLoanOptionsLoaded(forceRefresh).catch(function () { return null; })
+        ]).then(function (results) {
+          var docs = Array.isArray(results[0]) ? results[0] : [];
+          var optionsRes = results[1] || {};
+          var optionsData = (optionsRes && optionsRes.data && typeof optionsRes.data === 'object') ? optionsRes.data : {};
+
+          var expenseByDocs = collectUniqueLoanValues(docs, function (d) { return d.expenseType || ''; });
+          var fundingByDocs = collectUniqueLoanValues(docs, function (d) { return d.fundingSource || ''; });
+          var locationByDocs = collectUniqueLoanValues(docs, function (d) { return d.storedLoc || ''; });
+
+          var expenseByApi = normalizeOptionArray(optionsData.expenseTypes || []);
+          var fundingByApi = normalizeOptionArray(optionsData.fundingSources || []);
+
+          state.expenseTypeOptions = normalizeOptionArray(expenseByApi.concat(expenseByDocs));
+          state.fundingSourceOptions = normalizeOptionArray(fundingByApi.concat(fundingByDocs));
+          state.locationOptions = normalizeOptionArray(locationByDocs);
+
+          state.boxSummary = aggregateBoxes(docs);
+          state.boxesLoaded = true;
+          return docs;
+        });
+      }
+
+      function openFilterModal() {
+        if (!els.filterModal) return;
+        setLoading(true);
+        ensureFilterDataLoaded(false).then(function () {
+          mountFilterModalToBody();
+          refreshFilterOptions();
+          els.filterModal.classList.add('active');
+          setLoading(false);
+        }).catch(function (err) {
+          setLoading(false);
+          showError((err && err.message) ? err.message : 'โหลดข้อมูลตัวกรองไม่สำเร็จ');
+        });
+      }
+
+      function closeFilterModal() {
+        if (!els.filterModal) return;
+        els.filterModal.classList.remove('active');
+      }
+
+      function normalizeDateRange(fromValue, toValue) {
+        var from = C.safeTrim(fromValue || '');
+        var to = C.safeTrim(toValue || '');
+        if (from && to && from > to) {
+          return { from: to, to: from };
+        }
+        return { from: from, to: to };
+      }
+
+      function applyFilterFromModal() {
+        state.selectedStatusFilters = [];
+        if (els.filterLoanUnpaid && els.filterLoanUnpaid.checked) state.selectedStatusFilters.push('unpaid');
+        if (els.filterLoanDueSoon && els.filterLoanDueSoon.checked) state.selectedStatusFilters.push('due_soon');
+        if (els.filterLoanOverdue && els.filterLoanOverdue.checked) state.selectedStatusFilters.push('overdue');
+        if (els.filterLoanPaid && els.filterLoanPaid.checked) state.selectedStatusFilters.push('paid');
+        if (els.filterLoanPendingStorage && els.filterLoanPendingStorage.checked) state.selectedStatusFilters.push('pending_storage');
+        if (els.filterLoanStored && els.filterLoanStored.checked) state.selectedStatusFilters.push('stored');
+
+        state.selectedExpenseTypes = [];
+        var expenseOptions = document.querySelectorAll('.filter-expense-option:checked');
+        for (var i = 0; i < expenseOptions.length; i++) {
+          state.selectedExpenseTypes.push(C.safeText(expenseOptions[i].value));
+        }
+
+        state.selectedFundingSources = [];
+        var fundingOptions = document.querySelectorAll('.filter-funding-option:checked');
+        for (var j = 0; j < fundingOptions.length; j++) {
+          state.selectedFundingSources.push(C.safeText(fundingOptions[j].value));
+        }
+
+        state.selectedLocation = C.safeTrim((els.filterLocation && els.filterLocation.value) || '');
+
+        var approveRange = normalizeDateRange(
+          (els.filterApproveDateFrom && els.filterApproveDateFrom.value) || '',
+          (els.filterApproveDateTo && els.filterApproveDateTo.value) || ''
+        );
+        state.selectedApproveDateFrom = approveRange.from;
+        state.selectedApproveDateTo = approveRange.to;
+
+        var receiveRange = normalizeDateRange(
+          (els.filterReceiveDateFrom && els.filterReceiveDateFrom.value) || '',
+          (els.filterReceiveDateTo && els.filterReceiveDateTo.value) || ''
+        );
+        state.selectedReceiveDateFrom = receiveRange.from;
+        state.selectedReceiveDateTo = receiveRange.to;
+
+        var dueRange = normalizeDateRange(
+          (els.filterDueDateFrom && els.filterDueDateFrom.value) || '',
+          (els.filterDueDateTo && els.filterDueDateTo.value) || ''
+        );
+        state.selectedDueDateFrom = dueRange.from;
+        state.selectedDueDateTo = dueRange.to;
+
+        var parts = [];
+        if (state.selectedStatusFilters.length) parts.push('status:' + state.selectedStatusFilters.join(','));
+        if (state.selectedExpenseTypes.length) parts.push('expense:' + state.selectedExpenseTypes.join(','));
+        if (state.selectedFundingSources.length) parts.push('fund:' + state.selectedFundingSources.join(','));
+        if (state.selectedLocation) parts.push('loc:' + state.selectedLocation);
+        if (state.selectedApproveDateFrom || state.selectedApproveDateTo) parts.push('approve:' + state.selectedApproveDateFrom + ',' + state.selectedApproveDateTo);
+        if (state.selectedReceiveDateFrom || state.selectedReceiveDateTo) parts.push('receive:' + state.selectedReceiveDateFrom + ',' + state.selectedReceiveDateTo);
+        if (state.selectedDueDateFrom || state.selectedDueDateTo) parts.push('due:' + state.selectedDueDateFrom + ',' + state.selectedDueDateTo);
+
+        state.currentFilter = parts.length ? ('adv:' + parts.join('|')) : 'all';
+        updateFilterBadge();
+      }
+
+      function resetFilterModal() {
+        state.selectedStatusFilters = [];
+        state.selectedExpenseTypes = [];
+        state.selectedFundingSources = [];
+        state.selectedLocation = '';
+        state.selectedApproveDateFrom = '';
+        state.selectedApproveDateTo = '';
+        state.selectedReceiveDateFrom = '';
+        state.selectedReceiveDateTo = '';
+        state.selectedDueDateFrom = '';
+        state.selectedDueDateTo = '';
+        state.currentFilter = 'all';
+        refreshFilterOptions();
+        updateFilterBadge();
+      }
+
+      function buildFilteredLoanDocs(rawDocs, queryText) {
+        var rows = Array.isArray(rawDocs) ? rawDocs : [];
+        var query = C.safeTrim(queryText || '').toLowerCase();
+        var out = [];
+        for (var i = 0; i < rows.length; i++) {
+          var record = rows[i] || {};
+          if (!matchesLoanSearch(record, query)) continue;
+          if (!matchesLoanAdvancedFilter(record)) continue;
+          out.push(record);
+        }
+        return out;
+      }
+
+      function buildLoanStatsFromDocs(rows) {
+        var docs = Array.isArray(rows) ? rows : [];
+        var stats = { total: 0, paid: 0, unpaid: 0, overdue: 0, dueSoon: 0, stored: 0, pendingStorage: 0 };
+        for (var i = 0; i < docs.length; i++) {
+          var d = docs[i] || {};
+          stats.total++;
+          if (C.safeTrim(d.statusDoc || '') === 'ชำระแล้ว' || C.safeTrim(d.dueState || '') === 'paid') stats.paid++;
+          else stats.unpaid++;
+          if (C.safeTrim(d.dueState || '') === 'overdue') stats.overdue++;
+          if (C.safeTrim(d.dueState || '') === 'due_soon' || C.safeTrim(d.dueState || '') === 'due_today') stats.dueSoon++;
+          if (C.safeTrim(d.storedLoc || '')) stats.stored++;
+          if (isPendingStorage(d)) stats.pendingStorage++;
+        }
+        return stats;
+      }
+
+      function getActiveFilterSummaryText() {
+        var parts = [];
+        if (state.selectedStatusFilters.length) parts.push('สถานะ ' + state.selectedStatusFilters.length + ' รายการ');
+        if (state.selectedExpenseTypes.length) parts.push('ประเภทค่าใช้จ่าย ' + state.selectedExpenseTypes.length + ' รายการ');
+        if (state.selectedFundingSources.length) parts.push('แหล่งเงินยืม ' + state.selectedFundingSources.length + ' รายการ');
+        if (state.selectedLocation) parts.push('กล่อง "' + state.selectedLocation + '"');
+        if (state.selectedApproveDateFrom || state.selectedApproveDateTo) parts.push('วันที่อนุมัติ');
+        if (state.selectedReceiveDateFrom || state.selectedReceiveDateTo) parts.push('วันที่ได้รับเงิน');
+        if (state.selectedDueDateFrom || state.selectedDueDateTo) parts.push('วันครบกำหนด');
+        return parts.join(' | ');
+      }
+
+      function getLoanStatusLabelForReport(item) {
+        var d = item || {};
+        if (C.safeTrim(d.storedLoc || '')) return 'จัดเก็บแล้ว';
+        if (isPendingStorage(d)) return 'รอจัดเก็บ';
+        if (isPaidForStorage(d)) return 'ชำระแล้ว';
+        if (C.safeTrim(d.dueState || '') === 'overdue') return 'เลยกำหนด';
+        if (C.safeTrim(d.dueState || '') === 'due_soon' || C.safeTrim(d.dueState || '') === 'due_today') return 'ใกล้ครบกำหนด';
+        return 'ยังไม่ชำระ';
+      }
+
+      function loadMemberOptions() {
+        if (!state.api) return Promise.resolve();
+        return state.api.optionsMembers({ noPageLoader: true }).then(function (res) {
+          var list = (res && res.success && Array.isArray(res.data)) ? res.data : [];
+          state.members = list;
+          mapMemberData(list);
+        }).catch(function () {
+          state.members = [];
+          state.memberImgMap = {};
+        });
       }
 
       function buildLoanInfoItem(iconClass, label, value) {
@@ -1315,17 +2180,18 @@
         if (!els.boxesWrap || !els.boxSummaryLabel) return;
 
         if (!state.boxSummary.length) {
-          els.boxSummaryLabel.textContent = 'ยังไม่พบกล่องที่มีการจัดเก็บเอกสารเงินยืม';
+          els.boxSummaryLabel.textContent = 'ยังไม่พบกล่องที่มีเอกสารถูกจัดเก็บ';
           els.boxesWrap.innerHTML = '<div class="empty" style="grid-column:1 / -1;">ยังไม่มีกล่องที่มีรายการจัดเก็บจริง</div>';
           return;
         }
 
-        var totalDocs = 0;
         var html = '';
+        var totalDocs = 0;
         for (var i = 0; i < state.boxSummary.length; i++) {
           var box = state.boxSummary[i] || {};
           totalDocs += Number(box.count || 0);
-          html += '<div class="box-card"><i class="bi bi-archive box-icon"></i><div class="box-name">' + C.escapeHtml(box.name || '-') + '</div><div class="box-count">' + Number(box.count || 0) + ' รายการ</div><div class="box-hint"><i class="bi bi-wallet2 me-1"></i>ข้อมูลจากทะเบียนคุมเงินยืม</div></div>';
+          var url = C.buildPageUrl('loan-storage-box-view.html', { box: box.name, boxName: box.name });
+          html += '<a class="box-card d-block text-decoration-none" data-box-name="' + C.escapeHtml(box.name || '') + '" href="' + C.escapeHtml(url) + '"><i class="bi bi-archive box-icon"></i><div class="box-name">' + C.escapeHtml(box.name || '-') + '</div><div class="box-count">' + Number(box.count || 0) + ' รายการ</div><div class="box-hint"><i class="bi bi-arrow-right-circle me-1"></i>กดเพื่อดูรายละเอียดและ QR ในกล่อง</div></a>';
         }
 
         els.boxSummaryLabel.textContent = 'รวม ' + state.boxSummary.length + ' กล่อง | รายการเงินยืมที่จัดเก็บแล้ว ' + totalDocs + ' รายการ';
@@ -1357,6 +2223,37 @@
         showError('');
 
         renderLoadingList(showLoader ? 'กำลังโหลดข้อมูล...' : 'กำลังค้นหาข้อมูล...');
+
+        if (hasAdvancedFilter()) {
+          return ensureAllLoanDocs(false).then(function (allDocs) {
+            var filtered = buildFilteredLoanDocs(allDocs, state.searchText);
+            var stats = buildLoanStatsFromDocs(filtered);
+
+            var totalItems = filtered.length;
+            var totalPages = Math.max(1, Math.ceil(totalItems / state.itemsPerPage));
+            if (state.page > totalPages) state.page = totalPages;
+            if (state.page < 1) state.page = 1;
+
+            var startIndex = (state.page - 1) * state.itemsPerPage;
+            var pageDocs = filtered.slice(startIndex, startIndex + state.itemsPerPage);
+
+            state.totalPages = totalPages;
+            state.totalItems = totalItems;
+
+            renderStats(stats);
+            renderList(pageDocs);
+            syncPagination();
+            setLoading(false);
+          }).catch(function (err) {
+            setLoading(false);
+            renderStats({});
+            if (els.docsList) {
+              els.docsList.innerHTML = '<div class="text-center py-5 text-danger"><i class="bi bi-exclamation-triangle d-block mb-2" style="font-size:1.3rem"></i><p>เกิดข้อผิดพลาดในการโหลดข้อมูล</p></div>';
+            }
+            syncPagination();
+            throw err;
+          });
+        }
 
         return state.api.loanList({
           page: state.page,
@@ -1398,33 +2295,9 @@
         }
 
         setLoading(true);
-        var allDocs = [];
-        var pageSize = 200;
 
-        function fetchPage(page) {
-          return state.api.loanList({
-            page: page,
-            itemsPerPage: pageSize,
-            searchQuery: ''
-          }, {
-            noPageLoader: true
-          }).then(function (res) {
-            if (!res || res.success === false) {
-              throw new Error((res && res.error) ? res.error : 'โหลดข้อมูลกล่องไม่สำเร็จ');
-            }
-
-            var docs = Array.isArray(res.docs) ? res.docs : [];
-            for (var i = 0; i < docs.length; i++) allDocs.push(docs[i]);
-
-            var pagination = res.pagination || {};
-            var totalPages = Number(pagination.totalPages || 1);
-            if (page < totalPages) return fetchPage(page + 1);
-            return null;
-          });
-        }
-
-        return fetchPage(1).then(function () {
-          state.boxSummary = aggregateBoxes(allDocs);
+        return ensureFilterDataLoaded(!!showLoader).then(function (docs) {
+          state.boxSummary = aggregateBoxes(docs);
           state.boxesLoaded = true;
           renderBoxes();
           setLoading(false);
@@ -1434,6 +2307,78 @@
           if (els.boxSummaryLabel) els.boxSummaryLabel.textContent = 'เกิดข้อผิดพลาดในการโหลดข้อมูลกล่อง';
           if (els.boxesWrap) els.boxesWrap.innerHTML = '<div class="empty" style="grid-column:1 / -1;">ไม่สามารถโหลดข้อมูลกล่องได้</div>';
           throw err;
+        });
+      }
+
+      function printAllLoanReport() {
+        if (!state.api) return;
+
+        var w = window.open('', '', 'width=1280,height=860');
+        if (!w) {
+          showError('ไม่สามารถเปิดหน้าต่างพิมพ์ (Pop-up ถูกบล็อก)');
+          return;
+        }
+        try {
+          w.document.open();
+          w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>กำลังเตรียมรายงาน...</title></head><body style="font-family:IBM Plex Sans Thai,sans-serif;padding:24px;color:#0F172A;">กำลังเตรียมข้อมูลรายงานสำหรับพิมพ์...</body></html>');
+          w.document.close();
+        } catch (_ignore) {}
+
+        ensureAllLoanDocs(false).then(function (allDocs) {
+          var docs = hasAdvancedFilter()
+            ? buildFilteredLoanDocs(allDocs, state.searchText)
+            : buildFilteredLoanDocs(allDocs, C.safeTrim(state.searchText || ''));
+
+          if (!docs.length) {
+            try { w.close(); } catch (_ignore2) {}
+            showError('ไม่พบข้อมูลรายงานสำหรับพิมพ์');
+            return;
+          }
+
+          var esc = C.escapeHtml;
+          var printedAt = new Date().toLocaleString('th-TH');
+          var filterSummary = getActiveFilterSummaryText();
+          var hasSearch = C.safeTrim(state.searchText || '') !== '';
+
+          var h = '';
+          h += '<!DOCTYPE html><html><head><meta charset="UTF-8"><title>รายงานทะเบียนคุมเงินยืม</title>';
+          h += '<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">';
+          h += '<style>@page{size:A4 landscape;margin:8mm}body{font-family:"IBM Plex Sans Thai",sans-serif;margin:0;padding:8px;color:#0F172A}.wrap{padding:0}h2{margin:0 0 2px;text-align:center;font-size:21px;line-height:1.2;font-weight:800}p.sub{margin:0 0 4px;text-align:center;font-size:12px;color:#334155}.meta{margin:0 0 8px;text-align:center;font-size:11px;color:#475569}.meta.filter{font-weight:700;color:#0f766e}table{width:100%;border-collapse:collapse;table-layout:fixed}thead{display:table-header-group}tbody tr{break-inside:avoid;page-break-inside:avoid}th,td{border:1px solid #334155;padding:4px 5px;font-size:10.2px;line-height:1.28;vertical-align:top}th{background:#E2E8F0;text-align:center;font-weight:800}.text-center{text-align:center}.text-right{text-align:right}.subject-cell,.borrower-cell,.group-cell,.expense-cell,.fund-cell,.status-cell,.loc-cell,.user-cell{white-space:normal;overflow-wrap:anywhere;word-break:break-word}.contract,.doc-sdh,.due,.date{white-space:nowrap}.btn-print{padding:10px 28px;background:#0A84FF;color:#fff;border:none;border-radius:999px;font-weight:900}.no-print{text-align:center;margin-top:14px}@media print{.no-print{display:none!important}}</style>';
+          h += '</head><body><div class="wrap">';
+          h += '<h2>รายงานทะเบียนคุมเงินยืม</h2>';
+          h += '<p class="sub">จำนวนทั้งหมด ' + docs.length + ' รายการ</p>';
+          h += '<p class="meta">พิมพ์เมื่อ: ' + esc(printedAt) + '</p>';
+          if (hasSearch) h += '<p class="meta filter">คำค้นหา: ' + esc(state.searchText) + '</p>';
+          if (filterSummary) h += '<p class="meta filter">ตัวกรอง: ' + esc(filterSummary) + '</p>';
+          h += '<table><colgroup><col style="width:4%"><col style="width:10%"><col style="width:9%"><col style="width:11%"><col style="width:11%"><col style="width:11%"><col style="width:8%"><col style="width:9%"><col style="width:10%"><col style="width:8%"><col style="width:9%"></colgroup><thead><tr><th>ลำดับ</th><th>เลขที่สัญญา</th><th>เลขที่ สธ.</th><th>ผู้ยืม</th><th>กลุ่ม/ศูนย์</th><th>ประเภทค่าใช้จ่าย</th><th>แหล่งเงินยืม</th><th>สถานะ</th><th>วันครบกำหนด</th><th>สถานที่เก็บ</th><th>ผู้จัดเก็บ</th></tr></thead><tbody>';
+
+          for (var i = 0; i < docs.length; i++) {
+            var d = docs[i] || {};
+            h += '<tr>';
+            h += '<td class="text-center">' + (i + 1) + '</td>';
+            h += '<td class="contract text-center">' + esc(d.contractNo || '-') + '</td>';
+            h += '<td class="doc-sdh text-center">' + esc(d.docNoSdh || '-') + '</td>';
+            h += '<td class="borrower-cell">' + esc(d.borrowerName || '-') + '</td>';
+            h += '<td class="group-cell">' + esc(d.groupCenter || '-') + '</td>';
+            h += '<td class="expense-cell">' + esc(d.expenseType || '-') + '</td>';
+            h += '<td class="fund-cell">' + esc(d.fundingSource || '-') + '</td>';
+            h += '<td class="status-cell text-center">' + esc(getLoanStatusLabelForReport(d)) + '</td>';
+            h += '<td class="due text-center">' + esc(d.dueDateDisplay || '-') + '</td>';
+            h += '<td class="loc-cell text-center">' + esc(d.storedLoc || '-') + '</td>';
+            h += '<td class="user-cell">' + esc(d.storedBy || '-') + '</td>';
+            h += '</tr>';
+          }
+
+          h += '</tbody></table>';
+          h += '<div class="no-print"><button class="btn-print" onclick="window.print()">พิมพ์รายงานทั้งหมด</button></div>';
+          h += '</div></body></html>';
+
+          w.document.open();
+          w.document.write(h);
+          w.document.close();
+        }).catch(function (err) {
+          try { w.close(); } catch (_ignore3) {}
+          showError((err && err.message) ? err.message : 'ไม่สามารถดึงข้อมูลรายงานได้');
         });
       }
 
@@ -1549,6 +2494,72 @@
           });
         }
 
+        if (els.btnOpenFilter) {
+          els.btnOpenFilter.addEventListener('click', function () {
+            openFilterModal();
+          });
+        }
+
+        if (els.btnCloseFilter) {
+          els.btnCloseFilter.addEventListener('click', function () {
+            closeFilterModal();
+          });
+        }
+
+        if (els.filterBackdrop) {
+          els.filterBackdrop.addEventListener('click', function () {
+            closeFilterModal();
+          });
+        }
+
+        if (els.btnResetFilter) {
+          els.btnResetFilter.addEventListener('click', function () {
+            resetFilterModal();
+          });
+        }
+
+        if (els.btnApplyFilter) {
+          els.btnApplyFilter.addEventListener('click', function () {
+            applyFilterFromModal();
+            closeFilterModal();
+            state.page = 1;
+            loadList(true).catch(function (err) {
+              showError((err && err.message) ? err.message : 'ไม่สามารถกรองข้อมูลได้');
+            });
+          });
+        }
+
+        if (els.filterModal) {
+          els.filterModal.addEventListener('change', function (e) {
+            var t = e.target;
+            if (!t) return;
+            if (t.id === 'filterExpenseAll') {
+              var expense = document.querySelectorAll('.filter-expense-option');
+              for (var i = 0; i < expense.length; i++) expense[i].checked = !!t.checked;
+            }
+            if (t.classList && t.classList.contains('filter-expense-option')) {
+              var anyExpenseChecked = document.querySelectorAll('.filter-expense-option:checked').length > 0;
+              var expenseAll = document.getElementById('filterExpenseAll');
+              if (expenseAll) expenseAll.checked = !anyExpenseChecked;
+            }
+            if (t.id === 'filterFundingAll') {
+              var funding = document.querySelectorAll('.filter-funding-option');
+              for (var j = 0; j < funding.length; j++) funding[j].checked = !!t.checked;
+            }
+            if (t.classList && t.classList.contains('filter-funding-option')) {
+              var anyFundingChecked = document.querySelectorAll('.filter-funding-option:checked').length > 0;
+              var fundingAll = document.getElementById('filterFundingAll');
+              if (fundingAll) fundingAll.checked = !anyFundingChecked;
+            }
+          });
+        }
+
+        if (els.btnPrintAll) {
+          els.btnPrintAll.addEventListener('click', function () {
+            printAllLoanReport();
+          });
+        }
+
         if (els.itemsPerPage) {
           els.itemsPerPage.addEventListener('change', function () {
             state.page = 1;
@@ -1602,6 +2613,24 @@
             });
           });
         }
+
+        if (els.boxesWrap) {
+          els.boxesWrap.addEventListener('click', function (e) {
+            var target = e && e.target && e.target.closest ? e.target.closest('a.box-card[data-box-name]') : null;
+            if (!target) return;
+            var rememberedBox = C.safeTrim(target.getAttribute('data-box-name') || '');
+            if (!rememberedBox) return;
+            try { sessionStorage.setItem(LOAN_LAST_BOX_NAME_KEY, rememberedBox); } catch (_e1) {}
+            try { localStorage.setItem(LOAN_LAST_BOX_NAME_KEY, rememberedBox); } catch (_e2) {}
+            try { window.__loanControlLastBoxName = rememberedBox; } catch (_e3) {}
+          });
+        }
+
+        if (window && window.addEventListener) {
+          window.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') closeFilterModal();
+          });
+        }
       }
 
       function init() {
@@ -1615,6 +2644,7 @@
         renderStats({});
         renderLoadingList('กำลังโหลดข้อมูล...');
         renderBoxes();
+        updateFilterBadge();
         switchTab('docs');
         syncPagination();
         setStatus('พร้อมตรวจสอบสิทธิ์', 'warn');
@@ -1633,7 +2663,9 @@
             C.redirect('index.html', {}, true);
             return;
           }
-          loadList(false).catch(function (err) {
+          loadMemberOptions().then(function () {
+            return loadList(false);
+          }).catch(function (err) {
             showError((err && err.message) ? err.message : 'โหลดข้อมูลไม่สำเร็จ');
           });
         });

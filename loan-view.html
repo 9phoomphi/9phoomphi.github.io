@@ -1023,6 +1023,12 @@
         }, 2200);
       }
 
+      function normalizeMemberKey(name) {
+        var text = C.safeTrim(name || '');
+        if (!text) return '';
+        return text.toLowerCase().replace(/\s+/g, '');
+      }
+
       function mapMemberData(members) {
         var imgMap = {};
         var posMap = {};
@@ -1030,18 +1036,21 @@
 
         for (var i = 0; i < list.length; i++) {
           var m = list[i] || {};
-          var name = C.safeTrim(m.name || '');
+          var name = C.safeTrim(m.name || m.displayName || '');
           if (!name) continue;
           var lower = name.toLowerCase();
           var img = C.safeTrim(m.image || m.imageUrl || m.avatar || '');
           var pos = C.safeTrim(m.position || '');
+          var compact = normalizeMemberKey(name);
           if (img) {
             imgMap[name] = img;
             imgMap[lower] = img;
+            if (compact) imgMap[compact] = img;
           }
           if (pos) {
             posMap[name] = pos;
             posMap[lower] = pos;
+            if (compact) posMap[compact] = pos;
           }
         }
 
@@ -1131,6 +1140,7 @@
       function userAvatar(name, bgColor, colorHex) {
         var userName = C.safeTrim(name || '');
         var userLower = userName.toLowerCase();
+        var userCompact = normalizeMemberKey(userName);
         var myName = C.safeTrim((state.user && (state.user.displayName || state.user.username)) || '');
         var myLower = myName.toLowerCase();
         var myImage = C.safeTrim((state.user && (state.user.imageUrl || state.user.avatar || state.user.image)) || '');
@@ -1139,7 +1149,7 @@
           img = myImage;
         }
         if (!img && userName) {
-          img = C.safeTrim(state.memberImgMap[userName] || state.memberImgMap[userLower] || '');
+          img = C.safeTrim(state.memberImgMap[userName] || state.memberImgMap[userLower] || state.memberImgMap[userCompact] || '');
         }
         if (img) {
           return '<img src="' + C.escapeHtml(img) + '" alt="u">';
@@ -1535,7 +1545,7 @@
         html += row('สถานที่เก็บ', d.storedLoc || '-');
         html += '</table>';
         html += '<div class="subject"><div class="head">ชื่อการประชุม/การลงพื้นที่</div><div class="txt">' + C.escapeHtml(d.meetingTitle || '-') + '</div></div>';
-        html += '<div class="foot">พิมพ์เมื่อ: ' + C.escapeHtml(new Date().toLocaleString('th-TH')) + '</div>';
+        html += '<div class="foot">พิมพ์เมื่อ: ' + C.escapeHtml(new Date().toLocaleString('th-TH-u-ca-buddhist', { timeZone: 'Asia/Bangkok' })) + '</div>';
         html += '</div><div class="no-print"><button onclick="window.print()">พิมพ์ใบแปะหน้าเอกสาร</button></div></div>';
         html += '</body></html>';
 

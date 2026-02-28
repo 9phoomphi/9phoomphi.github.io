@@ -758,6 +758,31 @@
       box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.2), 0 0 0 999px rgba(2, 6, 23, 0.4), 0 0 30px rgba(14, 165, 233, 0.34);
     }
 
+    /* Ensure every actionable control in scan page shows clickable cursor */
+    .boxscan-page button,
+    .boxscan-page .hero-btn,
+    .boxscan-page .scanner-btn,
+    .boxscan-page .queue-save-btn,
+    .boxscan-page .queue-clear-btn,
+    .boxscan-page .queue-remove-btn,
+    .boxscan-page select,
+    .swal2-container.scan-success-backdrop .swal2-actions .swal2-styled,
+    .swal2-container.scan-success-backdrop .swal2-select {
+      cursor: pointer !important;
+    }
+
+    .boxscan-page button:disabled,
+    .boxscan-page .hero-btn:disabled,
+    .boxscan-page .scanner-btn:disabled,
+    .boxscan-page .queue-save-btn:disabled,
+    .boxscan-page .queue-clear-btn:disabled,
+    .boxscan-page .queue-remove-btn:disabled,
+    .boxscan-page select:disabled,
+    .swal2-container.scan-success-backdrop .swal2-actions .swal2-styled:disabled,
+    .swal2-container.scan-success-backdrop .swal2-select:disabled {
+      cursor: not-allowed !important;
+    }
+
     body.dark-mode .scan-guide-corner {
       border-color: #e0f2fe;
     }

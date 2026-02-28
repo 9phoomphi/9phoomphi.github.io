@@ -849,6 +849,17 @@ body.dark-mode .filter-option {
   background: var(--navbar-bg);
 }
 
+.boxes-toolbar #btnReloadBoxes {
+  min-height: 44px !important;
+  height: auto !important;
+  padding: 6px 16px !important;
+  line-height: 1.28 !important;
+  font-size: 0.95rem !important;
+  cursor: pointer !important;
+  white-space: nowrap;
+  overflow: visible !important;
+}
+
 #readOnlyNotice {
   background: rgba(217, 119, 6, 0.12) !important;
   border: 1px solid rgba(217, 119, 6, 0.3) !important;
@@ -2954,6 +2965,12 @@ body.dark-mode #docsList .doc-item.status-cancelled .doc-bg-icon {
   .boxes-toolbar {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .boxes-toolbar #btnReloadBoxes {
+    min-height: 40px !important;
+    padding: 5px 14px !important;
+    font-size: 0.9rem !important;
   }
 
   .pagination-controls {
