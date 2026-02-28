@@ -10,6 +10,7 @@
 - `document-form.html`
 - `document-view.html`
 - `document-status.html`
+- `loan-index.html`
 - `loan-register.html`
 - `inspection-report.html`
 - `storage-box-view.html`

@@ -673,14 +673,21 @@
     }, opts);
   };
 
-  DocumentControlApi.prototype.saveLoanStorageData = function (recordId, newLoc, userName, opts) {
+  DocumentControlApi.prototype.saveLoanStorageData = function (recordId, newLoc, userName, fiscalYear, opts) {
+    var realFiscal = fiscalYear;
+    var realOpts = opts;
+    if (realFiscal && typeof realFiscal === 'object' && !Array.isArray(realFiscal)) {
+      realOpts = realFiscal;
+      realFiscal = '';
+    }
     return this.call('loan.storage.save_data', {
       deviceKey: this.defaultDeviceKey,
       clientIpKey: this.defaultIpKey,
       recordId: safeTrim(recordId || ''),
       newLoc: safeTrim(newLoc || ''),
-      userName: safeTrim(userName || '')
-    }, opts);
+      userName: safeTrim(userName || ''),
+      fiscalYear: safeTrim(realFiscal || '')
+    }, realOpts);
   };
 
   DocumentControlApi.prototype.saveLoanDocumentsToStorage = function (items, userName, opts) {
