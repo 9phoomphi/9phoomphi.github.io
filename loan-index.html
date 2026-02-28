@@ -472,12 +472,28 @@
 
     .advanced-filter-btn,
     .print-all-report-btn {
+      min-height: 44px !important;
+      height: 44px !important;
+      padding: 0 16px !important;
+      font-size: 0.9rem !important;
+      font-weight: 800 !important;
+      line-height: 1 !important;
       cursor: pointer !important;
     }
 
     .advanced-filter-btn:disabled,
     .print-all-report-btn:disabled {
       cursor: not-allowed !important;
+    }
+
+    @media (max-width: 768px) {
+      .advanced-filter-btn,
+      .print-all-report-btn {
+        min-height: 38px !important;
+        height: 38px !important;
+        padding: 0 12px !important;
+        font-size: 0.82rem !important;
+      }
     }
 
     #filterModal #filterLocation.form-select,
