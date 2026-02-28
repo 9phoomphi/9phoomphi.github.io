@@ -858,7 +858,7 @@
         </div>
         <div class="dash-search-wrap">
           <i id="searchIcon" class="bi bi-search"></i>
-          <input type="text" id="searchInput" class="search-box" placeholder="ค้นหาด้วยเลขที่สัญญา, เลขที่ สธ., ชื่อผู้ยืม...">
+          <input type="text" id="searchInput" class="search-box" placeholder="ค้นหาด้วยเลขที่สัญญา, เลขที่ สธ., ชื่อผู้ยืม..." autocomplete="off" autocapitalize="off" spellcheck="false">
         </div>
       </div>
     </div>
@@ -1605,6 +1605,12 @@
       }
 
       function init() {
+        if (els.searchInput) {
+          // ป้องกันค่าค้นหาค้างจาก browser restore/autofill ที่ทำให้จำนวนรายการไม่ตรงข้ามอุปกรณ์
+          els.searchInput.value = '';
+        }
+        state.searchText = '';
+
         bindEvents();
         renderStats({});
         renderLoadingList('กำลังโหลดข้อมูล...');
