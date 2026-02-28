@@ -1963,6 +1963,9 @@
 
       var C = window.DocFrontendCommon;
       var DEFAULT_BUDGET_ORDER = ['กองทุน ววน.', 'กองทุนเงินทดแทน', 'เงินบำรุง', 'เงินงบประมาณ'];
+      var REGISTER_SELECTION_KEY = 'docControlSelectedRegisterV1';
+      var REGISTER_MAIN = 'main';
+      var REGISTER_LOAN = 'loan';
       var routeQuery = C.parseQuery();
 
       var state = {
@@ -2083,6 +2086,72 @@
         els.connectStatus.textContent = C.safeText(label || '');
         if (type) els.connectStatus.setAttribute('data-status', type);
         else els.connectStatus.removeAttribute('data-status');
+      }
+
+      function getRegisterSelection() {
+        try {
+          return C.safeTrim(sessionStorage.getItem(REGISTER_SELECTION_KEY) || '').toLowerCase();
+        } catch (_e) {
+          return '';
+        }
+      }
+
+      function rememberRegisterSelection(registerName) {
+        var value = C.safeTrim(registerName || '').toLowerCase();
+        if (value !== REGISTER_MAIN && value !== REGISTER_LOAN) return;
+        try { sessionStorage.setItem(REGISTER_SELECTION_KEY, value); } catch (_e) {}
+      }
+
+      function clearRegisterSelection() {
+        try { sessionStorage.removeItem(REGISTER_SELECTION_KEY); } catch (_e) {}
+      }
+
+      function hasExplicitEntryRoute() {
+        if (!routeQuery || typeof routeQuery !== 'object') return false;
+        for (var k in routeQuery) {
+          if (!Object.prototype.hasOwnProperty.call(routeQuery, k)) continue;
+          var key = String(k || '').toLowerCase();
+          if (key === 'dk' || key === 'ipk') continue;
+          var value = C.safeTrim(routeQuery[k] || '');
+          if (!value) continue;
+          return true;
+        }
+        return false;
+      }
+
+      function shouldRedirectToWelcomeChooser() {
+        if (hasExplicitEntryRoute()) return false;
+        var navType = '';
+        try {
+          if (window.performance && typeof window.performance.getEntriesByType === 'function') {
+            var navEntries = window.performance.getEntriesByType('navigation');
+            if (navEntries && navEntries.length && navEntries[0] && navEntries[0].type) {
+              navType = String(navEntries[0].type || '');
+            }
+          }
+        } catch (_e0) {}
+
+        if (!navType) {
+          try {
+            if (window.performance && window.performance.navigation) {
+              if (window.performance.navigation.type === 1) navType = 'reload';
+              else if (window.performance.navigation.type === 2) navType = 'back_forward';
+              else navType = 'navigate';
+            }
+          } catch (_e1) {}
+        }
+
+        if (navType && navType !== 'navigate') return false;
+
+        var ref = C.safeTrim(document.referrer || '');
+        if (!ref) return true;
+        try {
+          var refUrl = new URL(ref, window.location.href);
+          if (refUrl.origin === window.location.origin) return false;
+          return true;
+        } catch (_e2) {
+          return true;
+        }
       }
 
       function setLoading(isLoading) {
@@ -2782,6 +2851,11 @@
         return state.api.me({ noPageLoader: true }).then(function (res) {
           if (res && res.success && res.user) {
             setLoggedIn(res.user);
+            if (shouldRedirectToWelcomeChooser()) {
+              C.redirect('welcome.html', {}, true);
+              return true;
+            }
+            rememberRegisterSelection(REGISTER_MAIN);
             return loadDocs(false)
               .then(function () { return loadBoxes(); })
               .then(function () { return true; })
@@ -2833,6 +2907,7 @@
             throw new Error(res && res.error ? res.error : 'เข้าสู่ระบบไม่สำเร็จ');
           }
           setLoggedIn(res.user || { username: username });
+          clearRegisterSelection();
           setStatus('เข้าสู่ระบบสำเร็จ', 'ok');
           setLoading(false);
           C.redirect('welcome.html');
@@ -2854,6 +2929,7 @@
         setLoading(true);
         state.api.logout({ loaderMessage: 'กำลังออกจากระบบ...' }).finally(function () {
           setLoading(false);
+          clearRegisterSelection();
           state.page = 1;
           state.totalPages = 1;
           state.totalItems = 0;
@@ -3310,6 +3386,7 @@
         }
 
         if (mode === 'loan' || mode === 'loanregister') {
+          rememberRegisterSelection(REGISTER_LOAN);
           C.redirect('loan-index.html', {}, true);
           return true;
         }

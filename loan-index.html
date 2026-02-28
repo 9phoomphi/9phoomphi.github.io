@@ -1214,6 +1214,10 @@
 
       var C = window.DocFrontendCommon;
       var LOAN_LAST_BOX_NAME_KEY = 'loanControlLastBoxNameV1';
+      var REGISTER_SELECTION_KEY = 'docControlSelectedRegisterV1';
+      var REGISTER_MAIN = 'main';
+      var REGISTER_LOAN = 'loan';
+      var routeQuery = C.parseQuery();
 
       var state = {
         settings: null,
@@ -1250,7 +1254,8 @@
         loadingAllLoanDocsPromise: null,
         loadingLoanOptionsPromise: null,
         boxSummary: [],
-        boxesLoaded: false
+        boxesLoaded: false,
+        redirectingToWelcome: false
       };
 
       var els = {
@@ -1316,6 +1321,68 @@
         }
         els.errorBox.textContent = msg;
         els.errorBox.classList.remove('hidden');
+      }
+
+      function getRegisterSelection() {
+        try {
+          return C.safeTrim(sessionStorage.getItem(REGISTER_SELECTION_KEY) || '').toLowerCase();
+        } catch (_e) {
+          return '';
+        }
+      }
+
+      function rememberRegisterSelection(registerName) {
+        var value = C.safeTrim(registerName || '').toLowerCase();
+        if (value !== REGISTER_MAIN && value !== REGISTER_LOAN) return;
+        try { sessionStorage.setItem(REGISTER_SELECTION_KEY, value); } catch (_e) {}
+      }
+
+      function hasExplicitEntryRoute() {
+        if (!routeQuery || typeof routeQuery !== 'object') return false;
+        for (var k in routeQuery) {
+          if (!Object.prototype.hasOwnProperty.call(routeQuery, k)) continue;
+          var key = String(k || '').toLowerCase();
+          if (key === 'dk' || key === 'ipk') continue;
+          var value = C.safeTrim(routeQuery[k] || '');
+          if (!value) continue;
+          return true;
+        }
+        return false;
+      }
+
+      function shouldRedirectToWelcomeChooser() {
+        if (hasExplicitEntryRoute()) return false;
+        var navType = '';
+        try {
+          if (window.performance && typeof window.performance.getEntriesByType === 'function') {
+            var navEntries = window.performance.getEntriesByType('navigation');
+            if (navEntries && navEntries.length && navEntries[0] && navEntries[0].type) {
+              navType = String(navEntries[0].type || '');
+            }
+          }
+        } catch (_e0) {}
+
+        if (!navType) {
+          try {
+            if (window.performance && window.performance.navigation) {
+              if (window.performance.navigation.type === 1) navType = 'reload';
+              else if (window.performance.navigation.type === 2) navType = 'back_forward';
+              else navType = 'navigate';
+            }
+          } catch (_e1) {}
+        }
+
+        if (navType && navType !== 'navigate') return false;
+
+        var ref = C.safeTrim(document.referrer || '');
+        if (!ref) return true;
+        try {
+          var refUrl = new URL(ref, window.location.href);
+          if (refUrl.origin === window.location.origin) return false;
+          return true;
+        } catch (_e2) {
+          return true;
+        }
       }
 
       function setStatus(label, type) {
@@ -2387,7 +2454,13 @@
 
         return state.api.me({ noPageLoader: true }).then(function (res) {
           if (!res || res.success === false || !res.user) return false;
+          if (shouldRedirectToWelcomeChooser()) {
+            state.redirectingToWelcome = true;
+            C.redirect('welcome.html', {}, true);
+            return true;
+          }
           state.user = res.user;
+          rememberRegisterSelection(REGISTER_LOAN);
           if (els.sessionUserChip) els.sessionUserChip.classList.remove('hidden');
           setSessionChip(state.user);
           setStatus('เข้าสู่ระบบแล้ว', 'ok');
@@ -2659,6 +2732,7 @@
         }
 
         trySession().then(function (ok) {
+          if (state.redirectingToWelcome) return;
           if (!ok) {
             C.redirect('index.html', {}, true);
             return;

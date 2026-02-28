@@ -392,6 +392,7 @@
       'use strict';
 
       var C = window.DocFrontendCommon;
+      var REGISTER_SELECTION_KEY = 'docControlSelectedRegisterV1';
       var state = {
         settings: null,
         api: null,
@@ -436,15 +437,28 @@
         }
       }
 
+      function rememberRegisterSelection(registerName) {
+        var value = C.safeTrim(registerName || '').toLowerCase();
+        if (value !== 'main' && value !== 'loan') return;
+        try { sessionStorage.setItem(REGISTER_SELECTION_KEY, value); } catch (_e) {}
+      }
+
+      function clearRegisterSelection() {
+        try { sessionStorage.removeItem(REGISTER_SELECTION_KEY); } catch (_e) {}
+      }
+
       function goMainRegister() {
+        rememberRegisterSelection('main');
         C.redirect('index.html');
       }
 
       function goLoanRegister() {
+        rememberRegisterSelection('loan');
         C.redirect('loan-index.html');
       }
 
       function goLogout() {
+        clearRegisterSelection();
         if (!state.api) {
           C.redirect('index.html', {}, true);
           return;
