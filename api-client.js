@@ -798,6 +798,33 @@
     }, opts);
   };
 
+  DocumentControlApi.prototype.boxesManageList = function (scope, opts) {
+    return this.call('boxes.manage.list', {
+      deviceKey: this.defaultDeviceKey,
+      clientIpKey: this.defaultIpKey,
+      scope: safeTrim(scope || '')
+    }, opts);
+  };
+
+  DocumentControlApi.prototype.boxesManageSave = function (scope, oldName, newName, destroyYears, opts) {
+    var self = this;
+    return this.call('boxes.manage.save', {
+      deviceKey: this.defaultDeviceKey,
+      clientIpKey: this.defaultIpKey,
+      scope: safeTrim(scope || ''),
+      oldName: safeTrim(oldName || ''),
+      newName: safeTrim(newName || ''),
+      destroyYears: String(destroyYears == null ? '' : destroyYears)
+    }, opts).then(function (res) {
+      if (res && res.success) {
+        self._cacheClear('options.info');
+        self._cacheClear('storage.options');
+        self._cacheClear('loan.storage.options');
+      }
+      return res;
+    });
+  };
+
   DocumentControlApi.prototype.inspectionReport = function (params, opts) {
     params = params || {};
     return this.call('inspection.report', {

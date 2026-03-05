@@ -1,0 +1,630 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>จัดการกล่องเอกสาร</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="stylesheet" href="./theme-legacy.css?v=20260221-17">
+  <style>
+    .manage-page {
+      max-width: 1060px;
+      margin: 0 auto;
+      padding: 16px;
+    }
+
+    .manage-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+
+    .main-card {
+      overflow: hidden;
+    }
+
+    .hero {
+      background: linear-gradient(180deg, #35a1ff 0%, #0a84ff 60%, #0071e3 100%);
+      color: #fff;
+      padding: 24px 18px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::after {
+      content: "";
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      border-radius: 999px;
+      right: -64px;
+      top: -110px;
+      background: rgba(255, 255, 255, 0.18);
+      pointer-events: none;
+    }
+
+    .hero h1 {
+      margin: 0;
+      font-size: 1.44rem;
+      font-weight: 860;
+      line-height: 1.2;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero p {
+      margin: 7px 0 0;
+      font-size: 0.9rem;
+      font-weight: 580;
+      opacity: 0.97;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-chip {
+      margin-top: 11px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      padding: 7px 12px;
+      font-size: 0.78rem;
+      font-weight: 720;
+      background: rgba(255, 255, 255, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      position: relative;
+      z-index: 1;
+    }
+
+    .manage-body {
+      padding: 14px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .panel {
+      border: 1px solid var(--input-border);
+      border-radius: 16px;
+      background: var(--card-bg);
+      padding: 14px;
+    }
+
+    .panel-title {
+      margin: 0 0 10px;
+      font-size: 1.02rem;
+      font-weight: 820;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .add-grid {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: minmax(0, 1.9fr) minmax(0, 1fr) auto;
+      align-items: end;
+    }
+
+    .field-label {
+      margin: 0 0 6px;
+      font-size: 0.86rem;
+      font-weight: 720;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .input {
+      width: 100%;
+      min-height: 42px;
+      border-radius: 12px;
+      border: 1px solid var(--input-border);
+      background: var(--input-bg);
+      color: var(--text-main);
+      padding: 0 12px;
+      font: inherit;
+      font-weight: 640;
+      outline: none;
+      transition: border-color .2s ease, box-shadow .2s ease;
+    }
+
+    .input:focus {
+      border-color: rgba(10, 132, 255, 0.62);
+      box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.16);
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border-radius: 999px;
+      min-height: 42px;
+      padding: 0 14px;
+      font: inherit;
+      font-weight: 760;
+      border: 1px solid transparent;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      transition: transform .2s ease, box-shadow .2s ease;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn.primary {
+      color: #fff;
+      background: linear-gradient(180deg, #3ba5ff, #0a84ff, #0071e3);
+      box-shadow: 0 12px 24px rgba(10, 132, 255, 0.24);
+    }
+
+    .btn.outline {
+      color: var(--text-main);
+      border-color: var(--input-border);
+      background: var(--card-bg);
+    }
+
+    .btn.small {
+      min-height: 38px;
+      padding: 0 12px;
+      font-size: 0.9rem;
+    }
+
+    .box-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .box-row {
+      border: 1px solid var(--input-border);
+      border-radius: 14px;
+      background: var(--card-bg);
+      padding: 11px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .box-row-main {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) auto;
+      align-items: end;
+    }
+
+    .box-row-meta {
+      font-size: 0.82rem;
+      font-weight: 650;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .meta-chip {
+      border-radius: 999px;
+      border: 1px solid rgba(10, 132, 255, 0.24);
+      background: rgba(10, 132, 255, 0.1);
+      color: #075985;
+      padding: 4px 10px;
+      font-size: 0.76rem;
+      font-weight: 710;
+    }
+
+    .empty-boxes {
+      text-align: center;
+      padding: 24px 12px;
+      border: 1px dashed var(--input-border);
+      border-radius: 14px;
+      color: var(--text-muted);
+      font-weight: 640;
+    }
+
+    .error-box {
+      display: none;
+      margin-bottom: 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(248, 113, 113, 0.38);
+      background: rgba(254, 226, 226, 0.9);
+      color: #991b1b;
+      padding: 10px 12px;
+      font-weight: 650;
+    }
+
+    .error-box.show {
+      display: block;
+    }
+
+    @media (max-width: 860px) {
+      .add-grid,
+      .box-row-main {
+        grid-template-columns: 1fr;
+      }
+
+      .actions {
+        width: 100%;
+      }
+
+      .actions .btn {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="manage-page">
+    <div class="manage-top">
+      <button id="btnBack" class="btn outline"><i class="bi bi-arrow-left"></i>กลับ</button>
+      <button id="btnReload" class="btn outline"><i class="bi bi-arrow-clockwise"></i>รีโหลด</button>
+    </div>
+
+    <div id="errorBox" class="error-box"></div>
+
+    <div class="card main-card">
+      <div class="hero">
+        <h1 id="titleText">จัดการกล่องเอกสาร</h1>
+        <p id="subText">เพิ่ม/แก้ไขชื่อกล่อง และกำหนดอายุเก็บก่อนทำลาย</p>
+        <div id="sourceChip" class="hero-chip"><i class="bi bi-database"></i>บันทึกข้อมูล: -</div>
+      </div>
+
+      <div class="manage-body">
+        <section class="panel">
+          <h2 class="panel-title"><i class="bi bi-plus-circle"></i>เพิ่มกล่องใหม่</h2>
+          <div class="add-grid">
+            <div>
+              <div class="field-label"><i class="bi bi-archive"></i>ชื่อกล่อง</div>
+              <input id="addBoxName" class="input" type="text" placeholder="เช่น กล่อง 1/2569">
+            </div>
+            <div>
+              <div class="field-label"><i class="bi bi-clock-history"></i>อายุเก็บก่อนทำลาย (ปี)</div>
+              <input id="addDestroyYears" class="input" type="number" min="1" max="99" step="1" value="10">
+            </div>
+            <div class="actions">
+              <button id="btnAddBox" class="btn primary" type="button"><i class="bi bi-save2"></i>บันทึกกล่อง</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <h2 class="panel-title"><i class="bi bi-pencil-square"></i>แก้ไขกล่องที่มีอยู่</h2>
+          <div id="boxList" class="box-list"></div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <script src="./config.js"></script>
+  <script src="./api-client.js?v=20260221-6"></script>
+  <script src="./theme-legacy.js?v=20260221-3"></script>
+  <script src="./app-common.js?v=20260221-2"></script>
+  <script>
+    (function () {
+      'use strict';
+
+      var C = window.DocFrontendCommon;
+      var q = C.parseQuery();
+      var scope = C.safeTrim(q.scope || '').toLowerCase() === 'loan' ? 'loan' : 'main';
+
+      var state = {
+        api: null,
+        user: null,
+        settings: null,
+        list: [],
+        boxColumn: scope === 'loan' ? 'B' : 'A',
+        destroyColumn: scope === 'loan' ? 'K' : 'J',
+        defaultDestroyYears: 10,
+        saving: false
+      };
+
+      var els = {
+        btnBack: document.getElementById('btnBack'),
+        btnReload: document.getElementById('btnReload'),
+        errorBox: document.getElementById('errorBox'),
+        titleText: document.getElementById('titleText'),
+        subText: document.getElementById('subText'),
+        sourceChip: document.getElementById('sourceChip'),
+        addBoxName: document.getElementById('addBoxName'),
+        addDestroyYears: document.getElementById('addDestroyYears'),
+        btnAddBox: document.getElementById('btnAddBox'),
+        boxList: document.getElementById('boxList')
+      };
+
+      function getBackPage() {
+        var raw = C.safeTrim(q.back || '');
+        if (raw === 'loan-index.html') return 'loan-index.html';
+        if (raw === 'index.html') return 'index.html';
+        return scope === 'loan' ? 'loan-index.html' : 'index.html';
+      }
+
+      function goBack() {
+        var back = getBackPage();
+        var tab = C.safeTrim(q.tab || '').toLowerCase();
+        if (tab === 'boxes') {
+          C.redirect(back, { mode: 'boxes', tab: 'boxes' });
+          return;
+        }
+        C.redirect(back);
+      }
+
+      function setError(message) {
+        var msg = C.safeTrim(message || '');
+        if (!msg) {
+          els.errorBox.classList.remove('show');
+          els.errorBox.textContent = '';
+          return;
+        }
+        els.errorBox.textContent = msg;
+        els.errorBox.classList.add('show');
+      }
+
+      function setBusy(isBusy) {
+        state.saving = !!isBusy;
+        var disabled = !!isBusy;
+        if (els.btnAddBox) els.btnAddBox.disabled = disabled;
+        if (els.btnReload) els.btnReload.disabled = disabled;
+        if (els.btnBack) els.btnBack.disabled = disabled;
+        if (els.addBoxName) els.addBoxName.disabled = disabled;
+        if (els.addDestroyYears) els.addDestroyYears.disabled = disabled;
+
+        if (els.boxList) {
+          var controls = els.boxList.querySelectorAll('input,button');
+          for (var i = 0; i < controls.length; i++) {
+            controls[i].disabled = disabled;
+          }
+        }
+      }
+
+      function normalizeYears(value) {
+        var v = parseInt(value, 10);
+        if (!isFinite(v) || isNaN(v)) v = state.defaultDestroyYears || 10;
+        if (v < 1) v = 1;
+        if (v > 99) v = 99;
+        return v;
+      }
+
+      function getScopeLabel() {
+        return scope === 'loan' ? 'ทะเบียนคุมเงินยืม' : 'ทะเบียนคุมเอกสารหลัก';
+      }
+
+      function renderHeader() {
+        try {
+          document.title = 'จัดการกล่องเอกสาร (' + getScopeLabel() + ')';
+        } catch (_e) {}
+        if (els.titleText) {
+          els.titleText.textContent = 'จัดการกล่องเอกสาร (' + getScopeLabel() + ')';
+        }
+        if (els.subText) {
+          els.subText.textContent = 'เพิ่ม/แก้ไขชื่อกล่อง และกำหนดอายุเก็บก่อนทำลายของกล่อง';
+        }
+        if (els.sourceChip) {
+          els.sourceChip.innerHTML = '<i class="bi bi-database"></i>บันทึกชื่อกล่องที่ชีตข้อมูล คอลัมน์ ' + C.escapeHtml(state.boxColumn) + ' | อายุเก็บคอลัมน์ ' + C.escapeHtml(state.destroyColumn);
+        }
+      }
+
+      function renderBoxList() {
+        var list = Array.isArray(state.list) ? state.list : [];
+        if (!list.length) {
+          els.boxList.innerHTML = '<div class="empty-boxes"><i class="bi bi-inbox" style="font-size:1.2rem;display:block;margin-bottom:6px;"></i>ยังไม่พบรายการกล่อง</div>';
+          return;
+        }
+
+        var html = '';
+        for (var i = 0; i < list.length; i++) {
+          var row = list[i] || {};
+          var name = C.safeTrim(row.name || '');
+          var years = normalizeYears(row.destroyYears);
+          var usedCount = Number(row.usedCount || 0);
+          html += '<div class="box-row" data-old-name="' + C.escapeHtml(name) + '">';
+          html += '<div class="box-row-main">';
+          html += '<div><div class="field-label"><i class="bi bi-archive"></i>ชื่อกล่อง</div><input class="input js-name" type="text" value="' + C.escapeHtml(name) + '"></div>';
+          html += '<div><div class="field-label"><i class="bi bi-clock-history"></i>อายุเก็บก่อนทำลาย (ปี)</div><input class="input js-years" type="number" min="1" max="99" step="1" value="' + years + '"></div>';
+          html += '<div class="actions"><button class="btn primary small js-save" type="button"><i class="bi bi-check2-circle"></i>บันทึก</button></div>';
+          html += '</div>';
+          html += '<div class="box-row-meta">';
+          html += '<span class="meta-chip">ใช้งานแล้ว ' + usedCount + ' รายการ</span>';
+          html += '<span>แถวที่ ' + Number(row.rowNumber || 0) + '</span>';
+          html += '</div>';
+          html += '</div>';
+        }
+        els.boxList.innerHTML = html;
+      }
+
+      async function loadList() {
+        setError('');
+        var res = await state.api.boxesManageList(scope, { noPageLoader: true });
+        if (!res || res.success === false) {
+          throw new Error((res && res.error) ? res.error : 'โหลดรายการกล่องไม่สำเร็จ');
+        }
+        state.list = Array.isArray(res.boxes) ? res.boxes : [];
+        state.boxColumn = C.safeTrim(res.boxColumn || state.boxColumn);
+        state.destroyColumn = C.safeTrim(res.destroyYearsColumn || state.destroyColumn);
+        state.defaultDestroyYears = normalizeYears(res.defaultDestroyYears);
+        if (els.addDestroyYears) els.addDestroyYears.value = String(state.defaultDestroyYears);
+        renderHeader();
+        renderBoxList();
+      }
+
+      async function saveBox(oldName, newName, years) {
+        var cleanedName = C.safeTrim(newName || '');
+        if (!cleanedName) {
+          throw new Error('กรุณาระบุชื่อกล่อง');
+        }
+        var destroyYears = normalizeYears(years);
+        var res = await state.api.boxesManageSave(scope, oldName || '', cleanedName, destroyYears, { noPageLoader: true });
+        if (!res || res.success === false) {
+          throw new Error((res && res.error) ? res.error : 'บันทึกข้อมูลกล่องไม่สำเร็จ');
+        }
+        return res;
+      }
+
+      async function onAddBox() {
+        if (state.saving) return;
+        var name = C.safeTrim((els.addBoxName && els.addBoxName.value) || '');
+        var years = normalizeYears((els.addDestroyYears && els.addDestroyYears.value) || '');
+        if (!name) {
+          setError('กรุณากรอกชื่อกล่องก่อนบันทึก');
+          if (els.addBoxName) els.addBoxName.focus();
+          return;
+        }
+
+        setBusy(true);
+        try {
+          var result = await saveBox('', name, years);
+          if (els.addBoxName) els.addBoxName.value = '';
+          if (els.addDestroyYears) els.addDestroyYears.value = String(state.defaultDestroyYears || 10);
+          await loadList();
+          var addMsg = 'บันทึกกล่องสำเร็จ';
+          if (result && Number(result.updatedDestroyDateCount || 0) > 0) {
+            addMsg += ' (อัปเดตวันทำลายเอกสารแล้ว ' + Number(result.updatedDestroyDateCount || 0) + ' รายการ)';
+          }
+          await Swal.fire({ icon: 'success', title: addMsg, confirmButtonColor: '#0A84FF' });
+        } catch (err) {
+          setError((err && err.message) ? err.message : 'บันทึกไม่สำเร็จ');
+        } finally {
+          setBusy(false);
+        }
+      }
+
+      async function onSaveRow(rowEl) {
+        if (!rowEl || state.saving) return;
+        var oldName = C.safeTrim(rowEl.getAttribute('data-old-name') || '');
+        var inputName = rowEl.querySelector('.js-name');
+        var inputYears = rowEl.querySelector('.js-years');
+        var nextName = C.safeTrim((inputName && inputName.value) || '');
+        var nextYears = normalizeYears((inputYears && inputYears.value) || '');
+        if (!nextName) {
+          setError('กรุณาระบุชื่อกล่อง');
+          if (inputName) inputName.focus();
+          return;
+        }
+
+        setBusy(true);
+        try {
+          var result = await saveBox(oldName, nextName, nextYears);
+          await loadList();
+          var msg = 'บันทึกข้อมูลกล่องสำเร็จ';
+          if (result && result.action === 'renamed' && Number(result.renamedStoredCount || 0) > 0) {
+            msg += ' (ย้ายชื่อรายการจัดเก็บแล้ว ' + Number(result.renamedStoredCount || 0) + ' รายการ)';
+          }
+          if (result && Number(result.updatedDestroyDateCount || 0) > 0) {
+            msg += ' (อัปเดตวันทำลายเอกสารแล้ว ' + Number(result.updatedDestroyDateCount || 0) + ' รายการ)';
+          }
+          await Swal.fire({ icon: 'success', title: msg, confirmButtonColor: '#0A84FF' });
+        } catch (err) {
+          setError((err && err.message) ? err.message : 'บันทึกไม่สำเร็จ');
+        } finally {
+          setBusy(false);
+        }
+      }
+
+      function bindEvents() {
+        if (els.btnBack) {
+          els.btnBack.addEventListener('click', function () {
+            goBack();
+          });
+        }
+
+        if (els.btnReload) {
+          els.btnReload.addEventListener('click', function () {
+            if (state.saving) return;
+            setBusy(true);
+            loadList().catch(function (err) {
+              setError((err && err.message) ? err.message : 'โหลดข้อมูลไม่สำเร็จ');
+            }).finally(function () {
+              setBusy(false);
+            });
+          });
+        }
+
+        if (els.btnAddBox) {
+          els.btnAddBox.addEventListener('click', function () {
+            onAddBox();
+          });
+        }
+
+        if (els.boxList) {
+          els.boxList.addEventListener('click', function (e) {
+            var target = e && e.target && e.target.closest ? e.target.closest('.js-save') : null;
+            if (!target) return;
+            var row = target.closest('.box-row');
+            if (!row) return;
+            onSaveRow(row);
+          });
+        }
+      }
+
+      var initLoadTicket = null;
+      function beginInitLoading(message) {
+        if (typeof window.beginPageLoading === 'function') {
+          initLoadTicket = window.beginPageLoading(message || 'กำลังโหลดข้อมูล...');
+          return;
+        }
+        if (typeof window.showPageLoader === 'function') {
+          window.showPageLoader(message || 'กำลังโหลดข้อมูล...', false);
+        }
+      }
+
+      function endInitLoading() {
+        if (initLoadTicket && typeof window.endPageLoading === 'function') {
+          window.endPageLoading(initLoadTicket);
+          initLoadTicket = null;
+          return;
+        }
+        if (typeof window.hidePageLoader === 'function') {
+          window.hidePageLoader(false);
+        }
+      }
+
+      async function init() {
+        beginInitLoading('กำลังโหลดหน้าจัดการกล่อง...');
+        try {
+          bindEvents();
+          renderHeader();
+
+          state.settings = C.ensureSettingsOrThrow();
+          state.api = C.createApiClient(state.settings);
+
+          var me = await state.api.me({ noPageLoader: true });
+          if (!me || me.success === false || !me.user) {
+            goBack();
+            return;
+          }
+          state.user = me.user;
+          var isReadOnly = !!(state.user.isReadOnly || state.user.canEdit === false || state.user.accessRole === 'read_only');
+          if (isReadOnly) {
+            C.redirect('access-denied.html', {
+              message: 'บัญชีผู้มีสิทธิ์อ่าน ไม่สามารถจัดการกล่องเอกสารได้'
+            });
+            return;
+          }
+
+          await loadList();
+        } catch (err) {
+          setError((err && err.message) ? err.message : 'ไม่สามารถโหลดหน้าจัดการกล่องได้');
+        } finally {
+          endInitLoading();
+        }
+      }
+
+      init();
+    })();
+  </script>
+</body>
+</html>

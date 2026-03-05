@@ -1957,17 +1957,13 @@
           return;
         }
 
-        var today = new Date();
-        var destroyDate = new Date(today);
-        destroyDate.setFullYear(destroyDate.getFullYear() + 10);
-        var destroyDateStr = destroyDate.getFullYear() + '-' + String(destroyDate.getMonth() + 1).padStart(2, '0') + '-' + String(destroyDate.getDate()).padStart(2, '0');
-
         var form = document.getElementById('formContainer');
         if (form) form.style.display = 'none';
 
         setBusy(true);
         try {
-          var res = await state.api.saveStorageData(doc.docId, loc, '', fiscal, destroyDateStr);
+          // ให้ backend คำนวณวันทำลายจากค่าที่กำหนดไว้ของแต่ละกล่อง
+          var res = await state.api.saveStorageData(doc.docId, loc, '', fiscal, '');
           if (!res || res.success === false) {
             throw new Error((res && res.error) ? res.error : 'บันทึกไม่สำเร็จ');
           }

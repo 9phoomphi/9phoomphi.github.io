@@ -598,6 +598,7 @@
   <div class="box-page">
     <div class="box-top">
       <button id="btnBack" type="button" class="back-btn"><i class="bi bi-arrow-left"></i> กลับ</button>
+      <button id="btnManageBoxes" type="button" class="back-btn"><i class="bi bi-sliders"></i> จัดการกล่อง</button>
     </div>
 
     <div id="errBox" class="error-box"></div>
@@ -654,6 +655,7 @@
 
       var els = {
         btnBack: document.getElementById('btnBack'),
+        btnManageBoxes: document.getElementById('btnManageBoxes'),
         btnReload: document.getElementById('btnReload'),
         errBox: document.getElementById('errBox'),
         mainCard: document.getElementById('mainCard'),
@@ -1096,6 +1098,12 @@
         els.btnBack.addEventListener('click', function () {
           C.redirect('index.html');
         });
+
+        if (els.btnManageBoxes) {
+          els.btnManageBoxes.addEventListener('click', function () {
+            C.redirect('box-management.html', { scope: 'main', back: 'index.html', tab: 'boxes' });
+          });
+        }
 
         els.btnReload.addEventListener('click', function () {
           loadDetail().catch(function (err) {
