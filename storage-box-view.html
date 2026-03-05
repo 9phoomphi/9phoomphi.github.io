@@ -863,9 +863,31 @@
         C.redirect('document-view.html', { id: id });
       }
 
+      function getOpDateSortValue(doc) {
+        var d = doc || {};
+        var ts = Number(d.operationDateSortTs);
+        if (!isNaN(ts) && ts > 0) return ts;
+        return null;
+      }
+
+      function getDocsSortedByOperationDate(docs) {
+        var list = Array.isArray(docs) ? docs.slice() : [];
+        list.sort(function (a, b) {
+          var aTs = getOpDateSortValue(a);
+          var bTs = getOpDateSortValue(b);
+          if (aTs != null && bTs != null && aTs !== bTs) return bTs - aTs;
+          if (aTs != null && bTs == null) return -1;
+          if (aTs == null && bTs != null) return 1;
+          var aRow = Number((a && a.rowNumber) || 0) || 0;
+          var bRow = Number((b && b.rowNumber) || 0) || 0;
+          return bRow - aRow;
+        });
+        return list;
+      }
+
       function render() {
         var detail = state.detail || {};
-        var docs = Array.isArray(detail.docs) ? detail.docs : [];
+        var docs = getDocsSortedByOperationDate(detail.docs);
         var resolvedBoxName = C.safeTrim(detail.boxName || boxName || '-');
         if (resolvedBoxName && resolvedBoxName !== '-') {
           boxName = resolvedBoxName;
@@ -982,7 +1004,7 @@
 
       function printReport() {
         var d = state.detail || {};
-        var docs = Array.isArray(d.docs) ? d.docs : [];
+        var docs = getDocsSortedByOperationDate(d.docs);
 
         if (!docs.length) {
           Swal.fire('ไม่มีข้อมูล', 'ไม่พบเอกสารสำหรับพิมพ์', 'warning');
@@ -1002,7 +1024,7 @@
         h += '</head><body>';
         h += '<h2>รายการเอกสารในกล่อง: ' + C.escapeHtml(d.boxName || boxName || '-') + '</h2>';
         h += '<p class="meta">ข้อมูล ณ วันที่ ' + C.escapeHtml(new Date().toLocaleString('th-TH')) + ' | จำนวนทั้งหมด ' + docs.length + ' รายการ</p>';
-        h += '<table><colgroup><col style="width:4%"><col style="width:5%"><col style="width:10%"><col style="width:7%"><col style="width:24%"><col style="width:11%"><col style="width:8%"><col style="width:8%"><col style="width:11%"><col style="width:12%"></colgroup><thead><tr><th>ลำดับ</th><th>ปีงบฯ</th><th>เลขที่หนังสือส่งกองคลัง</th><th>เลขที่ สธ.</th><th>ชื่อเรื่อง</th><th>ชื่อผู้ส่ง</th><th>จำนวน</th><th>ส่วนต่าง</th><th>วันที่จัดเก็บ</th><th>ผู้จัดเก็บ</th></tr></thead><tbody>';
+        h += '<table><colgroup><col style="width:4%"><col style="width:5%"><col style="width:10%"><col style="width:7%"><col style="width:24%"><col style="width:11%"><col style="width:8%"><col style="width:8%"><col style="width:11%"><col style="width:12%"></colgroup><thead><tr><th>ลำดับ</th><th>ปีงบฯ</th><th>เลขที่หนังสือส่งกองคลัง</th><th>เลขที่ สธ.</th><th>ชื่อเรื่อง</th><th>ชื่อผู้ส่ง</th><th>จำนวน</th><th>ส่วนต่าง</th><th>ลงวันที่ดำเนินการ</th><th>ผู้จัดเก็บ</th></tr></thead><tbody>';
 
         for (var i = 0; i < docs.length; i++) {
           var row = docs[i] || {};
@@ -1010,7 +1032,7 @@
           if (subject.length > 240) {
             subject = subject.substring(0, 240).replace(/\s+$/, '') + '...';
           }
-          var dateText = C.safeText(row.dateStr || '-') + (C.safeTrim(row.timeStr || '') ? (' ' + C.safeTrim(row.timeStr || '')) : '');
+          var dateText = C.safeText(row.operationDate || '-');
 
           h += '<tr>';
           h += '<td class="text-center index">' + (i + 1) + '</td>';
