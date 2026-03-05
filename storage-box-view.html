@@ -875,12 +875,12 @@
         list.sort(function (a, b) {
           var aTs = getOpDateSortValue(a);
           var bTs = getOpDateSortValue(b);
-          if (aTs != null && bTs != null && aTs !== bTs) return bTs - aTs;
+          if (aTs != null && bTs != null && aTs !== bTs) return aTs - bTs;
           if (aTs != null && bTs == null) return -1;
           if (aTs == null && bTs != null) return 1;
           var aRow = Number((a && a.rowNumber) || 0) || 0;
           var bRow = Number((b && b.rowNumber) || 0) || 0;
-          return bRow - aRow;
+          return aRow - bRow;
         });
         return list;
       }

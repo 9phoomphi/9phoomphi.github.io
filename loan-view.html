@@ -1063,6 +1063,22 @@
         document.title = (suffix ? ('รายละเอียดเงินยืม • ' + suffix) : 'รายละเอียดทะเบียนคุมเงินยืม');
       }
 
+      function syncLoanRouteId(nextId) {
+        var normalized = C.safeTrim(nextId || '');
+        if (!normalized) return;
+        recordId = normalized;
+        try {
+          if (!window.history || typeof window.history.replaceState !== 'function') return;
+          var nextUrl = C.buildPageUrl('loan-view.html', { id: recordId });
+          if (typeof window.appendSessionKeysToUrl === 'function') {
+            nextUrl = window.appendSessionKeysToUrl(nextUrl);
+          } else if (typeof window.appendDeviceKeyToUrl === 'function') {
+            nextUrl = window.appendDeviceKeyToUrl(nextUrl);
+          }
+          window.history.replaceState({}, '', nextUrl);
+        } catch (_ignore) {}
+      }
+
       function isReadOnlyUser(user) {
         return !!(user && (user.isReadOnly || user.canEdit === false || user.accessRole === 'read_only'));
       }
@@ -1576,6 +1592,7 @@
 
       function renderDocument() {
         var doc = state.doc || {};
+        syncLoanRouteId(doc.recordId || doc.contractNo || recordId);
         renderHead(doc);
         renderGeneralInfo(doc);
         renderAutoInfo(doc);
@@ -1623,6 +1640,7 @@
         state.isReadOnly = isReadOnlyUser(meRes.user);
         state.storageInfo = normalizeLoanStorageInfo((storageRes && storageRes.success && storageRes.data) ? storageRes.data : {});
         state.members = Array.isArray(membersRes.data) ? membersRes.data : [];
+        syncLoanRouteId((state.doc && (state.doc.recordId || state.doc.contractNo || state.doc.docNoSdh)) || recordId);
         mapMemberData(state.members);
 
         renderDocument();

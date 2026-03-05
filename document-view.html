@@ -1359,6 +1359,23 @@
         document.title = page + ' | ' + APP_BROWSER_NAME;
       }
 
+      function syncDocRouteId(nextId) {
+        var normalized = C.safeTrim(nextId || '');
+        if (!normalized) return;
+        docId = normalized;
+        updateBrowserTitle(docId);
+        try {
+          if (!window.history || typeof window.history.replaceState !== 'function') return;
+          var nextUrl = C.buildPageUrl('document-view.html', { id: docId });
+          if (typeof window.appendSessionKeysToUrl === 'function') {
+            nextUrl = window.appendSessionKeysToUrl(nextUrl);
+          } else if (typeof window.appendDeviceKeyToUrl === 'function') {
+            nextUrl = window.appendDeviceKeyToUrl(nextUrl);
+          }
+          window.history.replaceState({}, '', nextUrl);
+        } catch (_ignore) {}
+      }
+
       function setBusy(isBusy) {
         els.loadingMsg.classList.toggle('show', !!isBusy);
       }
@@ -1768,7 +1785,7 @@
         var doc = state.doc || {};
         var statusData = state.statusData || {};
         var isReadOnly = !!doc.isReadOnlyUser;
-        updateBrowserTitle(doc.docId || docId);
+        syncDocRouteId(doc.docId || docId);
 
         els.docIdTitle.textContent = doc.docId || '-';
         els.docIdSub.textContent = C.safeTrim(doc.docNoSdh || '') ? ('สธ ' + C.safeText(doc.docNoSdh || '')) : '-';
@@ -1868,6 +1885,7 @@
           if (!res || res.success === false) {
             throw new Error((res && res.error) ? res.error : 'บันทึกไม่สำเร็จ');
           }
+          syncDocRouteId((res && res.docId) || C.safeTrim(result.value || '') || state.doc.docNoSdh || docId);
           await Swal.fire({ icon: 'success', title: 'บันทึกสำเร็จ', confirmButtonColor: '#007AFF' });
           await loadDetail();
         } catch (err) {
@@ -2057,6 +2075,7 @@
         state.statusData = detailRes.statusData || {};
         state.members = Array.isArray(membersRes.data) ? membersRes.data : [];
         state.info = (infoRes && infoRes.data && typeof infoRes.data === 'object') ? infoRes.data : { locations: [], fiscalYears: [] };
+        syncDocRouteId((state.doc && state.doc.docId) || docId);
 
         mapMemberData(state.members);
         renderDocument();
