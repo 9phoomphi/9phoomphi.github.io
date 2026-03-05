@@ -1041,6 +1041,7 @@
       <div class="tabs-bar dashboard-tabs loan-dashboard-tabs">
         <button id="tabLoanDocs" class="tab-btn active" type="button"><i class="bi bi-file-text me-1"></i>รายการเงินยืม</button>
         <button id="tabLoanBoxes" class="tab-btn" type="button"><i class="bi bi-archive me-1"></i>ตรวจสอบกล่อง</button>
+        <button id="tabLoanManage" class="tab-btn" type="button"><i class="bi bi-sliders me-1"></i>จัดการกล่อง</button>
         <button id="tabLoanScan" class="tab-btn" type="button"><i class="bi bi-qr-code-scan me-1"></i>สแกนจัดเก็บ</button>
       </div>
 
@@ -1287,6 +1288,7 @@
         btnBack: document.getElementById('btnBack'),
         tabLoanDocs: document.getElementById('tabLoanDocs'),
         tabLoanBoxes: document.getElementById('tabLoanBoxes'),
+        tabLoanManage: document.getElementById('tabLoanManage'),
         tabLoanScan: document.getElementById('tabLoanScan'),
         btnAddFab: document.getElementById('btnAddFab'),
         searchInput: document.getElementById('searchInput'),
@@ -1487,6 +1489,7 @@
           els.btnBack,
           els.tabLoanDocs,
           els.tabLoanBoxes,
+          els.tabLoanManage,
           els.tabLoanScan,
           els.btnManageBoxes,
           els.btnReloadBoxes,
@@ -2298,6 +2301,7 @@
           els.readOnlyNotice.classList.add('hidden');
           if (els.btnAddFab) els.btnAddFab.classList.remove('hidden');
           if (els.tabLoanScan) els.tabLoanScan.classList.remove('hidden');
+          if (els.tabLoanManage) els.tabLoanManage.classList.remove('hidden');
           if (els.btnManageBoxes) els.btnManageBoxes.classList.remove('hidden');
           return;
         }
@@ -2306,6 +2310,7 @@
         els.readOnlyNotice.innerHTML = '<i class="bi bi-eye me-1"></i>บัญชีผู้มีสิทธิ์อ่าน: สามารถดูข้อมูลทะเบียนคุมเงินยืมได้เท่านั้น';
         if (els.btnAddFab) els.btnAddFab.classList.add('hidden');
         if (els.tabLoanScan) els.tabLoanScan.classList.add('hidden');
+        if (els.tabLoanManage) els.tabLoanManage.classList.add('hidden');
         if (els.btnManageBoxes) els.btnManageBoxes.classList.add('hidden');
       }
 
@@ -2526,6 +2531,16 @@
         C.redirect('storage-box-scan.html', { scope: 'loan' });
       }
 
+      function goManageBoxes() {
+        if (state.isReadOnly) {
+          C.redirect('access-denied.html', {
+            message: 'บัญชีผู้มีสิทธิ์อ่าน ไม่สามารถจัดการกล่องเอกสารได้'
+          });
+          return;
+        }
+        C.redirect('box-management.html', { scope: 'loan', back: 'loan-index.html', tab: 'boxes' });
+      }
+
       function bindEvents() {
         if (els.btnBack) {
           els.btnBack.addEventListener('click', function () {
@@ -2568,6 +2583,12 @@
         if (els.tabLoanScan) {
           els.tabLoanScan.addEventListener('click', function () {
             goScanStorage();
+          });
+        }
+
+        if (els.tabLoanManage) {
+          els.tabLoanManage.addEventListener('click', function () {
+            goManageBoxes();
           });
         }
 
@@ -2718,13 +2739,7 @@
 
         if (els.btnManageBoxes) {
           els.btnManageBoxes.addEventListener('click', function () {
-            if (state.isReadOnly) {
-              C.redirect('access-denied.html', {
-                message: 'บัญชีผู้มีสิทธิ์อ่าน ไม่สามารถจัดการกล่องเอกสารได้'
-              });
-              return;
-            }
-            C.redirect('box-management.html', { scope: 'loan', back: 'loan-index.html', tab: 'boxes' });
+            goManageBoxes();
           });
         }
 

@@ -187,6 +187,22 @@
       font-size: 0.9rem;
     }
 
+    .btn.danger {
+      color: #b91c1c;
+      border-color: rgba(239, 68, 68, 0.36);
+      background: rgba(254, 242, 242, 0.9);
+    }
+
+    .btn.danger:hover {
+      box-shadow: 0 10px 20px rgba(239, 68, 68, 0.2);
+    }
+
+    body.dark-mode .btn.danger {
+      color: #fecaca;
+      border-color: rgba(248, 113, 113, 0.5);
+      background: rgba(127, 29, 29, 0.3);
+    }
+
     .box-list {
       display: grid;
       gap: 10px;
@@ -281,7 +297,6 @@
       <div class="hero">
         <h1 id="titleText">จัดการกล่องเอกสาร</h1>
         <p id="subText">เพิ่ม/แก้ไขชื่อกล่อง และกำหนดอายุเก็บก่อนทำลาย</p>
-        <div id="sourceChip" class="hero-chip"><i class="bi bi-database"></i>บันทึกข้อมูล: -</div>
       </div>
 
       <div class="manage-body">
@@ -339,7 +354,6 @@
         errorBox: document.getElementById('errorBox'),
         titleText: document.getElementById('titleText'),
         subText: document.getElementById('subText'),
-        sourceChip: document.getElementById('sourceChip'),
         addBoxName: document.getElementById('addBoxName'),
         addDestroyYears: document.getElementById('addDestroyYears'),
         btnAddBox: document.getElementById('btnAddBox'),
@@ -413,9 +427,6 @@
         if (els.subText) {
           els.subText.textContent = 'เพิ่ม/แก้ไขชื่อกล่อง และกำหนดอายุเก็บก่อนทำลายของกล่อง';
         }
-        if (els.sourceChip) {
-          els.sourceChip.innerHTML = '<i class="bi bi-database"></i>บันทึกชื่อกล่องที่ชีตข้อมูล คอลัมน์ ' + C.escapeHtml(state.boxColumn) + ' | อายุเก็บคอลัมน์ ' + C.escapeHtml(state.destroyColumn);
-        }
       }
 
       function renderBoxList() {
@@ -435,7 +446,10 @@
           html += '<div class="box-row-main">';
           html += '<div><div class="field-label"><i class="bi bi-archive"></i>ชื่อกล่อง</div><input class="input js-name" type="text" value="' + C.escapeHtml(name) + '"></div>';
           html += '<div><div class="field-label"><i class="bi bi-clock-history"></i>อายุเก็บก่อนทำลาย (ปี)</div><input class="input js-years" type="number" min="1" max="99" step="1" value="' + years + '"></div>';
-          html += '<div class="actions"><button class="btn primary small js-save" type="button"><i class="bi bi-check2-circle"></i>บันทึก</button></div>';
+          html += '<div class="actions">';
+          html += '<button class="btn primary small js-save" type="button"><i class="bi bi-check2-circle"></i>บันทึก</button>';
+          html += '<button class="btn danger small js-delete" type="button"><i class="bi bi-trash3"></i>ลบกล่อง</button>';
+          html += '</div>';
           html += '</div>';
           html += '<div class="box-row-meta">';
           html += '<span class="meta-chip">ใช้งานแล้ว ' + usedCount + ' รายการ</span>';
@@ -470,6 +484,16 @@
         var res = await state.api.boxesManageSave(scope, oldName || '', cleanedName, destroyYears, { noPageLoader: true });
         if (!res || res.success === false) {
           throw new Error((res && res.error) ? res.error : 'บันทึกข้อมูลกล่องไม่สำเร็จ');
+        }
+        return res;
+      }
+
+      async function deleteBox(boxName) {
+        var target = C.safeTrim(boxName || '');
+        if (!target) throw new Error('ไม่พบชื่อกล่องที่ต้องการลบ');
+        var res = await state.api.boxesManageDelete(scope, target, { noPageLoader: true });
+        if (!res || res.success === false) {
+          throw new Error((res && res.error) ? res.error : 'ลบกล่องไม่สำเร็จ');
         }
         return res;
       }
@@ -534,6 +558,42 @@
         }
       }
 
+      async function onDeleteRow(rowEl) {
+        if (!rowEl || state.saving) return;
+        var oldName = C.safeTrim(rowEl.getAttribute('data-old-name') || '');
+        if (!oldName) {
+          setError('ไม่พบชื่อกล่องที่ต้องการลบ');
+          return;
+        }
+
+        var ask = await Swal.fire({
+          icon: 'warning',
+          title: 'ยืนยันการลบกล่อง',
+          html: 'ต้องการลบกล่อง <b>' + C.escapeHtml(oldName) + '</b> ใช่หรือไม่?<br>หากมีกล่องนี้ในเอกสาร ระบบจะนำรายการออกจากกล่องอัตโนมัติ และต้องจัดเก็บใหม่',
+          showCancelButton: true,
+          confirmButtonText: 'ลบกล่อง',
+          cancelButtonText: 'ยกเลิก',
+          confirmButtonColor: '#DC2626'
+        });
+        if (!ask || !ask.isConfirmed) return;
+
+        setBusy(true);
+        try {
+          var result = await deleteBox(oldName);
+          await loadList();
+          var msg = 'ลบกล่องสำเร็จ';
+          var removedCount = Number(result && result.removedStoredCount || 0);
+          if (removedCount > 0) {
+            msg += ' (เอาเอกสารออกจากกล่องแล้ว ' + removedCount + ' รายการ)';
+          }
+          await Swal.fire({ icon: 'success', title: msg, confirmButtonColor: '#0A84FF' });
+        } catch (err) {
+          setError((err && err.message) ? err.message : 'ลบกล่องไม่สำเร็จ');
+        } finally {
+          setBusy(false);
+        }
+      }
+
       function bindEvents() {
         if (els.btnBack) {
           els.btnBack.addEventListener('click', function () {
@@ -561,10 +621,14 @@
 
         if (els.boxList) {
           els.boxList.addEventListener('click', function (e) {
-            var target = e && e.target && e.target.closest ? e.target.closest('.js-save') : null;
+            var target = e && e.target && e.target.closest ? e.target.closest('.js-save, .js-delete') : null;
             if (!target) return;
-            var row = target.closest('.box-row');
+            var row = target.closest ? target.closest('.box-row') : null;
             if (!row) return;
+            if (target.classList.contains('js-delete')) {
+              onDeleteRow(row);
+              return;
+            }
             onSaveRow(row);
           });
         }

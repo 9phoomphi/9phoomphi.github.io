@@ -825,6 +825,31 @@
     });
   };
 
+  DocumentControlApi.prototype.boxesManageDelete = function (scope, boxName, opts) {
+    var self = this;
+    var normalized = safeTrim(boxName || '');
+    return this.call('boxes.manage.delete', {
+      deviceKey: this.defaultDeviceKey,
+      clientIpKey: this.defaultIpKey,
+      scope: safeTrim(scope || ''),
+      boxName: normalized,
+      name: normalized,
+      oldName: normalized,
+      box: normalized,
+      boxId: normalized,
+      box_name: normalized,
+      location: normalized,
+      loc: normalized
+    }, opts).then(function (res) {
+      if (res && res.success) {
+        self._cacheClear('options.info');
+        self._cacheClear('storage.options');
+        self._cacheClear('loan.storage.options');
+      }
+      return res;
+    });
+  };
+
   DocumentControlApi.prototype.inspectionReport = function (params, opts) {
     params = params || {};
     return this.call('inspection.report', {

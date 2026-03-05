@@ -1817,6 +1817,7 @@
       <div class="tabs-bar dashboard-tabs">
         <button id="tabDocs" class="tab-btn active" type="button"><i class="bi bi-file-text me-1"></i>รายการเอกสาร</button>
         <button id="tabBoxes" class="tab-btn" type="button"><i class="bi bi-archive me-1"></i>ตรวจสอบกล่อง</button>
+        <button id="tabManageBoxes" class="tab-btn" type="button"><i class="bi bi-sliders me-1"></i>จัดการกล่อง</button>
         <button id="tabBoxScan" class="tab-btn" type="button"><i class="bi bi-qr-code-scan me-1"></i>สแกนจัดเก็บ</button>
         <button id="tabInspector" class="tab-btn" type="button"><i class="bi bi-clipboard-check me-1"></i>ตรวจสอบผลงาน</button>
       </div>
@@ -2034,6 +2035,7 @@
         btnAddFab: document.getElementById('btnAddFab'),
         tabDocs: document.getElementById('tabDocs'),
         tabBoxes: document.getElementById('tabBoxes'),
+        tabManageBoxes: document.getElementById('tabManageBoxes'),
         tabBoxScan: document.getElementById('tabBoxScan'),
         tabInspector: document.getElementById('tabInspector'),
         docsTab: document.getElementById('docsTab'),
@@ -2345,6 +2347,7 @@
           }
 
           if (els.tabBoxScan) els.tabBoxScan.classList.toggle('hidden', state.isReadOnly);
+          if (els.tabManageBoxes) els.tabManageBoxes.classList.toggle('hidden', state.isReadOnly);
           if (els.btnAddFab) els.btnAddFab.classList.toggle('hidden', state.isReadOnly);
           if (els.btnManageBoxes) els.btnManageBoxes.classList.toggle('hidden', state.isReadOnly);
 
@@ -2361,6 +2364,7 @@
         if (els.sessionUserChip) els.sessionUserChip.classList.add('hidden');
         if (els.btnOpenSettings) els.btnOpenSettings.classList.add('hidden');
         if (els.tabBoxScan) els.tabBoxScan.classList.remove('hidden');
+        if (els.tabManageBoxes) els.tabManageBoxes.classList.add('hidden');
         if (els.btnAddFab) els.btnAddFab.classList.add('hidden');
         if (els.btnManageBoxes) els.btnManageBoxes.classList.add('hidden');
         if (els.readOnlyNotice) els.readOnlyNotice.classList.add('hidden');
@@ -3072,6 +3076,16 @@
         C.redirect('inspection-report.html');
       }
 
+      function goManageBoxes() {
+        if (state.isReadOnly) {
+          C.redirect('access-denied.html', {
+            message: 'บัญชีผู้มีสิทธิ์อ่าน ไม่สามารถจัดการกล่องเอกสารได้'
+          });
+          return;
+        }
+        C.redirect('box-management.html', { scope: 'main', back: 'index.html', tab: 'boxes' });
+      }
+
       function goRegisterHub() {
         C.redirect('welcome.html');
       }
@@ -3210,6 +3224,12 @@
           });
         }
 
+        if (els.tabManageBoxes) {
+          els.tabManageBoxes.addEventListener('click', function () {
+            goManageBoxes();
+          });
+        }
+
         if (els.tabInspector) {
           els.tabInspector.addEventListener('click', function () {
             goInspectionTool();
@@ -3302,13 +3322,7 @@
 
         if (els.btnManageBoxes) {
           els.btnManageBoxes.addEventListener('click', function () {
-            if (state.isReadOnly) {
-              C.redirect('access-denied.html', {
-                message: 'บัญชีผู้มีสิทธิ์อ่าน ไม่สามารถจัดการกล่องเอกสารได้'
-              });
-              return;
-            }
-            C.redirect('box-management.html', { scope: 'main', back: 'index.html', tab: 'boxes' });
+            goManageBoxes();
           });
         }
 
