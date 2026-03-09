@@ -142,6 +142,17 @@
       box-shadow: 0 0 0 3px rgba(10, 132, 255, 0.16);
     }
 
+    input.input[type="number"]::-webkit-outer-spin-button,
+    input.input[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    input.input[type="number"] {
+      -moz-appearance: textfield;
+      appearance: textfield;
+    }
+
     .actions {
       display: flex;
       align-items: center;

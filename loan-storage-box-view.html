@@ -1476,7 +1476,7 @@
         return 0;
       }
 
-      function computeStorageYearSummary(storageOptionsData, targetBox) {
+      function computeStorageYearSummaryFromOptions(storageOptionsData, targetBox) {
         var data = storageOptionsData || {};
         var map = data.boxesByFiscalYear || {};
         var years = [];
@@ -1489,6 +1489,26 @@
           if (listContainsBox(map[year], targetBox)) years.push(C.safeTrim(year));
         }
         if (!years.length) return '-';
+        years.sort(function (a, b) {
+          var na = parseInt(a, 10);
+          var nb = parseInt(b, 10);
+          if (!isNaN(na) && !isNaN(nb)) return nb - na;
+          return String(b).localeCompare(String(a), 'th');
+        });
+        return years.join(', ');
+      }
+
+      function computeStorageYearSummaryFromDocs(docs, storageOptionsData, targetBox) {
+        var list = Array.isArray(docs) ? docs : [];
+        var years = [];
+        var seen = {};
+        for (var i = 0; i < list.length; i++) {
+          var fy = C.safeTrim((list[i] && list[i].fiscalYear) || '');
+          if (!fy || seen[fy]) continue;
+          seen[fy] = true;
+          years.push(fy);
+        }
+        if (!years.length) return computeStorageYearSummaryFromOptions(storageOptionsData, targetBox);
         years.sort(function (a, b) {
           var na = parseInt(a, 10);
           var nb = parseInt(b, 10);
@@ -1514,7 +1534,7 @@
         return {
           boxName: boxName,
           docs: filtered,
-          storageYearSummary: computeStorageYearSummary(storageOptionsData, boxName),
+          storageYearSummary: computeStorageYearSummaryFromDocs(filtered, storageOptionsData, boxName),
           destroyYearSummary: '-'
         };
       }
