@@ -606,7 +606,7 @@
               <div class="field"><label class="form-label">โครงการย่อยที่</label><input id="subProject" class="form-control auto-text-field" disabled></div>
               <div class="field"><label class="form-label">กิจกรรมย่อยที่</label><input id="activity" class="form-control auto-text-field" disabled></div>
               <div class="field"><label class="form-label">วันที่ได้รับเอกสารยืมเงิน</label><input id="receiveBorrowDocDate" class="form-control auto-text-field" disabled></div>
-              <div class="field"><label class="form-label">ผู้รับผิดชอบ</label><input id="responsible" class="form-control auto-text-field" disabled></div>
+              <div class="field"><label class="form-label">ผู้รับผิดชอบ</label><input id="responsible" class="form-control auto-text-field"></div>
             </div>
           </section>
 
@@ -1211,6 +1211,7 @@
           expenseType: C.safeTrim(els.expenseType.value || ''),
           fundingSource: C.safeTrim(els.fundingSource.value || ''),
           settlementDocDate: C.safeTrim(document.getElementById('settlementDocDate').value || ''),
+          responsible: C.safeTrim(els.responsible.value || ''),
           voucherNo: C.safeTrim(els.voucherNo.value || ''),
           voucherAmount: C.safeTrim(els.voucherAmount.value || ''),
           receiptNo: C.safeTrim(els.receiptNo.value || ''),

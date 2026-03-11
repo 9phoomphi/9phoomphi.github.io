@@ -122,9 +122,9 @@
     }
 
     .head-badge.status-awaiting {
-      background: linear-gradient(180deg, rgba(59, 130, 246, 0.7), rgba(37, 99, 235, 0.52));
-      border-color: rgba(191, 219, 254, 0.74);
-      color: #eff6ff;
+      background: linear-gradient(180deg, rgba(139, 92, 246, 0.72), rgba(109, 40, 217, 0.52));
+      border-color: rgba(221, 214, 254, 0.74);
+      color: #f5f3ff;
     }
 
     .loan-body {
@@ -251,6 +251,11 @@
     }
 
     .field-value.money {
+      color: #1d4ed8;
+      font-weight: 800;
+    }
+
+    .field.money-like .field-value {
       color: #1d4ed8;
       font-weight: 800;
     }
@@ -726,6 +731,10 @@
     }
 
     body.dark-mode.page-loan-view .field-value.money {
+      color: #90cafc;
+    }
+
+    body.dark-mode.page-loan-view .field.money-like .field-value {
       color: #90cafc;
     }
 
@@ -1264,8 +1273,8 @@
         html += fieldItem('วันที่ได้รับเงิน', doc.receiveMoneyDateDisplay || '-');
         html += fieldItem('วันที่จัด/เดินทาง', doc.eventDateDisplay || '-');
         html += fieldItem('วันที่สิ้นสุดกิจกรรม', doc.endActivityDateDisplay || '-');
-        html += fieldItem('ประเภทค่าใช้จ่าย', doc.expenseType || '-');
-        html += fieldItem('แหล่งเงินยืม', doc.fundingSource || '-');
+        html += fieldItem('ประเภทค่าใช้จ่าย', doc.expenseType || '-', 'money-like');
+        html += fieldItem('แหล่งเงินยืม', doc.fundingSource || '-', 'money-like');
         html += moneyFieldItem('จำนวนเงิน', doc.amount || '-');
         html += fieldItem('ผู้รับผิดชอบ', doc.responsible || '-');
         els.generalInfo.innerHTML = html;
