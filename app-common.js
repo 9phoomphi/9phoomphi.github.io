@@ -241,6 +241,7 @@
   function normalizeHelpKey(value) {
     var text = safeText(value || '');
     text = text.replace(/\*/g, '').replace(/\s+/g, ' ').trim();
+    text = text.replace(/\s*\([A-Z]{1,3}\)\s*$/g, '').trim();
     return text;
   }
 
