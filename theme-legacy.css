@@ -1117,14 +1117,20 @@ body.dark-mode .form-label .field-help {
 
 .section.section-payment input,
 .section.section-payment textarea,
-.section.section-payment .form-control,
-.section.section-payment .form-select {
-  cursor: default;
+.section.section-payment .form-control {
+  cursor: text;
+  caret-color: #0f172a;
 }
 
-.section.section-payment input:focus,
-.section.section-payment textarea:focus {
-  cursor: text;
+.section.section-payment select,
+.section.section-payment .form-select {
+  cursor: pointer;
+}
+
+body.dark-mode.page-loan-register .section.section-payment input,
+body.dark-mode.page-loan-register .section.section-payment textarea,
+body.dark-mode.page-loan-register .section.section-payment .form-control {
+  caret-color: #e2e8f0;
 }
 
 .field,
