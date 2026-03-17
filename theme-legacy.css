@@ -1115,6 +1115,18 @@ body.dark-mode .form-label .field-help {
   background: rgba(15, 23, 42, 0.72);
 }
 
+.section.section-payment input,
+.section.section-payment textarea,
+.section.section-payment .form-control,
+.section.section-payment .form-select {
+  cursor: default;
+}
+
+.section.section-payment input:focus,
+.section.section-payment textarea:focus {
+  cursor: text;
+}
+
 .field,
 .row,
 .actions {
@@ -1180,8 +1192,14 @@ select,
 }
 
 .back-btn,
-#btnBack {
+#btnBack,
+.back-btn * {
   cursor: pointer;
+}
+
+.back-btn:disabled,
+.back-btn:disabled * {
+  cursor: not-allowed !important;
 }
 
 .btn::before {
