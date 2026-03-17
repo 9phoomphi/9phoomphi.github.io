@@ -438,12 +438,12 @@
       z-index: 1;
       width: min(720px, 92vw);
       border-radius: 24px;
-      padding: 20px;
-      background: var(--card-strong);
+      padding: 22px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(248, 250, 255, 0.92));
       border: 1px solid var(--input-border);
-      box-shadow: var(--elev);
+      box-shadow: 0 24px 50px rgba(15, 23, 42, 0.18);
       display: grid;
-      gap: 16px;
+      gap: 18px;
     }
 
     .sheet-color-head h3 {
@@ -463,17 +463,21 @@
     .sheet-color-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 12px;
+      gap: 14px;
     }
 
     .sheet-color-card {
       border-radius: 18px;
       border: 1.5px solid rgba(148, 163, 184, 0.36);
-      background: rgba(255, 255, 255, 0.72);
-      padding: 14px;
-      text-align: left;
-      display: grid;
-      gap: 8px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.96), rgba(248, 250, 252, 0.9));
+      padding: 16px 12px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 138px;
       cursor: pointer;
       transition: transform 0.2s ease, box-shadow 0.24s ease, border-color 0.24s ease;
     }
@@ -481,26 +485,49 @@
     .sheet-color-card span {
       font-weight: 760;
       color: var(--text-color);
+      font-size: 1rem;
     }
 
     .sheet-color-swatch {
-      width: 42px;
-      height: 42px;
-      border-radius: 14px;
+      width: 64px;
+      height: 64px;
+      border-radius: 20px;
       border: 1px solid rgba(255, 255, 255, 0.7);
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      color: #ffffff;
+      text-shadow: 0 1px 2px rgba(15, 23, 42, 0.25);
+    }
+
+    .sheet-color-card[data-color="blue"] {
+      --sheet-card-accent: #3b82f6;
     }
 
     .sheet-color-card[data-color="blue"] .sheet-color-swatch {
       background: linear-gradient(145deg, #93c5fd, #3b82f6);
     }
 
+    .sheet-color-card[data-color="pink"] {
+      --sheet-card-accent: #ec4899;
+    }
+
     .sheet-color-card[data-color="pink"] .sheet-color-swatch {
       background: linear-gradient(145deg, #f9a8d4, #ec4899);
     }
 
+    .sheet-color-card[data-color="green"] {
+      --sheet-card-accent: #22c55e;
+    }
+
     .sheet-color-card[data-color="green"] .sheet-color-swatch {
       background: linear-gradient(145deg, #86efac, #22c55e);
+    }
+
+    .sheet-color-card[data-color="other"] {
+      --sheet-card-accent: #64748b;
     }
 
     .sheet-color-card[data-color="other"] .sheet-color-swatch {
@@ -508,8 +535,14 @@
     }
 
     .sheet-color-card.is-selected {
-      border-color: rgba(59, 130, 246, 0.6);
-      box-shadow: 0 12px 26px rgba(15, 23, 42, 0.14);
+      border-color: var(--sheet-card-accent, rgba(59, 130, 246, 0.6));
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.16), 0 0 0 2px rgba(59, 130, 246, 0.2);
+      transform: translateY(-1px);
+    }
+
+    .sheet-color-card:hover {
+      border-color: rgba(59, 130, 246, 0.35);
+      box-shadow: 0 12px 26px rgba(15, 23, 42, 0.12);
       transform: translateY(-1px);
     }
 
@@ -524,12 +557,12 @@
     }
 
     body.dark-mode .sheet-color-panel {
-      background: rgba(17, 25, 39, 0.95);
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.96), rgba(12, 20, 36, 0.94));
       border-color: rgba(148, 163, 184, 0.36);
     }
 
     body.dark-mode .sheet-color-card {
-      background: rgba(15, 23, 42, 0.68);
+      background: linear-gradient(180deg, rgba(17, 25, 39, 0.9), rgba(12, 20, 32, 0.86));
       border-color: rgba(148, 163, 184, 0.34);
     }
 
@@ -764,19 +797,19 @@
         </div>
         <div class="sheet-color-grid">
           <button type="button" class="sheet-color-card" data-color="blue">
-            <div class="sheet-color-swatch"></div>
+            <div class="sheet-color-swatch"><i class="bi bi-file-earmark-text"></i></div>
             <span>ใบฟ้า</span>
           </button>
           <button type="button" class="sheet-color-card" data-color="pink">
-            <div class="sheet-color-swatch"></div>
+            <div class="sheet-color-swatch"><i class="bi bi-file-earmark-text"></i></div>
             <span>ใบชมพู</span>
           </button>
           <button type="button" class="sheet-color-card" data-color="green">
-            <div class="sheet-color-swatch"></div>
+            <div class="sheet-color-swatch"><i class="bi bi-file-earmark-text"></i></div>
             <span>ใบเขียว</span>
           </button>
           <button type="button" class="sheet-color-card" data-color="other">
-            <div class="sheet-color-swatch"></div>
+            <div class="sheet-color-swatch"><i class="bi bi-file-earmark-text"></i></div>
             <span>อื่น ๆ</span>
           </button>
         </div>
