@@ -95,7 +95,7 @@
       pointer-events: none;
     }
 
-    .header-bg i {
+    .header-bg > .header-hero-icon {
       font-size: 2rem;
       margin-bottom: 5px;
       display: inline-block;
@@ -140,6 +140,16 @@
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.34), 0 10px 20px rgba(15, 23, 42, 0.2);
       backdrop-filter: blur(10px);
       -webkit-backdrop-filter: blur(10px);
+    }
+
+    .h-badge i {
+      font-size: 0.84rem;
+      line-height: 1;
+      margin: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
     }
 
     .h-badge.sheet-blue {
@@ -1199,7 +1209,7 @@
 
     <div id="mainCard" class="main-card" style="display:none;">
       <div class="header-bg">
-        <i class="bi bi-list-check"></i>
+        <i class="bi bi-list-check header-hero-icon"></i>
         <h3>จัดการสถานะการดำเนินการ</h3>
         <small id="docHead">กำลังโหลด...</small>
         <div id="headerBadges" class="header-badges"></div>

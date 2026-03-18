@@ -1887,6 +1887,11 @@
               </div>
 
               <div class="filter-section">
+                <p class="filter-section-title"><i class="bi bi-file-earmark-richtext me-1"></i>สีใบงานเอกสาร</p>
+                <div id="filterSheetColorOptions" class="filter-options compact"></div>
+              </div>
+
+              <div class="filter-section">
                 <p class="filter-section-title"><i class="bi bi-tags me-1"></i>สถานะเอกสาร</p>
                 <div class="filter-options">
                   <label class="filter-option">
@@ -1988,7 +1993,7 @@
         searchTimer: null,
         boxSummary: [],
         lastSystemReport: null,
-        infoOptions: { fiscalYears: [], locations: [] },
+        infoOptions: { fiscalYears: [], locations: [], sheetColors: [] },
         budgetTypeOptions: DEFAULT_BUDGET_ORDER.slice(),
         selectedFilters: [],
         selectedFiscalYears: [],
@@ -1996,6 +2001,7 @@
         selectedDateTo: '',
         selectedLocation: '',
         selectedBudgetTypes: [],
+        selectedSheetColors: [],
         isReadOnly: false
       };
 
@@ -2051,6 +2057,7 @@
         btnApplyFilter: document.getElementById('btnApplyFilter'),
         filterFiscalOptions: document.getElementById('filterFiscalOptions'),
         filterBudgetOptions: document.getElementById('filterBudgetOptions'),
+        filterSheetColorOptions: document.getElementById('filterSheetColorOptions'),
         filterLocation: document.getElementById('filterLocation'),
         filterDateFrom: document.getElementById('filterDateFrom'),
         filterDateTo: document.getElementById('filterDateTo'),
@@ -2435,6 +2442,33 @@
         return '<span class="badge-status ' + cls + '"><i class="bi bi-file-earmark-text me-1"></i>' + C.escapeHtml(name) + '</span>';
       }
 
+      function getSheetColorFilterOptions() {
+        var order = ['ใบฟ้า', 'ใบชมพู', 'ใบเขียว', 'อื่น ๆ'];
+        var seen = {};
+        var out = [];
+        var source = Array.isArray(state.infoOptions && state.infoOptions.sheetColors) ? state.infoOptions.sheetColors : [];
+        var i;
+
+        for (i = 0; i < source.length; i++) {
+          var normalized = resolveSheetColorLabel(source[i]);
+          if (!normalized || seen[normalized]) continue;
+          seen[normalized] = true;
+        }
+
+        for (i = 0; i < order.length; i++) {
+          if (!seen[order[i]]) seen[order[i]] = true;
+          out.push(order[i]);
+        }
+
+        for (i = 0; i < source.length; i++) {
+          var extra = resolveSheetColorLabel(source[i]);
+          if (!extra) continue;
+          if (out.indexOf(extra) === -1) out.push(extra);
+        }
+
+        return out;
+      }
+
       function getStoredUserChip(doc) {
         var storedUser = C.safeTrim(doc && doc.storedUser || '');
         if (!storedUser || !C.safeTrim(doc && doc.storedLoc || '')) return '';
@@ -2675,6 +2709,26 @@
         els.filterBudgetOptions.innerHTML = html;
       }
 
+      function renderSheetColorOptions(colors) {
+        if (!els.filterSheetColorOptions) return;
+
+        colors = Array.isArray(colors) ? colors : [];
+        var selected = {};
+        for (var i = 0; i < state.selectedSheetColors.length; i++) {
+          var name = resolveSheetColorLabel(state.selectedSheetColors[i]);
+          if (name) selected[name] = true;
+        }
+
+        var html = '<label class="filter-option compact"><input type="checkbox" id="filterSheetAll" ' + (state.selectedSheetColors.length === 0 ? 'checked' : '') + '><span class="checkmark"></span><span class="filter-label">ทั้งหมด</span></label>';
+        for (var j = 0; j < colors.length; j++) {
+          var colorName = resolveSheetColorLabel(colors[j]);
+          if (!colorName) continue;
+          var checked = selected[colorName] ? 'checked' : '';
+          html += '<label class="filter-option compact"><input type="checkbox" class="filter-sheet-option" value="' + C.escapeHtml(colorName) + '" ' + checked + '><span class="checkmark"></span><span class="filter-label">' + buildSheetColorBadge(colorName) + '</span></label>';
+        }
+        els.filterSheetColorOptions.innerHTML = html;
+      }
+
       function renderLocationOptions(locations) {
         if (!els.filterLocation) return;
 
@@ -2692,6 +2746,7 @@
       function refreshFilterOptions() {
         renderFiscalOptions(state.infoOptions.fiscalYears || []);
         renderBudgetOptions(state.budgetTypeOptions || []);
+        renderSheetColorOptions(getSheetColorFilterOptions());
         renderLocationOptions(state.infoOptions.locations || []);
 
         if (els.filterDateFrom) els.filterDateFrom.value = state.selectedDateFrom || '';
@@ -2762,6 +2817,13 @@
           state.selectedBudgetTypes.push(C.safeText(budgetOptions[j].value));
         }
 
+        state.selectedSheetColors = [];
+        var sheetOptions = document.querySelectorAll('.filter-sheet-option:checked');
+        for (var k = 0; k < sheetOptions.length; k++) {
+          var sheetName = resolveSheetColorLabel(sheetOptions[k].value);
+          if (sheetName) state.selectedSheetColors.push(sheetName);
+        }
+
         state.selectedDateFrom = C.safeTrim((els.filterDateFrom && els.filterDateFrom.value) || '');
         state.selectedDateTo = C.safeTrim((els.filterDateTo && els.filterDateTo.value) || '');
 
@@ -2783,6 +2845,7 @@
         if (state.selectedFilters.length) parts.push('status:' + state.selectedFilters.join(','));
         if (state.selectedFiscalYears.length) parts.push('fiscal:' + state.selectedFiscalYears.join(','));
         if (state.selectedBudgetTypes.length) parts.push('budget:' + state.selectedBudgetTypes.join(','));
+        if (state.selectedSheetColors.length) parts.push('sheet:' + state.selectedSheetColors.join(','));
         if (state.selectedDateFrom || state.selectedDateTo) parts.push('date:' + state.selectedDateFrom + ',' + state.selectedDateTo);
         if (state.selectedLocation) parts.push('loc:' + state.selectedLocation);
 
@@ -2791,7 +2854,7 @@
           updateFilterBadge(0);
         } else {
           state.currentFilter = 'adv:' + parts.join('|');
-          var count = state.selectedFilters.length + state.selectedFiscalYears.length + state.selectedBudgetTypes.length + ((state.selectedDateFrom || state.selectedDateTo) ? 1 : 0) + (state.selectedLocation ? 1 : 0);
+          var count = state.selectedFilters.length + state.selectedFiscalYears.length + state.selectedBudgetTypes.length + state.selectedSheetColors.length + ((state.selectedDateFrom || state.selectedDateTo) ? 1 : 0) + (state.selectedLocation ? 1 : 0);
           updateFilterBadge(count);
         }
       }
@@ -2800,6 +2863,7 @@
         state.selectedFilters = [];
         state.selectedFiscalYears = [];
         state.selectedBudgetTypes = [];
+        state.selectedSheetColors = [];
         state.selectedDateFrom = '';
         state.selectedDateTo = '';
         state.selectedLocation = '';
@@ -2861,14 +2925,15 @@
           var report = results[0] || {};
           var optionsRes = results[1] || {};
           var docs = Array.isArray(report.docs) ? report.docs : [];
-          var info = (optionsRes && optionsRes.data && typeof optionsRes.data === 'object') ? optionsRes.data : { fiscalYears: [], locations: [] };
+          var info = (optionsRes && optionsRes.data && typeof optionsRes.data === 'object') ? optionsRes.data : { fiscalYears: [], locations: [], sheetColors: [] };
 
           state.lastSystemReport = report;
           state.boxSummary = aggregateBoxes(docs);
           state.budgetTypeOptions = collectBudgetTypesFromDocs(docs);
           state.infoOptions = {
             fiscalYears: Array.isArray(info.fiscalYears) ? info.fiscalYears : [],
-            locations: Array.isArray(info.locations) ? info.locations : []
+            locations: Array.isArray(info.locations) ? info.locations : [],
+            sheetColors: Array.isArray(info.sheetColors) ? info.sheetColors : []
           };
 
           renderBoxes();
@@ -3321,6 +3386,15 @@
               var anyBudgetChecked = document.querySelectorAll('.filter-budget-option:checked').length > 0;
               var budgetAll = document.getElementById('filterBudgetAll');
               if (budgetAll) budgetAll.checked = !anyBudgetChecked;
+            }
+            if (t.id === 'filterSheetAll') {
+              var sheet = document.querySelectorAll('.filter-sheet-option');
+              for (var k = 0; k < sheet.length; k++) sheet[k].checked = !!t.checked;
+            }
+            if (t.classList && t.classList.contains('filter-sheet-option')) {
+              var anySheetChecked = document.querySelectorAll('.filter-sheet-option:checked').length > 0;
+              var sheetAll = document.getElementById('filterSheetAll');
+              if (sheetAll) sheetAll.checked = !anySheetChecked;
             }
           });
         }
