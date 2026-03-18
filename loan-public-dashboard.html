@@ -11,57 +11,55 @@
   <style>
     :root {
       color-scheme: light;
-      --bg-1: #f5fbff;
-      --bg-2: #eaf3ff;
-      --surface: rgba(255, 255, 255, 0.78);
-      --surface-strong: rgba(255, 255, 255, 0.9);
-      --surface-soft: rgba(255, 255, 255, 0.62);
-      --line: rgba(148, 163, 184, 0.28);
-      --line-strong: rgba(148, 163, 184, 0.42);
-      --text-main: #0f172a;
-      --text-sub: #5b6b83;
-      --text-faint: #708198;
-      --shadow: 0 24px 72px rgba(15, 23, 42, 0.16);
-      --shadow-soft: 0 14px 34px rgba(15, 23, 42, 0.1);
+      --bg-top: #eff7ff;
+      --bg-bottom: #dfeeff;
+      --surface: rgba(255, 255, 255, 0.88);
+      --surface-strong: rgba(255, 255, 255, 0.96);
+      --surface-soft: rgba(248, 251, 255, 0.92);
+      --line: rgba(130, 154, 189, 0.28);
+      --line-strong: rgba(91, 112, 145, 0.42);
+      --text-main: #122039;
+      --text-sub: #5c6d87;
+      --text-faint: #7b8ba3;
       --blue: #2563eb;
       --blue-soft: rgba(37, 99, 235, 0.12);
-      --emerald: #059669;
-      --emerald-soft: rgba(5, 150, 105, 0.12);
-      --amber: #d97706;
-      --amber-soft: rgba(217, 119, 6, 0.13);
-      --rose: #dc2626;
-      --rose-soft: rgba(220, 38, 38, 0.12);
       --violet: #7c3aed;
       --violet-soft: rgba(124, 58, 237, 0.12);
-      --slate: #475569;
-      --slate-soft: rgba(71, 85, 105, 0.12);
-      --accent: linear-gradient(135deg, #34c8ff 0%, #0a84ff 52%, #0a63ff 100%);
-      --input-bg: rgba(255, 255, 255, 0.88);
-      --chip-bg: rgba(255, 255, 255, 0.7);
+      --amber: #d97706;
+      --amber-soft: rgba(217, 119, 6, 0.14);
+      --rose: #dc2626;
+      --rose-soft: rgba(220, 38, 38, 0.12);
+      --shadow: 0 28px 68px rgba(15, 23, 42, 0.14);
+      --shadow-soft: 0 16px 34px rgba(15, 23, 42, 0.08);
+      --accent: linear-gradient(135deg, #44c8ff 0%, #198dff 52%, #175fff 100%);
+      --status-awaiting-bg: linear-gradient(180deg, rgba(245, 240, 255, 0.98), rgba(236, 229, 255, 0.96));
+      --status-due-soon-bg: linear-gradient(180deg, rgba(255, 246, 231, 0.98), rgba(255, 238, 214, 0.96));
+      --status-unpaid-bg: linear-gradient(180deg, rgba(234, 244, 255, 0.98), rgba(223, 238, 255, 0.96));
+      --status-overdue-bg: linear-gradient(180deg, rgba(255, 236, 239, 0.98), rgba(255, 227, 232, 0.96));
     }
 
     body.dark-mode {
       color-scheme: dark;
-      --bg-1: #07111d;
-      --bg-2: #0d1828;
-      --surface: rgba(13, 22, 37, 0.78);
-      --surface-strong: rgba(16, 26, 42, 0.9);
-      --surface-soft: rgba(15, 24, 39, 0.62);
+      --bg-top: #07111d;
+      --bg-bottom: #0e1828;
+      --surface: rgba(13, 22, 37, 0.84);
+      --surface-strong: rgba(15, 25, 41, 0.96);
+      --surface-soft: rgba(11, 19, 32, 0.92);
       --line: rgba(148, 163, 184, 0.18);
-      --line-strong: rgba(148, 163, 184, 0.28);
-      --text-main: #ecf4ff;
-      --text-sub: #c1d0e5;
-      --text-faint: #95a7c2;
-      --shadow: 0 30px 88px rgba(2, 8, 20, 0.6);
-      --shadow-soft: 0 18px 42px rgba(2, 8, 20, 0.42);
-      --blue-soft: rgba(96, 165, 250, 0.16);
-      --emerald-soft: rgba(16, 185, 129, 0.16);
-      --amber-soft: rgba(245, 158, 11, 0.16);
-      --rose-soft: rgba(248, 113, 113, 0.16);
-      --violet-soft: rgba(167, 139, 250, 0.16);
-      --slate-soft: rgba(148, 163, 184, 0.14);
-      --input-bg: rgba(8, 15, 27, 0.78);
-      --chip-bg: rgba(15, 24, 39, 0.76);
+      --line-strong: rgba(148, 163, 184, 0.34);
+      --text-main: #edf4ff;
+      --text-sub: #c6d4e6;
+      --text-faint: #92a6c1;
+      --blue-soft: rgba(59, 130, 246, 0.18);
+      --violet-soft: rgba(124, 58, 237, 0.2);
+      --amber-soft: rgba(245, 158, 11, 0.2);
+      --rose-soft: rgba(248, 113, 113, 0.18);
+      --shadow: 0 34px 84px rgba(2, 8, 20, 0.54);
+      --shadow-soft: 0 18px 42px rgba(2, 8, 20, 0.36);
+      --status-awaiting-bg: linear-gradient(180deg, rgba(43, 25, 78, 0.68), rgba(27, 16, 52, 0.76));
+      --status-due-soon-bg: linear-gradient(180deg, rgba(87, 49, 8, 0.68), rgba(57, 33, 8, 0.76));
+      --status-unpaid-bg: linear-gradient(180deg, rgba(18, 46, 92, 0.68), rgba(12, 30, 64, 0.76));
+      --status-overdue-bg: linear-gradient(180deg, rgba(100, 24, 34, 0.66), rgba(63, 16, 23, 0.76));
     }
 
     * {
@@ -78,61 +76,38 @@
       font-family: "IBM Plex Sans Thai", sans-serif;
       color: var(--text-main);
       background:
-        radial-gradient(1000px 580px at -10% -15%, rgba(52, 200, 255, 0.24), rgba(52, 200, 255, 0) 60%),
-        radial-gradient(920px 520px at 115% -12%, rgba(10, 132, 255, 0.2), rgba(10, 132, 255, 0) 58%),
-        linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 100%);
+        radial-gradient(980px 620px at -10% -12%, rgba(52, 200, 255, 0.22), rgba(52, 200, 255, 0) 58%),
+        radial-gradient(920px 520px at 110% -16%, rgba(23, 95, 255, 0.18), rgba(23, 95, 255, 0) 56%),
+        linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
       transition: background 0.28s ease, color 0.28s ease;
     }
 
     .shell {
-      width: min(1280px, calc(100vw - 40px));
+      width: min(1820px, calc(100vw - 28px));
       margin: 0 auto;
-      padding: calc(18px + env(safe-area-inset-top, 0px)) 0 calc(42px + env(safe-area-inset-bottom, 0px));
+      padding: calc(18px + env(safe-area-inset-top, 0px)) 0 calc(32px + env(safe-area-inset-bottom, 0px));
       display: grid;
-      align-content: start;
-      gap: 28px;
+      gap: 22px;
     }
 
-    .hero {
-      position: relative;
-      overflow: hidden;
+    .top-panel,
+    .report-card,
+    .state-card {
       border-radius: 32px;
-      padding: 24px;
       background: var(--surface);
-      border: 1px solid rgba(255, 255, 255, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.56);
       box-shadow: var(--shadow);
       backdrop-filter: blur(22px) saturate(165%);
       -webkit-backdrop-filter: blur(22px) saturate(165%);
     }
 
-    .hero::before,
-    .hero::after {
-      content: "";
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(28px);
-      pointer-events: none;
+    .top-panel {
+      padding: 24px;
+      display: grid;
+      gap: 18px;
     }
 
-    .hero::before {
-      width: 220px;
-      height: 220px;
-      top: -100px;
-      right: -70px;
-      background: rgba(59, 130, 246, 0.18);
-    }
-
-    .hero::after {
-      width: 180px;
-      height: 180px;
-      bottom: -90px;
-      left: -50px;
-      background: rgba(52, 200, 255, 0.14);
-    }
-
-    .hero-top {
-      position: relative;
-      z-index: 1;
+    .top-head {
       display: flex;
       align-items: flex-start;
       justify-content: space-between;
@@ -140,73 +115,88 @@
       flex-wrap: wrap;
     }
 
-    .hero-top > * {
-      min-width: 0;
-    }
-
-    .hero-title {
+    .page-title {
       margin: 0;
-      font-size: clamp(2rem, 4vw, 3rem);
-      line-height: 1.08;
+      font-size: clamp(2rem, 4vw, 3.35rem);
+      line-height: 1.04;
       font-weight: 900;
-      letter-spacing: -0.03em;
+      letter-spacing: -0.04em;
       color: var(--text-main);
     }
 
-    .hero-actions {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
+    .page-subtitle {
+      margin: 10px 0 0;
+      max-width: 920px;
+      font-size: 1rem;
+      line-height: 1.7;
+      color: var(--text-sub);
+      font-weight: 700;
     }
 
     .theme-btn,
-    .ghost-chip {
+    .search-btn,
+    .ghost-btn,
+    .refresh-btn {
       appearance: none;
       border: 1px solid var(--line-strong);
-      background: var(--chip-bg);
-      color: var(--text-main);
-      border-radius: 999px;
-      min-height: 48px;
-      padding: 0 16px;
+      border-radius: 18px;
+      min-height: 56px;
+      padding: 0 18px;
+      font: inherit;
+      font-weight: 900;
+      cursor: pointer;
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      font: inherit;
-      font-weight: 800;
-      cursor: pointer;
-      box-shadow: var(--shadow-soft);
-      transition: transform 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+      gap: 10px;
+      transition: transform 0.16s ease, filter 0.16s ease, border-color 0.16s ease, opacity 0.16s ease;
       text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .theme-btn,
+    .ghost-btn,
+    .refresh-btn {
+      background: var(--surface-soft);
+      color: var(--text-main);
+      box-shadow: var(--shadow-soft);
+    }
+
+    .search-btn {
+      border: none;
+      color: #fff;
+      background: var(--accent);
+      box-shadow: 0 18px 32px rgba(10, 132, 255, 0.24);
     }
 
     .theme-btn:hover,
-    .ghost-chip:hover {
+    .search-btn:hover,
+    .ghost-btn:hover,
+    .refresh-btn:hover {
       transform: translateY(-1px);
-      border-color: rgba(59, 130, 246, 0.42);
+      filter: brightness(1.02);
     }
 
-    .search-panel {
-      position: relative;
-      z-index: 1;
-      margin-top: 22px;
-      padding: 18px;
-      border-radius: 26px;
-      background: var(--surface-strong);
-      border: 1px solid rgba(255, 255, 255, 0.42);
-      box-shadow: var(--shadow-soft);
+    .theme-btn:disabled,
+    .search-btn:disabled,
+    .ghost-btn:disabled,
+    .refresh-btn:disabled {
+      opacity: 0.72;
+      cursor: wait;
+      transform: none;
+      filter: none;
     }
 
-    .search-grid {
+    .search-bar {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(156px, 176px) minmax(136px, 156px);
+      grid-template-columns: minmax(0, 1fr) minmax(156px, 176px) minmax(136px, 148px);
       gap: 14px;
       align-items: center;
     }
 
     .search-field {
       position: relative;
+      min-width: 0;
     }
 
     .search-field i {
@@ -214,8 +204,8 @@
       left: 18px;
       top: 50%;
       transform: translateY(-50%);
-      color: #6b7e95;
       font-size: 1.08rem;
+      color: var(--text-faint);
       pointer-events: none;
     }
 
@@ -224,652 +214,395 @@
       min-height: 58px;
       border-radius: 18px;
       border: 1px solid var(--line-strong);
-      background: var(--input-bg);
+      background: var(--surface-strong);
       color: var(--text-main);
       padding: 0 18px 0 50px;
       font: inherit;
       font-size: 1.02rem;
-      font-weight: 700;
+      font-weight: 800;
       outline: none;
       transition: border-color 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
     }
 
     .search-input::placeholder {
-      color: #8a9ab0;
-      font-weight: 600;
+      color: var(--text-faint);
+      font-weight: 700;
     }
 
     .search-input:focus {
-      border-color: rgba(37, 99, 235, 0.5);
+      border-color: rgba(37, 99, 235, 0.48);
       box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
     }
 
-    .btn-primary,
-    .btn-secondary {
-      min-height: 58px;
-      border: none;
-      border-radius: 18px;
-      padding: 0 22px;
-      font: inherit;
-      font-weight: 900;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 9px;
-      transition: transform 0.16s ease, filter 0.16s ease, opacity 0.16s ease;
-    }
-
-    .btn-primary {
-      color: #fff;
-      background: var(--accent);
-      box-shadow: 0 18px 32px rgba(10, 132, 255, 0.26);
-    }
-
-    .btn-secondary {
-      color: var(--text-main);
-      background: var(--chip-bg);
-      border: 1px solid var(--line-strong);
-      box-shadow: var(--shadow-soft);
-    }
-
-    .btn-primary:hover,
-    .btn-secondary:hover {
-      transform: translateY(-1px);
-      filter: brightness(1.02);
-    }
-
-    .btn-primary:disabled,
-    .btn-secondary:disabled {
-      cursor: wait;
-      opacity: 0.72;
-      transform: none;
-      filter: none;
-    }
-
-    .dashboard {
-      display: grid;
-      gap: 22px;
-    }
-
-    .section-card {
-      display: grid;
-      gap: 18px;
-      border-radius: 28px;
-      background: var(--surface);
-      border: 1px solid rgba(255, 255, 255, 0.46);
-      box-shadow: var(--shadow-soft);
-      padding: 24px;
-      backdrop-filter: blur(20px) saturate(160%);
-      -webkit-backdrop-filter: blur(20px) saturate(160%);
-    }
-
-    .summary-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-      gap: 16px;
-    }
-
-    .summary-card {
-      position: relative;
+    .report-card {
       overflow: hidden;
-      min-width: 0;
-      min-height: 188px;
-      border-radius: 24px;
-      border: 1px solid rgba(148, 163, 184, 0.22);
-      padding: 20px;
-      background: linear-gradient(180deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.54) 100%);
     }
 
-    body.dark-mode .summary-card {
-      background: linear-gradient(180deg, rgba(20,29,46,0.88) 0%, rgba(11,18,31,0.72) 100%);
-    }
-
-    .summary-card::after {
-      content: "";
-      position: absolute;
-      right: -18px;
-      top: -18px;
-      width: 120px;
-      height: 120px;
-      border-radius: 40px;
-      background: rgba(255,255,255,0.35);
-      opacity: 0.48;
-    }
-
-    .summary-card.blue { border-color: rgba(59, 130, 246, 0.28); }
-    .summary-card.emerald { border-color: rgba(16, 185, 129, 0.28); }
-    .summary-card.amber { border-color: rgba(245, 158, 11, 0.28); }
-    .summary-card.rose { border-color: rgba(248, 113, 113, 0.28); }
-
-    .summary-head {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-
-    .summary-label {
-      font-size: 0.98rem;
-      font-weight: 800;
-      color: var(--text-sub);
-      line-height: 1.5;
-      min-width: 0;
-    }
-
-    .summary-icon {
-      width: 54px;
-      height: 54px;
-      border-radius: 18px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.42rem;
-    }
-
-    .summary-card.blue .summary-icon { color: var(--blue); background: var(--blue-soft); }
-    .summary-card.emerald .summary-icon { color: var(--emerald); background: var(--emerald-soft); }
-    .summary-card.amber .summary-icon { color: var(--amber); background: var(--amber-soft); }
-    .summary-card.rose .summary-icon { color: var(--rose); background: var(--rose-soft); }
-
-    .summary-value {
-      position: relative;
-      z-index: 1;
-      font-size: clamp(2rem, 4vw, 3rem);
-      font-weight: 900;
-      line-height: 1;
-      letter-spacing: -0.04em;
-      color: var(--text-main);
-    }
-
-    .summary-sub {
-      position: relative;
-      z-index: 1;
-      margin-top: 12px;
-      font-size: 0.9rem;
-      line-height: 1.35;
-      color: var(--text-sub);
-      font-weight: 650;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .status-grid {
+    .report-head {
+      padding: 28px 28px 22px;
+      border-bottom: 1px solid var(--line);
+      text-align: center;
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(176px, 1fr));
-      gap: 14px;
-      margin-top: 16px;
-    }
-
-    .status-card {
-      min-width: 0;
-      border-radius: 22px;
-      padding: 18px 16px;
-      border: 1px solid transparent;
-      display: grid;
-      align-content: start;
-      gap: 10px;
-      min-height: 142px;
-      background: var(--surface-soft);
-    }
-
-    .status-card .label {
-      font-size: 0.9rem;
-      font-weight: 800;
-      line-height: 1.5;
-    }
-
-    .status-card .count {
-      font-size: 2rem;
-      line-height: 1;
-      font-weight: 900;
-      letter-spacing: -0.03em;
-    }
-
-    .status-card .amount {
-      font-size: 0.84rem;
-      color: var(--text-sub);
-      font-weight: 700;
-      line-height: 1.5;
-      word-break: break-word;
-    }
-
-    .status-card.paid { border-color: rgba(16, 185, 129, 0.26); background: var(--emerald-soft); color: var(--emerald); }
-    .status-card.unpaid { border-color: rgba(59, 130, 246, 0.26); background: var(--blue-soft); color: var(--blue); }
-    .status-card.due_soon { border-color: rgba(245, 158, 11, 0.26); background: var(--amber-soft); color: var(--amber); }
-    .status-card.overdue { border-color: rgba(239, 68, 68, 0.26); background: var(--rose-soft); color: var(--rose); }
-    .status-card.awaiting { border-color: rgba(124, 58, 237, 0.26); background: var(--violet-soft); color: var(--violet); }
-    .status-card.cancelled { border-color: rgba(100, 116, 139, 0.26); background: var(--slate-soft); color: var(--slate); }
-
-    .section-head {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 14px;
-      margin-bottom: 16px;
-      flex-wrap: wrap;
-    }
-
-    .section-title {
-      margin: 0;
-      font-size: 1.42rem;
-      line-height: 1.2;
-      font-weight: 900;
-      letter-spacing: -0.02em;
-      color: var(--text-main);
-    }
-
-    .section-subtitle {
-      margin: 6px 0 0;
-      font-size: 0.96rem;
-      line-height: 1.55;
-      color: var(--text-sub);
-      font-weight: 650;
-    }
-
-    .section-pill {
-      display: inline-flex;
-      align-items: center;
       gap: 8px;
-      padding: 10px 14px;
-      border-radius: 999px;
-      background: var(--chip-bg);
-      border: 1px solid var(--line-strong);
-      color: var(--text-main);
-      font-size: 0.92rem;
-      font-weight: 800;
-      white-space: nowrap;
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0.08));
     }
 
-    .project-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 16px;
+    body.dark-mode .report-head {
+      background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), rgba(255, 255, 255, 0));
     }
 
-    .project-card {
-      min-width: 0;
-      display: grid;
-      gap: 14px;
-      min-height: 188px;
-      padding: 20px;
-      border-radius: 24px;
-      background: var(--surface-soft);
-      border: 1px solid var(--line);
-    }
-
-    .project-card-head {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      align-items: flex-start;
-      gap: 12px;
-    }
-
-    .project-card-title {
+    .report-title {
       margin: 0;
-      font-size: 1.02rem;
-      line-height: 1.55;
-      font-weight: 800;
-      color: var(--text-main);
-      min-width: 0;
-      overflow-wrap: anywhere;
-    }
-
-    .project-count {
-      font-size: 2rem;
-      line-height: 1;
-      font-weight: 900;
-      color: var(--blue);
-      letter-spacing: -0.03em;
-      white-space: nowrap;
-    }
-
-    .project-meta {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      align-items: end;
-      gap: 12px;
-      margin-top: auto;
-      color: var(--text-sub);
-      font-size: 0.9rem;
-      font-weight: 700;
-    }
-
-    .records-grid {
-      display: grid;
-      gap: 16px;
-    }
-
-    .record-card {
-      min-width: 0;
-      border-radius: 24px;
-      padding: 20px;
-      border: 1px solid var(--line);
-      background: var(--surface-soft);
-      display: grid;
-      gap: 18px;
-    }
-
-    .record-head {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) auto;
-      align-items: start;
-      gap: 16px;
-    }
-
-    .record-title {
-      margin: 8px 0 0;
-      font-size: 1.14rem;
-      line-height: 1.5;
-      font-weight: 850;
-      color: var(--text-main);
-      overflow-wrap: anywhere;
-    }
-
-    .record-amount {
-      font-size: 2rem;
-      line-height: 1;
+      font-size: clamp(1.8rem, 3vw, 2.4rem);
+      line-height: 1.15;
       font-weight: 900;
       letter-spacing: -0.03em;
-      color: var(--blue);
-      white-space: nowrap;
-      text-align: right;
-      align-self: start;
+      color: var(--text-main);
     }
 
-    .status-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 12px;
-      border-radius: 999px;
-      font-size: 0.88rem;
-      font-weight: 900;
-      border: 1px solid transparent;
-    }
-
-    .status-badge.paid { background: var(--emerald-soft); border-color: rgba(16, 185, 129, 0.24); color: var(--emerald); }
-    .status-badge.unpaid { background: var(--blue-soft); border-color: rgba(37, 99, 235, 0.24); color: var(--blue); }
-    .status-badge.due_soon { background: var(--amber-soft); border-color: rgba(217, 119, 6, 0.24); color: var(--amber); }
-    .status-badge.overdue { background: var(--rose-soft); border-color: rgba(220, 38, 38, 0.24); color: var(--rose); }
-    .status-badge.awaiting { background: var(--violet-soft); border-color: rgba(124, 58, 237, 0.24); color: var(--violet); }
-    .status-badge.cancelled { background: var(--slate-soft); border-color: rgba(71, 85, 105, 0.24); color: var(--slate); }
-
-    .record-meta-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 12px;
-    }
-
-    .meta-item {
-      min-width: 0;
+    .report-meta {
       display: grid;
       gap: 4px;
-      padding: 12px 14px;
-      border-radius: 18px;
-      background: rgba(255, 255, 255, 0.4);
-      border: 1px solid rgba(148, 163, 184, 0.16);
-    }
-
-    body.dark-mode .meta-item {
-      background: rgba(3, 10, 20, 0.34);
-      border-color: rgba(148, 163, 184, 0.12);
-    }
-
-    .meta-label {
-      font-size: 0.82rem;
-      color: var(--text-faint);
+      justify-items: center;
+      color: var(--text-sub);
+      font-size: 1rem;
       font-weight: 700;
+      line-height: 1.6;
+    }
+
+    .report-body {
+      padding: 22px 22px 24px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .status-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .status-box {
+      border-radius: 24px;
+      border: 1px solid transparent;
+      padding: 18px 18px 16px;
+      display: grid;
+      gap: 12px;
+      min-width: 0;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .status-box.awaiting {
+      background: var(--status-awaiting-bg);
+      border-color: rgba(124, 58, 237, 0.24);
+    }
+
+    .status-box.due_soon {
+      background: var(--status-due-soon-bg);
+      border-color: rgba(217, 119, 6, 0.24);
+    }
+
+    .status-box.unpaid {
+      background: var(--status-unpaid-bg);
+      border-color: rgba(37, 99, 235, 0.24);
+    }
+
+    .status-box.overdue {
+      background: var(--status-overdue-bg);
+      border-color: rgba(220, 38, 38, 0.24);
+    }
+
+    .status-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .status-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      font-size: 1rem;
+      font-weight: 900;
       line-height: 1.4;
     }
 
-    .meta-value {
-      font-size: 0.98rem;
-      color: var(--text-main);
-      font-weight: 800;
+    .status-label i {
+      font-size: 1rem;
+    }
+
+    .status-box.awaiting .status-label,
+    .status-box.awaiting .status-value { color: var(--violet); }
+    .status-box.due_soon .status-label,
+    .status-box.due_soon .status-value { color: var(--amber); }
+    .status-box.unpaid .status-label,
+    .status-box.unpaid .status-value { color: var(--blue); }
+    .status-box.overdue .status-label,
+    .status-box.overdue .status-value { color: var(--rose); }
+
+    .status-value {
+      font-size: clamp(2rem, 3vw, 2.75rem);
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      white-space: nowrap;
+    }
+
+    .status-sub {
+      font-size: 0.92rem;
       line-height: 1.55;
-      word-break: break-word;
+      font-weight: 750;
+      color: var(--text-sub);
     }
 
-    .record-foot {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 10px;
+    .table-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
     }
 
-    .foot-chip {
-      min-width: 0;
-      display: grid;
-      grid-template-columns: auto minmax(0, 1fr);
+    .toolbar-note {
+      color: var(--text-sub);
+      font-size: 0.96rem;
+      line-height: 1.6;
+      font-weight: 750;
+    }
+
+    .table-actions {
+      display: flex;
       align-items: center;
       gap: 10px;
-      padding: 11px 12px;
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.46);
-      border: 1px solid rgba(148, 163, 184, 0.18);
-      color: var(--text-sub);
-      line-height: 1.45;
-      overflow-wrap: anywhere;
+      flex-wrap: wrap;
     }
 
-    body.dark-mode .foot-chip {
-      background: rgba(3, 10, 20, 0.36);
-      border-color: rgba(148, 163, 184, 0.14);
-    }
-
-    .foot-chip-icon {
-      width: 38px;
-      height: 38px;
-      border-radius: 12px;
+    .count-pill {
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      font-size: 1.02rem;
-      flex: 0 0 auto;
-      background: rgba(148, 163, 184, 0.12);
-      color: var(--text-sub);
-    }
-
-    .foot-chip-copy {
-      min-width: 0;
-      display: grid;
-      gap: 2px;
-    }
-
-    .foot-chip-label {
-      font-size: 0.78rem;
-      font-weight: 800;
-      letter-spacing: 0.01em;
-      color: var(--text-faint);
-    }
-
-    .foot-chip-value {
+      gap: 8px;
+      min-height: 48px;
+      padding: 0 15px;
+      border-radius: 999px;
+      background: var(--surface-soft);
+      border: 1px solid var(--line-strong);
+      color: var(--text-main);
       font-size: 0.92rem;
       font-weight: 900;
-      color: var(--text-main);
-      line-height: 1.45;
-      overflow-wrap: anywhere;
-    }
-
-    .foot-chip.tone-blue {
-      background: rgba(37, 99, 235, 0.08);
-      border-color: rgba(37, 99, 235, 0.18);
-    }
-
-    .foot-chip.tone-blue .foot-chip-icon {
-      background: rgba(37, 99, 235, 0.12);
-      color: var(--blue);
-    }
-
-    .foot-chip.tone-blue .foot-chip-label,
-    .foot-chip.tone-blue .foot-chip-value {
-      color: var(--blue);
-    }
-
-    .foot-chip.tone-emerald {
-      background: rgba(5, 150, 105, 0.08);
-      border-color: rgba(5, 150, 105, 0.18);
-    }
-
-    .foot-chip.tone-emerald .foot-chip-icon {
-      background: rgba(5, 150, 105, 0.12);
-      color: var(--emerald);
-    }
-
-    .foot-chip.tone-emerald .foot-chip-label,
-    .foot-chip.tone-emerald .foot-chip-value {
-      color: var(--emerald);
-    }
-
-    .foot-chip.tone-amber {
-      background: rgba(217, 119, 6, 0.08);
-      border-color: rgba(217, 119, 6, 0.2);
-    }
-
-    .foot-chip.tone-amber .foot-chip-icon {
-      background: rgba(217, 119, 6, 0.12);
-      color: var(--amber);
-    }
-
-    .foot-chip.tone-amber .foot-chip-label,
-    .foot-chip.tone-amber .foot-chip-value {
-      color: var(--amber);
-    }
-
-    .foot-chip.tone-rose {
-      background: rgba(220, 38, 38, 0.08);
-      border-color: rgba(220, 38, 38, 0.2);
-    }
-
-    .foot-chip.tone-rose .foot-chip-icon {
-      background: rgba(220, 38, 38, 0.12);
-      color: var(--rose);
-    }
-
-    .foot-chip.tone-rose .foot-chip-label,
-    .foot-chip.tone-rose .foot-chip-value {
-      color: var(--rose);
-    }
-
-    .foot-chip.tone-violet {
-      background: rgba(124, 58, 237, 0.08);
-      border-color: rgba(124, 58, 237, 0.18);
-    }
-
-    .foot-chip.tone-violet .foot-chip-icon {
-      background: rgba(124, 58, 237, 0.12);
-      color: var(--violet);
-    }
-
-    .foot-chip.tone-violet .foot-chip-label,
-    .foot-chip.tone-violet .foot-chip-value {
-      color: var(--violet);
-    }
-
-    .foot-chip.tone-slate {
-      background: rgba(71, 85, 105, 0.08);
-      border-color: rgba(71, 85, 105, 0.18);
-    }
-
-    .foot-chip.tone-slate .foot-chip-icon {
-      background: rgba(71, 85, 105, 0.12);
-      color: var(--slate);
-    }
-
-    .foot-chip.tone-slate .foot-chip-label,
-    .foot-chip.tone-slate .foot-chip-value {
-      color: var(--slate);
-    }
-
-    body.dark-mode .foot-chip.tone-blue {
-      background: rgba(37, 99, 235, 0.14);
-      border-color: rgba(96, 165, 250, 0.22);
-    }
-
-    body.dark-mode .foot-chip.tone-emerald {
-      background: rgba(5, 150, 105, 0.16);
-      border-color: rgba(52, 211, 153, 0.22);
-    }
-
-    body.dark-mode .foot-chip.tone-amber {
-      background: rgba(217, 119, 6, 0.16);
-      border-color: rgba(251, 191, 36, 0.22);
-    }
-
-    body.dark-mode .foot-chip.tone-rose {
-      background: rgba(220, 38, 38, 0.16);
-      border-color: rgba(248, 113, 113, 0.22);
-    }
-
-    body.dark-mode .foot-chip.tone-violet {
-      background: rgba(124, 58, 237, 0.16);
-      border-color: rgba(167, 139, 250, 0.22);
-    }
-
-    body.dark-mode .foot-chip.tone-slate {
-      background: rgba(71, 85, 105, 0.18);
-      border-color: rgba(148, 163, 184, 0.22);
-    }
-
-    .empty-state,
-    .loading-state,
-    .error-state {
-      border-radius: 28px;
-      padding: 28px 24px;
-      text-align: center;
-      background: var(--surface);
-      border: 1px solid rgba(255, 255, 255, 0.42);
+      white-space: nowrap;
       box-shadow: var(--shadow-soft);
-      color: var(--text-sub);
     }
 
-    .empty-icon,
-    .error-icon,
-    .loading-icon {
-      width: 78px;
-      height: 78px;
+    .table-wrap {
+      overflow: auto;
       border-radius: 24px;
-      margin: 0 auto 16px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2rem;
-      background: rgba(37, 99, 235, 0.1);
+      border: 1px solid var(--line-strong);
+      background: var(--surface-strong);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.46);
+    }
+
+    .report-table {
+      width: 100%;
+      min-width: 1240px;
+      border-collapse: collapse;
+      color: var(--text-main);
+    }
+
+    .report-table thead th {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      padding: 15px 12px;
+      border-right: 1px solid var(--line-strong);
+      border-bottom: 1px solid var(--line-strong);
+      background: linear-gradient(180deg, rgba(229, 236, 246, 0.98), rgba(217, 226, 239, 0.98));
+      color: #18253c;
+      text-align: center;
+      font-size: 1rem;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    body.dark-mode .report-table thead th {
+      background: linear-gradient(180deg, rgba(26, 38, 58, 0.98), rgba(18, 28, 43, 0.98));
+      color: #edf4ff;
+    }
+
+    .report-table thead th:last-child,
+    .report-table tbody td:last-child {
+      border-right: none;
+    }
+
+    .report-table tbody td {
+      padding: 14px 12px;
+      border-right: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      vertical-align: middle;
+      font-size: 0.98rem;
+      line-height: 1.6;
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.74);
+    }
+
+    body.dark-mode .report-table tbody td {
+      background: rgba(10, 18, 31, 0.76);
+    }
+
+    .report-table tbody tr:nth-child(even) td {
+      background: rgba(246, 250, 255, 0.9);
+    }
+
+    body.dark-mode .report-table tbody tr:nth-child(even) td {
+      background: rgba(13, 21, 35, 0.92);
+    }
+
+    .report-table tbody tr.row-awaiting td:first-child { box-shadow: inset 4px 0 0 rgba(124, 58, 237, 0.86); }
+    .report-table tbody tr.row-due_soon td:first-child { box-shadow: inset 4px 0 0 rgba(217, 119, 6, 0.86); }
+    .report-table tbody tr.row-unpaid td:first-child { box-shadow: inset 4px 0 0 rgba(37, 99, 235, 0.86); }
+    .report-table tbody tr.row-overdue td:first-child { box-shadow: inset 4px 0 0 rgba(220, 38, 38, 0.86); }
+
+    .cell-center {
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .cell-amount {
+      text-align: right;
+      white-space: nowrap;
+      font-weight: 900;
       color: var(--blue);
     }
 
-    .error-icon { background: rgba(220, 38, 38, 0.1); color: var(--rose); }
-    .loading-icon { background: rgba(217, 119, 6, 0.1); color: var(--amber); }
-
-    .empty-title,
-    .error-title,
-    .loading-title {
-      margin: 0;
-      font-size: 1.42rem;
+    .cell-borrower {
+      min-width: 260px;
       font-weight: 900;
       color: var(--text-main);
     }
 
-    .empty-text,
-    .error-text,
-    .loading-text {
-      margin: 10px auto 0;
-      max-width: 640px;
-      line-height: 1.7;
-      font-weight: 650;
+    .cell-contract {
+      min-width: 160px;
+      font-weight: 900;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .cell-group,
+    .cell-expense,
+    .cell-funding {
+      min-width: 210px;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 38px;
+      padding: 0 14px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font-size: 0.92rem;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .status-pill.awaiting {
+      color: var(--violet);
+      background: var(--violet-soft);
+      border-color: rgba(124, 58, 237, 0.24);
+    }
+
+    .status-pill.due_soon {
+      color: var(--amber);
+      background: var(--amber-soft);
+      border-color: rgba(217, 119, 6, 0.24);
+    }
+
+    .status-pill.unpaid {
+      color: var(--blue);
+      background: var(--blue-soft);
+      border-color: rgba(37, 99, 235, 0.24);
+    }
+
+    .status-pill.overdue {
+      color: var(--rose);
+      background: var(--rose-soft);
+      border-color: rgba(220, 38, 38, 0.24);
+    }
+
+    .muted-text {
+      color: var(--text-faint);
+      font-weight: 700;
+    }
+
+    .truncate-note {
+      color: var(--text-sub);
+      font-size: 0.92rem;
+      line-height: 1.6;
+      font-weight: 700;
+      text-align: right;
+    }
+
+    .state-card {
+      padding: 30px 24px;
+      text-align: center;
+      color: var(--text-sub);
+      display: grid;
+      justify-items: center;
+      gap: 10px;
+    }
+
+    .state-icon {
+      width: 74px;
+      height: 74px;
+      border-radius: 24px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.9rem;
+      box-shadow: var(--shadow-soft);
+    }
+
+    .state-card.loading .state-icon {
+      color: var(--amber);
+      background: var(--amber-soft);
+    }
+
+    .state-card.error .state-icon {
+      color: var(--rose);
+      background: var(--rose-soft);
+    }
+
+    .state-card.empty .state-icon {
+      color: var(--blue);
+      background: var(--blue-soft);
+    }
+
+    .state-title {
+      margin: 0;
+      font-size: 1.48rem;
+      line-height: 1.2;
+      font-weight: 900;
+      color: var(--text-main);
+    }
+
+    .state-text {
+      margin: 0;
+      max-width: 720px;
+      font-size: 1rem;
+      line-height: 1.75;
+      font-weight: 700;
     }
 
     .spinner {
-      width: 24px;
-      height: 24px;
+      width: 26px;
+      height: 26px;
       border-radius: 50%;
-      border: 3px solid rgba(217, 119, 6, 0.2);
+      border: 3px solid rgba(217, 119, 6, 0.22);
       border-top-color: var(--amber);
-      animation: spin 0.85s linear infinite;
+      animation: spin 0.9s linear infinite;
     }
 
     .hidden {
@@ -880,131 +613,140 @@
       to { transform: rotate(360deg); }
     }
 
-    @media (max-width: 1120px) {
+    @media (max-width: 1180px) {
       .shell {
-        width: min(100vw - 26px, 100%);
-        gap: 24px;
+        width: min(100vw - 20px, 100%);
       }
-      .section-card {
-        padding: 22px;
-      }
-      .record-head {
-        grid-template-columns: 1fr;
-      }
-      .record-amount {
-        text-align: left;
-        white-space: normal;
+
+      .status-strip {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
     }
 
     @media (max-width: 820px) {
       .shell {
-        width: min(100vw - 18px, 100%);
+        width: min(100vw - 14px, 100%);
         padding-top: calc(12px + env(safe-area-inset-top, 0px));
-        gap: 20px;
       }
-      .hero,
-      .section-card,
-      .empty-state,
-      .loading-state,
-      .error-state {
+
+      .top-panel,
+      .report-card,
+      .state-card {
         border-radius: 24px;
       }
-      .hero,
-      .section-card {
+
+      .top-panel {
         padding: 18px;
       }
-      .search-grid {
+
+      .search-bar {
         grid-template-columns: 1fr;
       }
-      .record-amount {
-        font-size: 1.72rem;
-      }
-      .project-card-head,
-      .project-meta,
-      .record-foot {
+
+      .status-strip {
         grid-template-columns: 1fr;
       }
-      .section-pill,
-      .ghost-chip,
-      .theme-btn {
-        width: 100%;
-        justify-content: center;
+
+      .table-toolbar,
+      .table-actions,
+      .top-head {
+        align-items: stretch;
       }
-      .hero-actions {
+
+      .theme-btn,
+      .ghost-btn,
+      .refresh-btn,
+      .search-btn,
+      .count-pill {
         width: 100%;
+      }
+
+      .report-head {
+        padding: 22px 18px 18px;
+      }
+
+      .report-body {
+        padding: 18px;
       }
     }
   </style>
 </head>
 <body>
   <main class="shell">
-    <section class="hero">
-      <div class="hero-top">
+    <section class="top-panel">
+      <div class="top-head">
         <div>
-          <h1 class="hero-title">ตรวจสอบเงินยืม</h1>
+          <h1 class="page-title">ตรวจสอบเงินยืม</h1>
+          <p class="page-subtitle">แสดงเฉพาะรายการที่ต้องติดตาม 4 สถานะ คือ รอเพิ่มข้อมูล, ใกล้ครบกำหนด, ยังไม่ชำระ และ เลยกำหนด โดยเรียงวันครบกำหนดจากเก่าไปใหม่</p>
         </div>
-        <div class="hero-actions">
-          <button id="btnTheme" class="theme-btn" type="button"><i class="bi bi-moon-stars"></i><span>โหมดกลางคืน</span></button>
-        </div>
+        <button id="btnTheme" class="theme-btn" type="button"><i class="bi bi-moon-stars"></i><span>โหมดกลางคืน</span></button>
       </div>
 
-      <section class="search-panel" aria-label="ค้นหาผู้ยืม">
-        <div class="search-grid">
-          <label class="search-field" for="searchInput">
-            <i class="bi bi-search"></i>
-            <input id="searchInput" class="search-input" type="text" placeholder="ค้นหาด้วยชื่อ-นามสกุลผู้ยืม" autocomplete="name" spellcheck="false">
-          </label>
-          <button id="btnSearch" class="btn-primary" type="button"><i class="bi bi-search"></i>ค้นหา</button>
-          <button id="btnReset" class="btn-secondary" type="button"><i class="bi bi-arrow-counterclockwise"></i>ล้างค่า</button>
-        </div>
-      </section>
+      <div class="search-bar" aria-label="ค้นหาผู้ยืม">
+        <label class="search-field" for="searchInput">
+          <i class="bi bi-search"></i>
+          <input id="searchInput" class="search-input" type="text" placeholder="ค้นหาชื่อผู้ยืม หรือเว้นว่างเพื่อแสดงทั้งหมด" autocomplete="name" spellcheck="false">
+        </label>
+        <button id="btnSearch" class="search-btn" type="button"><i class="bi bi-search"></i>ค้นหา</button>
+        <button id="btnReset" class="ghost-btn" type="button"><i class="bi bi-eraser"></i>ล้างชื่อ</button>
+      </div>
     </section>
 
-    <section id="loadingState" class="loading-state hidden" aria-live="polite">
-      <div class="loading-icon"><div class="spinner" aria-hidden="true"></div></div>
-      <h2 class="loading-title">กำลังค้นหาข้อมูลเงินยืม</h2>
-      <p class="loading-text">ระบบกำลังตรวจสอบรายการทะเบียนคุมเงินยืมตามชื่อที่กรอก กรุณารอสักครู่</p>
+    <section id="loadingState" class="state-card loading hidden" aria-live="polite">
+      <div class="state-icon"><div class="spinner" aria-hidden="true"></div></div>
+      <h2 class="state-title">กำลังโหลดข้อมูลทะเบียนคุมเงินยืม</h2>
+      <p class="state-text">ระบบกำลังดึงรายการที่ต้องติดตามและเรียงวันครบกำหนดจากเก่าไปใหม่ กรุณารอสักครู่</p>
     </section>
 
-    <section id="errorState" class="error-state hidden" aria-live="assertive">
-      <div class="error-icon"><i class="bi bi-exclamation-octagon"></i></div>
-      <h2 class="error-title">ไม่สามารถโหลดข้อมูลได้</h2>
-      <p id="errorText" class="error-text">เกิดข้อผิดพลาดในการเชื่อมต่อระบบ</p>
+    <section id="errorState" class="state-card error hidden" aria-live="assertive">
+      <div class="state-icon"><i class="bi bi-exclamation-octagon"></i></div>
+      <h2 class="state-title">ไม่สามารถโหลดข้อมูลได้</h2>
+      <p id="errorText" class="state-text">เกิดข้อผิดพลาดในการเชื่อมต่อระบบ</p>
     </section>
 
-    <section id="emptyState" class="empty-state">
-      <div class="empty-icon"><i class="bi bi-person-vcard"></i></div>
-      <h2 id="emptyTitle" class="empty-title">เริ่มต้นค้นหาด้วยชื่อผู้ยืม</h2>
-      <p id="emptyText" class="empty-text">กรอกชื่อ-นามสกุลของผู้ยืมเพื่อดูสรุปรายการเงินยืม ยอดเงินรวม จำนวนโครงการ และสถานะการชำระคืน</p>
+    <section id="emptyState" class="state-card empty hidden">
+      <div class="state-icon"><i class="bi bi-table"></i></div>
+      <h2 id="emptyTitle" class="state-title">ยังไม่มีรายการที่ต้องติดตาม</h2>
+      <p id="emptyText" class="state-text">เมื่อระบบพบรายการเงินยืมในสถานะ รอเพิ่มข้อมูล, ใกล้ครบกำหนด, ยังไม่ชำระ หรือ เลยกำหนด รายการจะแสดงในตารางด้านล่างอัตโนมัติ</p>
     </section>
 
-    <section id="dashboardArea" class="dashboard hidden">
-      <div class="section-card">
-        <div class="summary-grid" id="summaryGrid"></div>
-        <div class="status-grid" id="statusGrid"></div>
+    <section id="reportArea" class="report-card hidden">
+      <div class="report-head">
+        <h2 class="report-title">รายงานทะเบียนคุมเงินยืม</h2>
+        <div id="reportMeta" class="report-meta"></div>
       </div>
 
-      <div class="section-card">
-        <div class="section-head">
-          <div>
-            <h2 class="section-title">สรุปตามโครงการ</h2>
-            <p class="section-subtitle">แสดงจำนวนรายการเงินยืมและยอดรวมแยกตามโครงการที่ค้นพบจากชื่อผู้ยืม</p>
+      <div class="report-body">
+        <div id="statusStrip" class="status-strip"></div>
+
+        <div class="table-toolbar">
+          <div class="toolbar-note">หัวตารางแสดงเฉพาะข้อมูลที่ต้องติดตามจริง และตัดคอลัมน์เลขรับออกแล้ว โดยแทนที่ด้วยยอดเงินในสัญญา</div>
+          <div class="table-actions">
+            <div id="tableCount" class="count-pill"><i class="bi bi-files"></i>0 รายการ</div>
+            <button id="btnRefresh" class="refresh-btn" type="button"><i class="bi bi-arrow-clockwise"></i>รีเฟรชข้อมูล</button>
           </div>
-          <div id="projectCountPill" class="section-pill"><i class="bi bi-diagram-3"></i>0 โครงการ</div>
         </div>
-        <div id="projectGrid" class="project-grid"></div>
-      </div>
 
-      <div class="section-card">
-        <div class="section-head">
-          <div>
-            <h2 class="section-title">รายการเงินยืมที่พบ</h2>
-            <p class="section-subtitle">แสดงสถานะล่าสุดของแต่ละรายการ เช่น ชำระแล้ว คงค้างชำระ ใกล้ครบกำหนด หรือยกเลิกเงินยืม</p>
-          </div>
-          <div id="recordCountPill" class="section-pill"><i class="bi bi-files"></i>0 รายการ</div>
+        <div class="table-wrap">
+          <table class="report-table" aria-label="ตารางรายการเงินยืมที่ต้องติดตาม">
+            <thead>
+              <tr>
+                <th>ลำดับ</th>
+                <th>เลขที่สัญญา</th>
+                <th>ยอดเงินในสัญญา</th>
+                <th>ผู้ยืม</th>
+                <th>กลุ่ม/ศูนย์</th>
+                <th>ประเภทค่าใช้จ่าย</th>
+                <th>แหล่งเงินยืม</th>
+                <th>สถานะ</th>
+                <th>วันครบกำหนด</th>
+              </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+          </table>
         </div>
-        <div id="recordsGrid" class="records-grid"></div>
+
+        <div id="truncateNote" class="truncate-note hidden"></div>
       </div>
     </section>
   </main>
@@ -1016,14 +758,25 @@
     (function () {
       'use strict';
 
-      var C = window.DocFrontendCommon;
-      var THEME_KEY = 'loanPublicDashboardThemeV1';
+      var C = window.DocFrontendCommon || {};
+      var STATUS_ORDER = {
+        overdue: 1,
+        due_soon: 2,
+        unpaid: 3,
+        awaiting: 4
+      };
+      var STATUS_META = {
+        awaiting: { label: 'รอเพิ่มข้อมูล', icon: 'bi-pencil-square', cls: 'awaiting' },
+        due_soon: { label: 'ใกล้ครบกำหนด', icon: 'bi-alarm', cls: 'due_soon' },
+        unpaid: { label: 'ยังไม่ชำระ', icon: 'bi-hourglass-split', cls: 'unpaid' },
+        overdue: { label: 'เลยกำหนด', icon: 'bi-exclamation-octagon', cls: 'overdue' }
+      };
+
       var state = {
-        settings: null,
         api: null,
-        loading: false,
         query: '',
-        data: null
+        lastUpdatedAt: null,
+        theme: 'light'
       };
 
       var els = {
@@ -1032,286 +785,141 @@
         searchInput: document.getElementById('searchInput'),
         btnSearch: document.getElementById('btnSearch'),
         btnReset: document.getElementById('btnReset'),
+        btnRefresh: document.getElementById('btnRefresh'),
         loadingState: document.getElementById('loadingState'),
         errorState: document.getElementById('errorState'),
         errorText: document.getElementById('errorText'),
         emptyState: document.getElementById('emptyState'),
         emptyTitle: document.getElementById('emptyTitle'),
         emptyText: document.getElementById('emptyText'),
-        dashboardArea: document.getElementById('dashboardArea'),
-        summaryGrid: document.getElementById('summaryGrid'),
-        statusGrid: document.getElementById('statusGrid'),
-        projectGrid: document.getElementById('projectGrid'),
-        recordsGrid: document.getElementById('recordsGrid'),
-        projectCountPill: document.getElementById('projectCountPill'),
-        recordCountPill: document.getElementById('recordCountPill')
+        reportArea: document.getElementById('reportArea'),
+        reportMeta: document.getElementById('reportMeta'),
+        statusStrip: document.getElementById('statusStrip'),
+        tableCount: document.getElementById('tableCount'),
+        tableBody: document.getElementById('tableBody'),
+        truncateNote: document.getElementById('truncateNote')
       };
 
       function safeTrim(value) {
-        return C.safeTrim(value || '');
+        if (typeof C.safeTrim === 'function') return C.safeTrim(value || '');
+        return String(value == null ? '' : value).trim();
       }
 
       function escapeHtml(value) {
-        return C.escapeHtml(value == null ? '' : value);
+        if (typeof C.escapeHtml === 'function') return C.escapeHtml(value == null ? '' : value);
+        return String(value == null ? '' : value)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
       }
 
       function formatMoney(value) {
-        return C.fmtMoney(value == null ? '' : value);
+        if (typeof C.fmtMoney === 'function') return C.fmtMoney(value == null ? 0 : value);
+        return Number(value || 0).toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
       }
 
-      function buildPlanSegment(label, value) {
+      function formatDateTimeThai(value) {
+        var date = value instanceof Date ? value : new Date(value);
+        if (!(date instanceof Date) || isNaN(date.getTime())) return '-';
+        return new Intl.DateTimeFormat('th-TH', {
+          day: 'numeric',
+          month: 'numeric',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          second: '2-digit'
+        }).format(date);
+      }
+
+      function parseDateInput(value) {
         var text = safeTrim(value);
-        if (!text) return '';
-        var normalizedText = text.replace(/\s+/g, '').toLowerCase();
-        var normalizedLabel = safeTrim(label).replace(/\s+/g, '').toLowerCase();
-        if (normalizedLabel && normalizedText.indexOf(normalizedLabel) === 0) {
-          return text;
+        if (!text) return null;
+        var match = text.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+        if (match) {
+          return new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
         }
-        return label + ' ' + text;
+        var parsed = new Date(text);
+        return isNaN(parsed.getTime()) ? null : parsed;
       }
 
-      function buildPlanDisplay(item) {
-        var record = item || {};
-        var parts = [
-          buildPlanSegment('ผลผลิตที่', record.prod),
-          buildPlanSegment('กิจกรรมหลัก', record.mainAct),
-          buildPlanSegment('โครงการย่อยที่', record.subProject),
-          buildPlanSegment('กิจกรรมย่อยที่', record.activity)
-        ].filter(function (part) { return !!safeTrim(part); });
-
-        if (parts.length) return parts.join(' / ');
-        return safeTrim(record.projectLabel || record.meetingTitle || '-');
+      function getStatusMeta(key) {
+        var normalized = safeTrim(key).toLowerCase();
+        return STATUS_META[normalized] || STATUS_META.unpaid;
       }
 
-      function getPreferredTheme() {
-        return 'light';
+      function sortRecords(records) {
+        var list = Array.isArray(records) ? records.slice() : [];
+        list.sort(function (a, b) {
+          var aDue = parseDateInput(a && a.dueDateInput);
+          var bDue = parseDateInput(b && b.dueDateInput);
+          if (aDue && bDue) {
+            var dueDiff = aDue.getTime() - bDue.getTime();
+            if (dueDiff !== 0) return dueDiff;
+          } else if (aDue && !bDue) {
+            return -1;
+          } else if (!aDue && bDue) {
+            return 1;
+          }
+
+          var aStatus = safeTrim(a && a.statusKey).toLowerCase();
+          var bStatus = safeTrim(b && b.statusKey).toLowerCase();
+          var aWeight = STATUS_ORDER[aStatus] || 9;
+          var bWeight = STATUS_ORDER[bStatus] || 9;
+          if (aWeight !== bWeight) return aWeight - bWeight;
+
+          var aBorrower = safeTrim(a && a.borrowerName).toLowerCase();
+          var bBorrower = safeTrim(b && b.borrowerName).toLowerCase();
+          if (aBorrower !== bBorrower) return aBorrower.localeCompare(bBorrower, 'th');
+
+          return safeTrim(a && (a.contractNo || a.docNoSdh)).localeCompare(safeTrim(b && (b.contractNo || b.docNoSdh)), 'th');
+        });
+        return list;
+      }
+
+      function normalizeStatusSummary(list) {
+        var incoming = Array.isArray(list) ? list : [];
+        var lookup = {};
+        for (var i = 0; i < incoming.length; i++) {
+          var item = incoming[i] || {};
+          var key = safeTrim(item.key).toLowerCase();
+          if (!key) continue;
+          lookup[key] = {
+            key: key,
+            label: safeTrim(item.label) || getStatusMeta(key).label,
+            count: Number(item.count || 0),
+            amount: Number(item.amount || 0)
+          };
+        }
+
+        var orderedKeys = ['awaiting', 'due_soon', 'unpaid', 'overdue'];
+        return orderedKeys.map(function (key) {
+          return lookup[key] || {
+            key: key,
+            label: getStatusMeta(key).label,
+            count: 0,
+            amount: 0
+          };
+        });
+      }
+
+      function filterTrackingRecords(records) {
+        var list = Array.isArray(records) ? records : [];
+        return list.filter(function (item) {
+          return Object.prototype.hasOwnProperty.call(STATUS_META, safeTrim(item && item.statusKey).toLowerCase());
+        });
       }
 
       function applyTheme(theme) {
         var nextTheme = theme === 'dark' ? 'dark' : 'light';
+        state.theme = nextTheme;
         els.body.classList.toggle('dark-mode', nextTheme === 'dark');
         if (els.btnTheme) {
           els.btnTheme.innerHTML = nextTheme === 'dark'
             ? '<i class="bi bi-sun"></i><span>โหมดสว่าง</span>'
             : '<i class="bi bi-moon-stars"></i><span>โหมดกลางคืน</span>';
         }
-        try {
-          localStorage.setItem(THEME_KEY, nextTheme);
-        } catch (_e) {}
-      }
-
-      function setLoading(loading) {
-        state.loading = !!loading;
-        if (els.btnSearch) {
-          els.btnSearch.disabled = !!loading;
-          els.btnSearch.innerHTML = loading
-            ? '<div class="spinner" aria-hidden="true"></div><span>กำลังค้นหา</span>'
-            : '<i class="bi bi-search"></i>ค้นหา';
-        }
-        if (els.btnReset) els.btnReset.disabled = !!loading;
-        if (els.loadingState) els.loadingState.classList.toggle('hidden', !loading);
-      }
-
-      function showError(message) {
-        if (els.errorText) els.errorText.textContent = message || 'เกิดข้อผิดพลาดในการเชื่อมต่อระบบ';
-        if (els.errorState) els.errorState.classList.remove('hidden');
-      }
-
-      function hideError() {
-        if (els.errorState) els.errorState.classList.add('hidden');
-      }
-
-      function showEmpty(title, text) {
-        if (els.emptyTitle) els.emptyTitle.textContent = title || 'ไม่พบข้อมูล';
-        if (els.emptyText) els.emptyText.textContent = text || 'ไม่พบรายการที่ตรงกับคำค้นหา';
-        if (els.emptyState) els.emptyState.classList.remove('hidden');
-        if (els.dashboardArea) els.dashboardArea.classList.add('hidden');
-      }
-
-      function hideEmpty() {
-        if (els.emptyState) els.emptyState.classList.add('hidden');
-      }
-
-      function updateQueryVisuals(query, summary) {
-        void query;
-        void summary;
-      }
-
-      function statusIcon(key) {
-        if (key === 'paid') return 'bi-check-circle-fill';
-        if (key === 'overdue') return 'bi-exclamation-octagon-fill';
-        if (key === 'due_soon') return 'bi-alarm-fill';
-        if (key === 'awaiting') return 'bi-pencil-square';
-        if (key === 'cancelled') return 'bi-x-octagon-fill';
-        return 'bi-hourglass-split';
-      }
-
-      function getStatusTone(key) {
-        if (key === 'paid') return 'tone-emerald';
-        if (key === 'overdue') return 'tone-rose';
-        if (key === 'due_soon') return 'tone-amber';
-        if (key === 'awaiting') return 'tone-violet';
-        if (key === 'cancelled') return 'tone-slate';
-        return 'tone-blue';
-      }
-
-      function renderSummary(summary) {
-        summary = summary || {};
-        if (!els.summaryGrid) return;
-        var items = [
-          {
-            cls: 'blue',
-            icon: 'bi-cash-stack',
-            label: 'ยอดเงินยืมรวม',
-            value: formatMoney(summary.totalBorrowedAmount || 0),
-            sub: 'นับเฉพาะรายการที่ยังใช้งานอยู่ ' + (Number(summary.activeContracts || 0)) + ' รายการ'
-          },
-          {
-            cls: 'emerald',
-            icon: 'bi-wallet2',
-            label: 'ยอดที่ชำระแล้ว',
-            value: formatMoney(summary.paidAmount || 0),
-            sub: 'ชำระครบแล้ว ' + (Number(summary.paidContracts || 0)) + ' รายการ'
-          },
-          {
-            cls: 'amber',
-            icon: 'bi-hourglass-bottom',
-            label: 'ยอดค้างชำระ',
-            value: formatMoney(summary.outstandingAmount || 0),
-            sub: 'ยังคงค้าง ' + (Number(summary.outstandingContracts || 0)) + ' รายการ'
-          },
-          {
-            cls: 'rose',
-            icon: 'bi-diagram-3-fill',
-            label: 'จำนวนโครงการ',
-            value: Number(summary.uniqueProjects || 0),
-            sub: 'ครอบคลุมทั้งหมด ' + (Number(summary.totalContracts || 0)) + ' สัญญาเงินยืม'
-          }
-        ];
-
-        var html = '';
-        for (var i = 0; i < items.length; i++) {
-          var item = items[i];
-          html += '<article class="summary-card ' + item.cls + '">';
-          html += '<div class="summary-head"><div class="summary-label">' + escapeHtml(item.label) + '</div><div class="summary-icon"><i class="bi ' + item.icon + '"></i></div></div>';
-          html += '<div class="summary-value">' + escapeHtml(item.value) + '</div>';
-          html += '<div class="summary-sub">' + escapeHtml(item.sub) + '</div>';
-          html += '</article>';
-        }
-        els.summaryGrid.innerHTML = html;
-      }
-
-      function renderStatuses(statusSummary) {
-        if (!els.statusGrid) return;
-        var list = Array.isArray(statusSummary) ? statusSummary : [];
-        var html = '';
-        for (var i = 0; i < list.length; i++) {
-          var item = list[i] || {};
-          html += '<article class="status-card ' + escapeHtml(item.key || '') + '">';
-          html += '<div class="label"><i class="bi ' + statusIcon(item.key || '') + '"></i> ' + escapeHtml(item.label || '-') + '</div>';
-          html += '<div class="count">' + escapeHtml(item.count == null ? 0 : item.count) + '</div>';
-          html += '<div class="amount">ยอดรวม ' + escapeHtml(formatMoney(item.amount || 0)) + ' บาท</div>';
-          html += '</article>';
-        }
-        els.statusGrid.innerHTML = html;
-      }
-
-      function renderProjects(projectSummary) {
-        if (!els.projectGrid) return;
-        var list = Array.isArray(projectSummary) ? projectSummary : [];
-        if (els.projectCountPill) {
-          els.projectCountPill.innerHTML = '<i class="bi bi-diagram-3"></i>' + escapeHtml(list.length) + ' โครงการ';
-        }
-        if (!list.length) {
-          els.projectGrid.innerHTML = '<div class="empty-state" style="padding:20px;"><div class="empty-text" style="margin-top:0;">ไม่พบข้อมูลโครงการสำหรับรายการที่ค้นหา</div></div>';
-          return;
-        }
-        var html = '';
-        for (var i = 0; i < list.length; i++) {
-          var item = list[i] || {};
-          html += '<article class="project-card">';
-          html += '<div class="project-card-head"><h3 class="project-card-title">' + escapeHtml(item.label || '-') + '</h3><div class="project-count">' + escapeHtml(item.count == null ? 0 : item.count) + '</div></div>';
-          html += '<div class="project-meta"><span>จำนวนรายการ ' + escapeHtml(item.count == null ? 0 : item.count) + ' ฉบับ</span><strong>' + escapeHtml(formatMoney(item.totalAmount || 0)) + ' บาท</strong></div>';
-          html += '</article>';
-        }
-        els.projectGrid.innerHTML = html;
-      }
-
-      function buildRecordChip(icon, label, value, toneClass) {
-        var tone = safeTrim(toneClass || '') || 'tone-slate';
-        return '<div class="foot-chip ' + escapeHtml(tone) + '">'
-          + '<span class="foot-chip-icon"><i class="bi ' + icon + '"></i></span>'
-          + '<span class="foot-chip-copy"><span class="foot-chip-label">' + escapeHtml(label) + '</span><span class="foot-chip-value">' + escapeHtml(value || '-') + '</span></span>'
-          + '</div>';
-      }
-
-      function getDueChipTone(item) {
-        var statusKey = safeTrim(item && item.statusKey || '');
-        if (statusKey === 'overdue') return 'tone-rose';
-        if (statusKey === 'due_soon') return 'tone-amber';
-        if (statusKey === 'paid') return 'tone-emerald';
-        if (statusKey === 'awaiting' || statusKey === 'cancelled') return 'tone-slate';
-        return 'tone-blue';
-      }
-
-      function getSettlementChipTone(item) {
-        var record = item || {};
-        if (safeTrim(record.settlementDocDateDisplay || '') || safeTrim(record.settlementDocDateInput || '')) {
-          return 'tone-emerald';
-        }
-        if (safeTrim(record.statusKey || '') === 'cancelled') return 'tone-slate';
-        return 'tone-blue';
-      }
-
-      function renderRecords(records, totalMatched, truncated) {
-        if (!els.recordsGrid) return;
-        var list = Array.isArray(records) ? records : [];
-        if (els.recordCountPill) {
-          var pillText = String(totalMatched == null ? list.length : totalMatched) + ' รายการ';
-          if (truncated) pillText += ' (แสดงล่าสุด ' + list.length + ')';
-          els.recordCountPill.innerHTML = '<i class="bi bi-files"></i>' + escapeHtml(pillText);
-        }
-        if (!list.length) {
-          els.recordsGrid.innerHTML = '<div class="empty-state" style="padding:20px;"><div class="empty-text" style="margin-top:0;">ไม่พบรายการเงินยืมของผู้ยืมที่ค้นหา</div></div>';
-          return;
-        }
-        var html = '';
-        for (var i = 0; i < list.length; i++) {
-          var item = list[i] || {};
-          var displayId = safeTrim(item.contractNo || '') || safeTrim(item.docNoSdh || '') || '-';
-          var planDisplay = buildPlanDisplay(item);
-          html += '<article class="record-card">';
-          html += '<div class="record-head">';
-          html += '<div><span class="status-badge ' + escapeHtml(item.statusKey || 'unpaid') + '"><i class="bi ' + statusIcon(item.statusKey || '') + '"></i>' + escapeHtml(item.statusLabel || '-') + '</span><h3 class="record-title">' + escapeHtml(planDisplay) + '</h3></div>';
-          html += '<div class="record-amount">' + escapeHtml(formatMoney(item.amount || 0)) + '</div>';
-          html += '</div>';
-          html += '<div class="record-meta-grid">';
-          html += '<div class="meta-item"><div class="meta-label">ผู้ยืม</div><div class="meta-value">' + escapeHtml(item.borrowerName || '-') + '</div></div>';
-          html += '<div class="meta-item"><div class="meta-label">เลขสัญญา / เลขรับ</div><div class="meta-value">' + escapeHtml(displayId) + '</div></div>';
-          html += '<div class="meta-item"><div class="meta-label">กลุ่ม / ศูนย์</div><div class="meta-value">' + escapeHtml(item.groupCenter || '-') + '</div></div>';
-          html += '<div class="meta-item"><div class="meta-label">ประเภทค่าใช้จ่าย</div><div class="meta-value">' + escapeHtml(item.expenseType || '-') + '</div></div>';
-          html += '</div>';
-          html += '<div class="record-foot">';
-          html += buildRecordChip('bi-bank2', 'แหล่งเงินยืม', item.fundingSource || '-', 'tone-blue');
-          html += buildRecordChip('bi-calendar2-week', 'วันครบกำหนด', item.dueDateDisplay || '-', getDueChipTone(item));
-          html += buildRecordChip('bi-receipt-cutoff', 'วันที่ชำระเอกสาร', item.settlementDocDateDisplay || '-', getSettlementChipTone(item));
-          html += buildRecordChip('bi-info-circle', 'สถานะล่าสุด', item.remainingText || item.statusLabel || '-', getStatusTone(item.statusKey || ''));
-          html += '</div>';
-          html += '</article>';
-        }
-        els.recordsGrid.innerHTML = html;
-      }
-
-      function renderDashboard(data) {
-        var payload = data || {};
-        var summary = payload.summary || {};
-        renderSummary(summary);
-        renderStatuses(payload.statusSummary || []);
-        renderProjects(payload.projectSummary || []);
-        renderRecords(payload.records || [], payload.totalMatchedRecords, payload.truncated);
-        updateQueryVisuals(payload.query || state.query, summary);
-        hideEmpty();
-        if (els.dashboardArea) els.dashboardArea.classList.remove('hidden');
       }
 
       function setSearchQueryInUrl(query) {
@@ -1323,115 +931,227 @@
       }
 
       function loadInitialQuery() {
-        var q = '';
         try {
-          var params = C.parseQuery();
-          q = safeTrim(params.q || params.search || params.name || '');
+          var params = typeof C.parseQuery === 'function' ? C.parseQuery() : {};
+          var q = safeTrim(params.q || params.search || params.name || '');
+          if (q && els.searchInput) {
+            els.searchInput.value = q;
+            state.query = q;
+          }
         } catch (_e) {}
-        if (q && els.searchInput) {
-          els.searchInput.value = q;
-          state.query = q;
-        }
-        return q;
       }
 
-      function resetDashboard() {
-        state.data = null;
-        state.query = '';
-        setSearchQueryInUrl('');
-        if (els.searchInput) els.searchInput.value = '';
-        hideError();
-        if (els.dashboardArea) els.dashboardArea.classList.add('hidden');
-        showEmpty('เริ่มต้นค้นหาด้วยชื่อผู้ยืม', 'กรอกชื่อ-นามสกุลของผู้ยืมเพื่อดูสรุปรายการเงินยืม ยอดเงินรวม จำนวนโครงการ และสถานะการชำระคืน');
-        if (els.summaryGrid) els.summaryGrid.innerHTML = '';
-        if (els.statusGrid) els.statusGrid.innerHTML = '';
-        if (els.projectGrid) els.projectGrid.innerHTML = '';
-        if (els.recordsGrid) els.recordsGrid.innerHTML = '';
+      function setLoading(loading) {
+        if (els.loadingState) els.loadingState.classList.toggle('hidden', !loading);
+        if (els.btnSearch) {
+          els.btnSearch.disabled = !!loading;
+          els.btnSearch.innerHTML = loading
+            ? '<div class="spinner" aria-hidden="true"></div><span>กำลังโหลด</span>'
+            : '<i class="bi bi-search"></i>ค้นหา';
+        }
+        if (els.btnReset) els.btnReset.disabled = !!loading;
+        if (els.btnRefresh) els.btnRefresh.disabled = !!loading;
+        if (els.btnTheme) els.btnTheme.disabled = !!loading;
+      }
+
+      function hideError() {
+        if (els.errorState) els.errorState.classList.add('hidden');
+      }
+
+      function showError(message) {
+        if (els.errorText) els.errorText.textContent = message || 'เกิดข้อผิดพลาดในการเชื่อมต่อระบบ';
+        if (els.errorState) els.errorState.classList.remove('hidden');
+      }
+
+      function showEmpty(title, text) {
+        if (els.emptyTitle) els.emptyTitle.textContent = title || 'ไม่พบข้อมูล';
+        if (els.emptyText) els.emptyText.textContent = text || 'ไม่พบรายการที่ตรงกับเงื่อนไข';
+        if (els.emptyState) els.emptyState.classList.remove('hidden');
+        if (els.reportArea) els.reportArea.classList.add('hidden');
+      }
+
+      function hideEmpty() {
+        if (els.emptyState) els.emptyState.classList.add('hidden');
+      }
+
+      function renderStatusStrip(statusSummary) {
+        if (!els.statusStrip) return;
+        var list = normalizeStatusSummary(statusSummary);
+        var html = '';
+        for (var i = 0; i < list.length; i++) {
+          var item = list[i];
+          var meta = getStatusMeta(item.key);
+          html += '<article class="status-box ' + meta.cls + '">';
+          html += '<div class="status-top"><div class="status-label"><i class="bi ' + meta.icon + '"></i><span>' + escapeHtml(item.label) + '</span></div><div class="status-value">' + escapeHtml(item.count) + '</div></div>';
+          html += '<div class="status-sub">ยอดเงินรวม ' + escapeHtml(formatMoney(item.amount)) + ' บาท</div>';
+          html += '</article>';
+        }
+        els.statusStrip.innerHTML = html;
+      }
+
+      function buildStatusPill(item) {
+        var meta = getStatusMeta(item && item.statusKey);
+        return '<span class="status-pill ' + meta.cls + '"><i class="bi ' + meta.icon + '"></i>' + escapeHtml(item && item.statusLabel || meta.label) + '</span>';
+      }
+
+      function renderTable(records, totalMatched, truncated) {
+        if (!els.tableBody) return;
+        var list = Array.isArray(records) ? records : [];
+        var html = '';
+        for (var i = 0; i < list.length; i++) {
+          var item = list[i] || {};
+          var contractText = safeTrim(item.contractNo || item.docNoSdh || '-');
+          var dueDisplay = safeTrim(item.dueDateDisplay || '');
+          if (!dueDisplay && safeTrim(item.statusKey) === 'awaiting') dueDisplay = 'ยังไม่มีข้อมูลวันครบกำหนด';
+          if (!dueDisplay) dueDisplay = '-';
+          html += '<tr class="row-' + escapeHtml(safeTrim(item.statusKey).toLowerCase()) + '">';
+          html += '<td class="cell-center">' + escapeHtml(i + 1) + '</td>';
+          html += '<td class="cell-contract">' + escapeHtml(contractText) + '</td>';
+          html += '<td class="cell-amount">' + escapeHtml(formatMoney(item.amount || 0)) + '</td>';
+          html += '<td class="cell-borrower">' + escapeHtml(item.borrowerName || '-') + '</td>';
+          html += '<td class="cell-group">' + escapeHtml(item.groupCenter || '-') + '</td>';
+          html += '<td class="cell-expense">' + escapeHtml(item.expenseType || '-') + '</td>';
+          html += '<td class="cell-funding">' + escapeHtml(item.fundingSource || '-') + '</td>';
+          html += '<td class="cell-center">' + buildStatusPill(item) + '</td>';
+          html += '<td class="cell-center">' + (dueDisplay === 'ยังไม่มีข้อมูลวันครบกำหนด' ? '<span class="muted-text">' + escapeHtml(dueDisplay) + '</span>' : escapeHtml(dueDisplay)) + '</td>';
+          html += '</tr>';
+        }
+        els.tableBody.innerHTML = html;
+
+        if (els.tableCount) {
+          var countLabel = String(totalMatched == null ? list.length : totalMatched) + ' รายการ';
+          els.tableCount.innerHTML = '<i class="bi bi-files"></i>' + escapeHtml(countLabel);
+        }
+
+        if (els.truncateNote) {
+          if (truncated) {
+            els.truncateNote.textContent = 'ระบบแสดง ' + list.length + ' จากทั้งหมด ' + totalMatched + ' รายการ เนื่องจากตั้งค่าขีดจำกัดการแสดงผลไว้';
+            els.truncateNote.classList.remove('hidden');
+          } else {
+            els.truncateNote.classList.add('hidden');
+            els.truncateNote.textContent = '';
+          }
+        }
+      }
+
+      function renderReport(data, preparedRecords) {
+        var payload = data || {};
+        var summary = payload.summary || {};
+        var records = Array.isArray(preparedRecords) ? preparedRecords : sortRecords(filterTrackingRecords(payload.records || []));
+        var totalContracts = Number(payload.totalMatchedRecords == null ? records.length : payload.totalMatchedRecords);
+        var totalAmount = Number(summary.totalAmount || 0);
+        var refreshedText = formatDateTimeThai(state.lastUpdatedAt || new Date());
+
+        if (els.reportMeta) {
+          var metaHtml = '';
+          metaHtml += '<div>จำนวนทั้งหมด ' + escapeHtml(totalContracts) + ' รายการ</div>';
+          metaHtml += '<div>ยอดเงินในสัญญารวม ' + escapeHtml(formatMoney(totalAmount)) + ' บาท</div>';
+          metaHtml += '<div>อัปเดตเมื่อ: ' + escapeHtml(refreshedText) + '</div>';
+          els.reportMeta.innerHTML = metaHtml;
+        }
+
+        renderStatusStrip(payload.statusSummary || []);
+        renderTable(records, totalContracts, payload.truncated);
+        hideEmpty();
+        if (els.reportArea) els.reportArea.classList.remove('hidden');
       }
 
       function initApi() {
-        state.settings = C.getStoredSettings();
-        state.api = C.createApiClient(state.settings);
+        if (typeof C.getStoredSettings !== 'function' || typeof C.createApiClient !== 'function') {
+          throw new Error('ไม่พบการตั้งค่าระบบสำหรับเชื่อมต่อ API');
+        }
+        state.api = C.createApiClient(C.getStoredSettings());
       }
 
-      async function searchLoans() {
+      async function loadDashboard() {
         if (!state.api || typeof state.api.loanPublicDashboard !== 'function') {
           showError('ไม่พบการตั้งค่าระบบสำหรับเชื่อมต่อ API');
           return;
         }
 
-        var query = safeTrim(els.searchInput && els.searchInput.value || '');
-        state.query = query;
         hideError();
-        updateQueryVisuals('', { borrowerCount: 0 });
-
-        if (!query) {
-          resetDashboard();
-          return;
-        }
-
+        hideEmpty();
+        state.query = safeTrim(els.searchInput && els.searchInput.value || '');
         setLoading(true);
+
         try {
-          var res = await state.api.loanPublicDashboard({ searchQuery: query, maxRecords: 120 }, { noPageLoader: true });
-          var data = (res && res.success && res.data && typeof res.data === 'object') ? res.data : null;
+          var response = await state.api.loanPublicDashboard({ searchQuery: state.query, maxRecords: 1000 }, { noPageLoader: true });
+          var data = response && response.success && response.data && typeof response.data === 'object' ? response.data : null;
           if (!data) throw new Error('ไม่พบข้อมูลที่สามารถแสดงผลได้');
-          setSearchQueryInUrl(query);
-          state.data = data;
-          if (!data.searched || !Array.isArray(data.records) || !data.records.length) {
-            if (els.dashboardArea) els.dashboardArea.classList.add('hidden');
-            showEmpty('ไม่พบรายการเงินยืม', safeTrim(data.message || '') || 'ไม่พบข้อมูลเงินยืมที่ตรงกับชื่อผู้ยืม');
-            updateQueryVisuals(query, data.summary || {});
+
+          state.lastUpdatedAt = new Date();
+          setSearchQueryInUrl(state.query);
+
+          var filtered = sortRecords(filterTrackingRecords(data.records || []));
+          if (!filtered.length) {
+            showEmpty(
+              state.query ? 'ไม่พบรายการตามชื่อผู้ยืม' : 'ไม่พบรายการที่ต้องติดตาม',
+              safeTrim(data.message) || (state.query
+                ? 'ไม่พบรายการเงินยืมใน 4 สถานะที่ต้องติดตามสำหรับชื่อที่ค้นหา'
+                : 'ขณะนี้ไม่มีรายการเงินยืมในสถานะ รอเพิ่มข้อมูล, ใกล้ครบกำหนด, ยังไม่ชำระ หรือ เลยกำหนด')
+            );
             return;
           }
-          renderDashboard(data);
+
+          renderReport(data, filtered);
         } catch (err) {
-          if (els.dashboardArea) els.dashboardArea.classList.add('hidden');
-          showEmpty('ค้นหาข้อมูลไม่สำเร็จ', 'ระบบไม่สามารถสรุปข้อมูลเงินยืมได้ในขณะนี้');
-          showError((err && err.message) ? err.message : 'เกิดข้อผิดพลาดในการเชื่อมต่อระบบ');
+          if (els.reportArea) els.reportArea.classList.add('hidden');
+          showEmpty('โหลดข้อมูลไม่สำเร็จ', 'ระบบไม่สามารถสร้างรายงานทะเบียนคุมเงินยืมได้ในขณะนี้');
+          showError(err && err.message ? err.message : 'เกิดข้อผิดพลาดในการเชื่อมต่อระบบ');
         } finally {
           setLoading(false);
         }
       }
 
+      function resetSearch() {
+        if (els.searchInput) els.searchInput.value = '';
+        state.query = '';
+        loadDashboard();
+      }
+
       function bindEvents() {
         if (els.btnTheme) {
           els.btnTheme.addEventListener('click', function () {
-            applyTheme(els.body.classList.contains('dark-mode') ? 'light' : 'dark');
+            applyTheme(state.theme === 'dark' ? 'light' : 'dark');
           });
         }
         if (els.btnSearch) {
           els.btnSearch.addEventListener('click', function () {
-            searchLoans();
+            loadDashboard();
           });
         }
         if (els.btnReset) {
           els.btnReset.addEventListener('click', function () {
-            resetDashboard();
+            resetSearch();
+          });
+        }
+        if (els.btnRefresh) {
+          els.btnRefresh.addEventListener('click', function () {
+            loadDashboard();
           });
         }
         if (els.searchInput) {
           els.searchInput.addEventListener('keydown', function (event) {
             if (event.key === 'Enter') {
               event.preventDefault();
-              searchLoans();
+              loadDashboard();
             }
           });
         }
       }
 
       function init() {
-        applyTheme(getPreferredTheme());
-        resetDashboard();
+        applyTheme('light');
         bindEvents();
         try {
           initApi();
         } catch (err) {
-          showError((err && err.message) ? err.message : 'ไม่พบการตั้งค่าระบบสำหรับเชื่อมต่อ API');
-          showEmpty('ยังไม่พร้อมใช้งาน', 'กรุณาตรวจสอบการตั้งค่า scriptUrl ของระบบก่อนเปิดใช้งานหน้า dashboard สาธารณะ');
+          showEmpty('ยังไม่พร้อมใช้งาน', 'กรุณาตรวจสอบการตั้งค่า scriptUrl ของระบบก่อนเปิดใช้งานหน้าเว็บสาธารณะ');
+          showError(err && err.message ? err.message : 'ไม่พบการตั้งค่าระบบสำหรับเชื่อมต่อ API');
           return;
         }
-        var initialQuery = loadInitialQuery();
-        if (initialQuery) searchLoans();
+        loadInitialQuery();
+        loadDashboard();
       }
 
       init();
