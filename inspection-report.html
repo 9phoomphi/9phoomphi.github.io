@@ -411,8 +411,8 @@
 
     .dashboard-layout {
       display: grid;
-      grid-template-columns: minmax(300px, 0.95fr) minmax(0, 1.35fr);
-      gap: 12px;
+      grid-template-columns: 1fr;
+      gap: 14px;
       align-items: start;
     }
 
@@ -468,6 +468,8 @@
       background:
         radial-gradient(circle at top right, rgba(59, 130, 246, 0.16), rgba(59, 130, 246, 0) 46%),
         linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(246, 251, 255, 0.75));
+      display: grid;
+      gap: 14px;
     }
 
     .dashboard-spotlight::after {
@@ -505,6 +507,33 @@
       word-break: break-word;
     }
 
+    .dashboard-top-shell {
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(180px, auto);
+      gap: 18px;
+      align-items: start;
+      position: relative;
+      z-index: 1;
+    }
+
+    .dashboard-top-content {
+      min-width: 0;
+    }
+
+    .dashboard-top-stat {
+      min-width: 0;
+      text-align: right;
+      display: grid;
+      gap: 6px;
+      align-content: start;
+      justify-items: end;
+      padding: 14px 16px;
+      border-radius: 18px;
+      border: 1px solid rgba(59, 130, 246, 0.18);
+      background: rgba(255, 255, 255, 0.72);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.84);
+    }
+
     .dashboard-top-meta {
       display: flex;
       align-items: center;
@@ -519,6 +548,20 @@
       font-weight: 900;
       letter-spacing: -0.03em;
       color: #1d4ed8;
+    }
+
+    .dashboard-top-percent {
+      font-size: 0.9rem;
+      line-height: 1.35;
+      font-weight: 820;
+      color: #475569;
+    }
+
+    .dashboard-top-caption {
+      font-size: 0.8rem;
+      line-height: 1.35;
+      font-weight: 760;
+      color: var(--text-muted);
     }
 
     .dashboard-top-foot {
@@ -1225,6 +1268,10 @@
       color: #93c5fd;
     }
 
+    body.dark-mode .dashboard-top-percent {
+      color: #dbe7f5;
+    }
+
     body.dark-mode .metric-emerald .dashboard-metric-value,
     body.dark-mode .metric-emerald .dashboard-metric-icon,
     body.dark-mode .dashboard-flow-card.flow-verify i,
@@ -1248,7 +1295,8 @@
     body.dark-mode .dashboard-count-pill,
     body.dark-mode .sheet-pill,
     body.dark-mode .dashboard-flow-card,
-    body.dark-mode .purpose-progress {
+    body.dark-mode .purpose-progress,
+    body.dark-mode .dashboard-top-stat {
       background: rgba(15, 24, 36, 0.82);
     }
 
@@ -1294,6 +1342,15 @@
       .dashboard-layout,
       .purpose-summary-grid {
         grid-template-columns: 1fr;
+      }
+
+      .dashboard-top-shell {
+        grid-template-columns: 1fr;
+      }
+
+      .dashboard-top-stat {
+        justify-items: start;
+        text-align: left;
       }
     }
 
@@ -1767,9 +1824,14 @@
         if (topPurpose) {
           var topCount = Number(topPurpose.count || 0);
           var topPercent = topPurpose.percentage != null ? topPurpose.percentage : (totalDocuments ? (topCount / totalDocuments) * 100 : 0);
+          html += '<div class="dashboard-top-shell">';
+          html += '<div class="dashboard-top-content">';
           html += '<div class="dashboard-top-meta">' + buildSheetPill(topPurpose.sheetColor || '') + '</div>';
           html += '<h3 class="dashboard-top-purpose">' + esc(topPurpose.purpose || '-') + '</h3>';
-          html += '<div class="dashboard-top-meta"><div class="dashboard-top-count">' + esc(topCount) + '</div><div class="purpose-percent">คิดเป็น ' + esc(formatPercent(topPercent)) + ' ของเอกสารทั้งหมด</div></div>';
+          html += '<div class="purpose-percent">วัตถุประสงค์ที่มีจำนวนเอกสารสูงสุดจากผลค้นหาปัจจุบัน</div>';
+          html += '</div>';
+          html += '<div class="dashboard-top-stat"><div class="dashboard-top-count">' + esc(topCount) + '</div><div class="dashboard-top-percent">คิดเป็น ' + esc(formatPercent(topPercent)) + ' ของเอกสารทั้งหมด</div><div class="dashboard-top-caption">จำนวนเอกสารในวัตถุประสงค์นี้</div></div>';
+          html += '</div>';
         } else {
           html += '<div class="dashboard-empty">ยังไม่มีข้อมูลวัตถุประสงค์ในช่วงที่ค้นหา</div>';
         }
@@ -2171,9 +2233,12 @@
           + '.metric-emerald{background:#f0fdf4}.metric-emerald .dashboard-metric-value,.metric-emerald .dashboard-metric-icon{color:#15803d}'
           + '.metric-violet{background:#faf5ff}.metric-violet .dashboard-metric-value,.metric-violet .dashboard-metric-icon{color:#7c3aed}'
           + '.metric-amber{background:#fffbeb}.metric-amber .dashboard-metric-value,.metric-amber .dashboard-metric-icon{color:#d97706}'
-          + '.dashboard-layout{display:grid;grid-template-columns:minmax(280px,.9fr) minmax(0,1.35fr);gap:10px}'
+          + '.dashboard-layout{display:grid;grid-template-columns:1fr;gap:10px}'
           + '.dashboard-panel-head h3,.dashboard-top-purpose{margin:0;color:#0f172a}'
           + '.dashboard-top-purpose{font-size:16px;line-height:1.35;font-weight:800}'
+          + '.dashboard-top-shell{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(170px,auto);gap:12px;align-items:start}'
+          + '.dashboard-top-content{min-width:0}'
+          + '.dashboard-top-stat{display:grid;gap:4px;justify-items:end;text-align:right;padding:12px;border-radius:16px;border:1px solid #dbe4f0;background:#fff}'
           + '.dashboard-top-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}'
           + '.dashboard-top-foot{display:grid;gap:6px}'
           + '.dashboard-kicker,.dashboard-count-pill,.sheet-pill{display:inline-flex;align-items:center;gap:4px;padding:5px 9px;border-radius:999px;font-size:10px;font-weight:800;border:1px solid #dbe4f0;background:#fff;color:#334155}'
@@ -2183,6 +2248,8 @@
           + '.sheet-pill.sheet-green{background:#dcfce7;color:#15803d;border-color:#86efac}'
           + '.sheet-pill.sheet-other{background:#e2e8f0;color:#475569;border-color:#cbd5e1}'
           + '.dashboard-top-count{font-size:30px;line-height:1;font-weight:900;color:#1d4ed8}'
+          + '.dashboard-top-percent{font-size:10px;line-height:1.4;font-weight:800;color:#475569}'
+          + '.dashboard-top-caption{font-size:9.5px;line-height:1.35;color:#64748b;font-weight:700}'
           + '.dashboard-flow-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}'
           + '.dashboard-flow-card i{font-size:14px;margin-bottom:6px;display:inline-flex}'
           + '.dashboard-flow-card .flow-value{font-size:24px;line-height:1;font-weight:900;color:#0f172a}'
