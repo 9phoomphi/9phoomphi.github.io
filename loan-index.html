@@ -1556,6 +1556,45 @@
         return out;
       }
 
+      function parseLoanDateForSort(value) {
+        var text = C.safeTrim(value || '');
+        if (!text) return null;
+        var match = text.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+        if (!match) return null;
+        var dt = new Date(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+        if (isNaN(dt.getTime())) return null;
+        dt.setHours(0, 0, 0, 0);
+        return dt;
+      }
+
+      function sortLoanDocsForPrintByDueDate(rows) {
+        var docs = Array.isArray(rows) ? rows.slice() : [];
+        docs.sort(function (a, b) {
+          var aStatusKey = getLoanStatusKey(a);
+          var bStatusKey = getLoanStatusKey(b);
+          var aDue = (aStatusKey === 'awaiting' || aStatusKey === 'cancelled') ? null : parseLoanDateForSort((a && a.dueDateInput) || '');
+          var bDue = (bStatusKey === 'awaiting' || bStatusKey === 'cancelled') ? null : parseLoanDateForSort((b && b.dueDateInput) || '');
+
+          if (aDue && bDue) {
+            var diff = aDue.getTime() - bDue.getTime();
+            if (diff !== 0) return diff;
+          } else if (aDue && !bDue) {
+            return -1;
+          } else if (!aDue && bDue) {
+            return 1;
+          }
+
+          var aContract = C.safeTrim((a && a.contractNo) || '');
+          var bContract = C.safeTrim((b && b.contractNo) || '');
+          if (aContract !== bContract) return aContract.localeCompare(bContract, 'th');
+
+          var aDoc = C.safeTrim((a && a.docNoSdh) || '');
+          var bDoc = C.safeTrim((b && b.docNoSdh) || '');
+          return aDoc.localeCompare(bDoc, 'th');
+        });
+        return docs;
+      }
+
       function isInDateRange(dateValue, fromValue, toValue) {
         var v = C.safeTrim(dateValue || '');
         var from = C.safeTrim(fromValue || '');
@@ -2172,6 +2211,7 @@
           var docs = hasAdvancedFilter()
             ? buildFilteredLoanDocs(allDocs, state.searchText)
             : buildFilteredLoanDocs(allDocs, C.safeTrim(state.searchText || ''));
+          docs = sortLoanDocsForPrintByDueDate(docs);
 
           if (!docs.length) {
             try { w.close(); } catch (_ignore2) {}
