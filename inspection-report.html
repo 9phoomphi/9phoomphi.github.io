@@ -1871,6 +1871,69 @@
         return html;
       }
 
+      function buildPrintDashboardHtml(dashboard) {
+        dashboard = dashboard || {};
+
+        var totalDocuments = Number(dashboard.totalDocuments || 0);
+        var uniquePurposes = Number(dashboard.uniquePurposes || 0);
+        var verifyCount = Number(dashboard.verifyCount || 0);
+        var bossCount = Number(dashboard.bossCount || 0);
+        var latestVerifyDate = C.safeTrim(dashboard.latestVerifyDate || '') || '-';
+        var purposeSummary = sortPurposeSummary(Array.isArray(dashboard.purposeSummary) ? dashboard.purposeSummary : []);
+        var topPurpose = pickTopPurpose(purposeSummary);
+
+        var html = '';
+        html += '<div class="print-dashboard-grid">';
+        html += '<div class="print-metrics-grid">';
+        html += '<article class="print-metric metric-blue"><div class="print-metric-label">เอกสารทั้งหมด</div><div class="print-metric-value">' + esc(totalDocuments) + '</div><div class="print-metric-sub">ตรงกับผลค้นหาปัจจุบัน</div></article>';
+        html += '<article class="print-metric metric-amber"><div class="print-metric-label">วัตถุประสงค์</div><div class="print-metric-value">' + esc(uniquePurposes) + '</div><div class="print-metric-sub">ประเภทที่พบ</div></article>';
+        html += '<article class="print-metric metric-emerald"><div class="print-metric-label">ขั้นตรวจสอบ</div><div class="print-metric-value">' + esc(verifyCount) + '</div><div class="print-metric-sub">เอกสารในขั้นตรวจสอบ</div></article>';
+        html += '<article class="print-metric metric-violet"><div class="print-metric-label">ขั้นหัวหน้าผ่านงาน</div><div class="print-metric-value">' + esc(bossCount) + '</div><div class="print-metric-sub">เอกสารในขั้นหัวหน้าผ่านงาน</div></article>';
+        html += '</div>';
+
+        html += '<section class="print-top-card">';
+        html += '<div class="print-top-main">';
+        html += '<div class="print-panel-kicker">วัตถุประสงค์เด่น</div>';
+        if (topPurpose) {
+          var topCount = Number(topPurpose.count || 0);
+          var topPercent = topPurpose.percentage != null ? Number(topPurpose.percentage || 0) : (totalDocuments ? (topCount / totalDocuments) * 100 : 0);
+          html += '<div class="print-top-row">';
+          html += '<div class="print-top-text"><div class="print-purpose-pill-row">' + buildSheetPill(topPurpose.sheetColor || '') + '</div><div class="print-top-title">' + esc(topPurpose.purpose || '-') + '</div><div class="print-top-sub">วันที่ตรวจสอบล่าสุด: ' + esc(latestVerifyDate) + '</div></div>';
+          html += '<div class="print-top-side"><div class="print-top-count">' + esc(topCount) + '</div><div class="print-top-percent">คิดเป็น ' + esc(formatPercent(topPercent)) + '</div></div>';
+          html += '</div>';
+        } else {
+          html += '<div class="dashboard-empty">ยังไม่มีข้อมูลวัตถุประสงค์ในช่วงที่ค้นหา</div>';
+        }
+        html += '</div>';
+        html += '</section>';
+
+        html += '<section class="print-purpose-panel">';
+        html += '<div class="print-purpose-head"><div><div class="print-panel-title">สรุปตามวัตถุประสงค์</div><div class="print-panel-sub">เรียงตามสีใบงานและสรุปในรูปแบบกระชับสำหรับ A4 แนวนอน</div></div><div class="print-purpose-head-meta">' + esc(uniquePurposes) + ' ประเภท</div></div>';
+        if (!purposeSummary.length) {
+          html += '<div class="dashboard-empty">ไม่พบข้อมูลสำหรับสรุปตามวัตถุประสงค์</div>';
+        } else {
+          html += '<div class="print-purpose-grid">';
+          for (var i = 0; i < purposeSummary.length; i++) {
+            var item = purposeSummary[i] || {};
+            var pct = item.percentage != null ? Number(item.percentage || 0) : (totalDocuments ? (Number(item.count || 0) / totalDocuments) * 100 : 0);
+            var width = Math.max(0, Math.min(100, pct));
+            if (Number(item.count || 0) > 0 && width < 8) width = 8;
+            var sheetCls = getSheetColorClass(item.sheetColor || '');
+            html += '<article class="print-purpose-card ' + sheetCls + '">';
+            html += '<div class="print-purpose-pill-row">' + buildSheetPill(item.sheetColor || '') + '</div>';
+            html += '<div class="print-purpose-card-head"><div class="print-purpose-title">' + esc(item.purpose || '-') + '</div><div class="print-purpose-count">' + esc(Number(item.count || 0)) + '</div></div>';
+            html += '<div class="print-purpose-progress"><span class="print-purpose-progress-bar" style="width:' + width + '%"></span></div>';
+            html += '<div class="print-purpose-foot"><span>จำนวน ' + esc(Number(item.count || 0)) + ' ฉบับ</span><span>' + esc(formatPercent(pct)) + '</span></div>';
+            html += '</article>';
+          }
+          html += '</div>';
+        }
+        html += '</section>';
+        html += '</div>';
+
+        return html;
+      }
+
       function updateActiveFilterBadge() {
         var count = 0;
         if (state.advFilters.startDate || state.advFilters.endDate || state.advFilters.startTime || state.advFilters.endTime) count++;
@@ -2217,55 +2280,46 @@
         return '@page{size:A4 landscape;margin:8mm}'
           + 'body{font-family:"IBM Plex Sans Thai",sans-serif;margin:0;padding:8px;color:#0F172A;background:#fff}'
           + '.report-wrap{display:grid;gap:12px}'
-          + '.dashboard-sheet{display:grid;gap:8px;break-after:page;page-break-after:always}'
-          + '.print-hero{border:1px solid #cbd5e1;border-radius:22px;padding:18px;background:linear-gradient(145deg,#eff6ff,#ffffff)}'
-          + '.print-hero h2{margin:0 0 4px;text-align:center;font-size:22px;line-height:1.2;font-weight:800}'
-          + '.print-sub{margin:0;text-align:center;font-size:12px;color:#1f2937;line-height:1.5}'
-          + '.print-meta{margin:8px 0 0;text-align:center;font-size:10.5px;color:#475569}'
-          + '.dashboard-summary-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-bottom:8px}'
-          + '.dashboard-metric,.dashboard-panel,.purpose-card,.dashboard-flow-card{border:1px solid #dbe4f0;border-radius:16px;background:#fff;padding:10px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.84)}'
-          + '.purpose-card{display:grid;gap:8px}'
-          + '.dashboard-metric-head,.dashboard-panel-head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}'
-          + '.purpose-card-head{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:10px}'
-          + '.dashboard-metric-label,.dashboard-panel-head p,.purpose-percent,.dashboard-top-foot,.dashboard-metric-sub,.flow-label,.dashboard-top-caption,.dashboard-top-percent{font-size:9.5px;color:#475569;line-height:1.35}'
-          + '.dashboard-metric-value{font-size:24px;line-height:1;font-weight:900;color:#0f172a}'
-          + '.dashboard-metric-icon{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:10px;background:#e0f2fe;color:#0369a1;font-size:13px}'
-          + '.metric-blue{background:#eff6ff}.metric-blue .dashboard-metric-value,.metric-blue .dashboard-metric-icon{color:#1d4ed8}'
-          + '.metric-emerald{background:#f0fdf4}.metric-emerald .dashboard-metric-value,.metric-emerald .dashboard-metric-icon{color:#15803d}'
-          + '.metric-violet{background:#faf5ff}.metric-violet .dashboard-metric-value,.metric-violet .dashboard-metric-icon{color:#7c3aed}'
-          + '.metric-amber{background:#fffbeb}.metric-amber .dashboard-metric-value,.metric-amber .dashboard-metric-icon{color:#d97706}'
-          + '.dashboard-layout{display:grid;grid-template-columns:1fr;gap:8px}'
-          + '.dashboard-panel-head h3,.dashboard-top-purpose{margin:0;color:#0f172a}'
-          + '.dashboard-panel-head h3{font-size:14px;line-height:1.25}'
-          + '.dashboard-top-purpose{font-size:14px;line-height:1.3;font-weight:800}'
-          + '.dashboard-top-shell{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(150px,auto);gap:10px;align-items:start}'
-          + '.dashboard-top-content{min-width:0}'
-          + '.dashboard-top-stat{display:grid;gap:3px;justify-items:end;text-align:right;padding:10px;border-radius:14px;border:1px solid #dbe4f0;background:#fff}'
-          + '.dashboard-top-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:8px}'
-          + '.dashboard-top-foot{display:grid;gap:4px}'
-          + '.dashboard-kicker,.dashboard-count-pill,.sheet-pill{display:inline-flex;align-items:center;gap:4px;padding:5px 9px;border-radius:999px;font-size:10px;font-weight:800;border:1px solid #dbe4f0;background:#fff;color:#334155}'
-          + '.dashboard-count-pill{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}'
+          + '.dashboard-sheet{display:grid;gap:8px;break-after:page;page-break-after:always;min-height:184mm}'
+          + '.print-hero{border:1px solid #cbd5e1;border-radius:18px;padding:10px 14px;background:linear-gradient(145deg,#eff6ff,#ffffff)}'
+          + '.print-hero h2{margin:0 0 2px;text-align:center;font-size:18px;line-height:1.16;font-weight:800}'
+          + '.print-sub{margin:0;text-align:center;font-size:10px;color:#1f2937;line-height:1.35}'
+          + '.print-meta{margin:4px 0 0;text-align:center;font-size:9px;color:#475569}'
+          + '.print-dashboard-grid{display:grid;gap:8px}'
+          + '.print-metrics-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}'
+          + '.print-metric{border:1px solid #dbe4f0;border-radius:14px;background:#fff;padding:8px 10px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.84)}'
+          + '.print-metric-label,.print-metric-sub,.print-top-sub,.print-top-percent,.print-panel-sub,.print-purpose-foot{font-size:9px;line-height:1.3;color:#475569}'
+          + '.print-metric-value{font-size:22px;line-height:1;font-weight:900;color:#0f172a;margin:6px 0 3px}'
+          + '.metric-blue{background:#eff6ff}.metric-blue .print-metric-value{color:#1d4ed8}'
+          + '.metric-emerald{background:#f0fdf4}.metric-emerald .print-metric-value{color:#15803d}'
+          + '.metric-violet{background:#faf5ff}.metric-violet .print-metric-value{color:#7c3aed}'
+          + '.metric-amber{background:#fffbeb}.metric-amber .print-metric-value{color:#d97706}'
+          + '.print-top-card,.print-purpose-panel{border:1px solid #dbe4f0;border-radius:16px;background:#fff;padding:10px 12px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.84)}'
+          + '.print-panel-kicker,.print-purpose-head-meta,.sheet-pill{display:inline-flex;align-items:center;gap:4px;padding:4px 8px;border-radius:999px;font-size:9px;font-weight:800;border:1px solid #dbe4f0;background:#fff;color:#334155}'
+          + '.print-panel-kicker,.print-purpose-head-meta{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}'
           + '.sheet-pill.sheet-blue{background:#dbeafe;color:#1d4ed8;border-color:#93c5fd}'
           + '.sheet-pill.sheet-pink{background:#fce7f3;color:#be185d;border-color:#f9a8d4}'
           + '.sheet-pill.sheet-green{background:#dcfce7;color:#15803d;border-color:#86efac}'
           + '.sheet-pill.sheet-other{background:#e2e8f0;color:#475569;border-color:#cbd5e1}'
-          + '.dashboard-top-count{font-size:24px;line-height:1;font-weight:900;color:#1d4ed8}'
-          + '.dashboard-flow-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin-top:8px}'
-          + '.dashboard-flow-card i{font-size:13px;margin-bottom:4px;display:inline-flex}'
-          + '.dashboard-flow-card .flow-value{font-size:20px;line-height:1;font-weight:900;color:#0f172a}'
-          + '.dashboard-flow-card.flow-verify i,.dashboard-flow-card.flow-verify .flow-value{color:#15803d}'
-          + '.dashboard-flow-card.flow-boss i,.dashboard-flow-card.flow-boss .flow-value{color:#7c3aed}'
-          + '.purpose-summary-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}'
-          + '.purpose-card-main{min-width:0}.purpose-card-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:5px}.purpose-card-stat{display:grid;gap:2px;min-width:56px;text-align:right}'
-          + '.purpose-card-title{margin:0;font-size:10.5px;line-height:1.35;font-weight:800;color:#0f172a}'
-          + '.purpose-card-count{font-size:18px;line-height:1;font-weight:900;color:#0f172a}'
-          + '.purpose-card.sheet-blue{background:#eff6ff}.purpose-card.sheet-pink{background:#fdf2f8}.purpose-card.sheet-green{background:#f0fdf4}.purpose-card.sheet-other{background:#f8fafc}'
-          + '.purpose-progress{width:100%;height:6px;border-radius:999px;background:#fff;border:1px solid #dbe4f0;overflow:hidden}'
-          + '.purpose-progress-bar{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#3b82f6,#1d4ed8)}'
-          + '.purpose-card.sheet-pink .purpose-progress-bar{background:linear-gradient(90deg,#ec4899,#be185d)}'
-          + '.purpose-card.sheet-green .purpose-progress-bar{background:linear-gradient(90deg,#22c55e,#15803d)}'
-          + '.purpose-card.sheet-other .purpose-progress-bar{background:linear-gradient(90deg,#64748b,#475569)}'
-          + '.purpose-card-foot{display:flex;justify-content:space-between;align-items:center;gap:6px;margin-top:4px;flex-wrap:wrap}'
+          + '.print-top-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;margin-top:6px}'
+          + '.print-top-title{font-size:13px;line-height:1.28;font-weight:800;color:#0f172a;margin-top:4px}'
+          + '.print-top-side{text-align:right;display:grid;gap:3px;justify-items:end}'
+          + '.print-top-count{font-size:22px;line-height:1;font-weight:900;color:#1d4ed8}'
+          + '.print-purpose-head{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin-bottom:8px}'
+          + '.print-panel-title{font-size:12px;line-height:1.25;font-weight:800;color:#0f172a}'
+          + '.print-purpose-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}'
+          + '.print-purpose-card{border:1px solid #dbe4f0;border-radius:14px;background:#fff;padding:8px;display:grid;gap:6px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.82)}'
+          + '.print-purpose-card.sheet-blue{background:#eff6ff}.print-purpose-card.sheet-pink{background:#fdf2f8}.print-purpose-card.sheet-green{background:#f0fdf4}.print-purpose-card.sheet-other{background:#f8fafc}'
+          + '.print-purpose-pill-row{display:flex;align-items:center;gap:6px;flex-wrap:wrap}'
+          + '.print-purpose-card-head{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:start}'
+          + '.print-purpose-title{font-size:10px;line-height:1.3;font-weight:800;color:#0f172a}'
+          + '.print-purpose-count{font-size:16px;line-height:1;font-weight:900;color:#0f172a}'
+          + '.print-purpose-progress{width:100%;height:5px;border-radius:999px;background:#fff;border:1px solid #dbe4f0;overflow:hidden}'
+          + '.print-purpose-progress-bar{display:block;height:100%;border-radius:inherit;background:linear-gradient(90deg,#3b82f6,#1d4ed8)}'
+          + '.print-purpose-card.sheet-pink .print-purpose-progress-bar{background:linear-gradient(90deg,#ec4899,#be185d)}'
+          + '.print-purpose-card.sheet-green .print-purpose-progress-bar{background:linear-gradient(90deg,#22c55e,#15803d)}'
+          + '.print-purpose-card.sheet-other .print-purpose-progress-bar{background:linear-gradient(90deg,#64748b,#475569)}'
+          + '.print-purpose-foot{display:flex;justify-content:space-between;align-items:center;gap:6px;flex-wrap:wrap}'
           + '.dashboard-empty{text-align:center;padding:14px;border:1px dashed #cbd5e1;border-radius:16px;background:#f8fafc;color:#475569;font-size:10px;font-weight:700}'
           + '.table-wrap{border:1px solid #cbd5e1;border-radius:20px;overflow:hidden}'
           + '.table-head{padding:12px 14px;border-bottom:1px solid #cbd5e1;background:#f8fbff}.table-head h3{margin:0;font-size:15px;font-weight:800;color:#0f172a}.table-head p{margin:2px 0 0;font-size:10px;color:#475569}'
@@ -2273,7 +2327,7 @@
           + 'th,td{border:1px solid #334155;padding:4px 5px;font-size:10px;line-height:1.28;vertical-align:top}th{background:#E2E8F0;text-align:center;font-weight:800}'
           + '.text-center{text-align:center}.text-right{text-align:right}.subject-cell,.group-cell,.sender-cell{white-space:normal;overflow-wrap:anywhere;word-break:break-word}.subject-cell{line-height:1.3}'
           + '.index,.fiscal,.am-doc,.doc-sdh,.verify-date,.amount,.diff{white-space:nowrap}.print-step{display:block;font-size:9px;color:#475569;font-weight:700;margin-top:2px}'
-          + '.btn-print{padding:10px 28px;background:#0A84FF;color:#fff;border:none;border-radius:999px;font-weight:900}.no-print{text-align:center;margin-top:14px}@media print{.no-print{display:none!important}body{padding:0}.dashboard-sheet,.dashboard-summary-grid,.dashboard-layout,.purpose-summary-grid{break-inside:avoid-page}.table-wrap{break-before:page;page-break-before:always}}';
+          + '.btn-print{padding:10px 28px;background:#0A84FF;color:#fff;border:none;border-radius:999px;font-weight:900}.no-print{text-align:center;margin-top:14px}@media print{.no-print{display:none!important}body{padding:0}.dashboard-sheet{break-inside:avoid-page;page-break-inside:avoid}.table-wrap{break-before:page;page-break-before:always}}';
       }
 
       function printReport() {
@@ -2307,7 +2361,7 @@
         h += '<section class="print-hero"><h2>แดชบอร์ดสรุปผลงานการตรวจสอบเอกสาร</h2>';
         h += '<p class="print-sub">เจ้าหน้าที่: <strong>' + esc(officer) + '</strong> | ปีงบประมาณ: <strong>' + esc(fiscal) + '</strong>' + (dr ? (' | ' + esc(dr)) : '') + ' | จำนวนรวม: <strong>' + esc(total) + ' ฉบับ</strong></p>';
         h += '<p class="print-meta">พิมพ์เมื่อ: ' + esc(new Date().toLocaleString('th-TH')) + '</p></section>';
-        h += buildDashboardHtml(dashboard, { summaryText: summaryText });
+        h += buildPrintDashboardHtml(dashboard);
         h += '</section>';
         h += '<section class="table-wrap"><div class="table-head"><h3>รายการเอกสารที่ตรวจสอบ</h3><p>ตารางรายละเอียดเอกสารที่ใช้เป็นฐานข้อมูลของแดชบอร์ดด้านบน</p></div>';
         h += '<table><colgroup><col style="width:4%"><col style="width:5%"><col style="width:10%"><col style="width:8%"><col style="width:24%"><col style="width:9%"><col style="width:10%"><col style="width:14%"><col style="width:8%"><col style="width:8%"></colgroup><thead><tr><th>ลำดับ</th><th>ปีงบฯ</th><th>เลขที่หนังสือส่งกองคลัง</th><th>เลขที่ สธ. (กอง/กลุ่ม)</th><th>ชื่อเรื่อง</th><th>วันที่ตรวจสอบ</th><th>กลุ่ม/ศูนย์</th><th>ชื่อผู้ส่ง/ชื่อผู้ยืม/ชื่อผู้ใช้หนี้/ชื่อผู้ประสานงาน</th><th>จำนวนเบิก/ยืม/คืน</th><th>ส่วนต่าง/เงินเหลือคืน</th></tr></thead><tbody>';
