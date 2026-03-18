@@ -1429,6 +1429,19 @@
         return true;
       }
 
+      function applySheetColorFromDoc(doc) {
+        var record = doc || {};
+        var explicitColor = C.safeTrim(record.sheetColor || record.sheetType || record.colorSheet || record.docColor || '');
+        if (explicitColor) {
+          var explicitKey = resolveSheetColorKeyByLabel(explicitColor);
+          if (explicitKey) {
+            setSheetColor(explicitKey);
+            return true;
+          }
+        }
+        return applySheetColorFromPurpose(record.purpose || '');
+      }
+
       function openSheetColorModal(preselectKey) {
         if (!els.sheetColorModal) return Promise.resolve('');
         return new Promise(function (resolve) {
@@ -2000,13 +2013,13 @@
 
             if (isEdit && state.doc) {
               setFormData(state.doc);
-              applySheetColorFromPurpose(state.doc.purpose || '');
+              applySheetColorFromDoc(state.doc);
             } else {
               updateReceiveNo();
               setDefaultDates();
               if (isCopy && state.copyDoc) {
                 setCopyFormData(state.copyDoc);
-                applySheetColorFromPurpose(state.copyDoc.purpose || '');
+                applySheetColorFromDoc(state.copyDoc);
               }
             }
 
