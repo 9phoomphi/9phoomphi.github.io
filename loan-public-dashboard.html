@@ -85,9 +85,9 @@
     }
 
     .shell {
-      width: min(1240px, calc(100vw - 28px));
+      width: min(1280px, calc(100vw - 40px));
       margin: 0 auto;
-      padding: calc(18px + env(safe-area-inset-top, 0px)) 0 calc(36px + env(safe-area-inset-bottom, 0px));
+      padding: calc(18px + env(safe-area-inset-top, 0px)) 0 calc(42px + env(safe-area-inset-bottom, 0px));
     }
 
     .hero {
@@ -135,6 +135,10 @@
       justify-content: space-between;
       gap: 16px;
       flex-wrap: wrap;
+    }
+
+    .hero-top > * {
+      min-width: 0;
     }
 
     .hero-badge {
@@ -223,8 +227,8 @@
 
     .search-grid {
       display: grid;
-      grid-template-columns: minmax(0, 1fr) auto auto;
-      gap: 12px;
+      grid-template-columns: minmax(0, 1fr) minmax(156px, 176px) minmax(136px, 156px);
+      gap: 14px;
       align-items: center;
     }
 
@@ -311,10 +315,10 @@
     }
 
     .search-meta {
-      display: flex;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 10px;
-      align-items: center;
+      align-items: stretch;
       margin-top: 14px;
     }
 
@@ -355,33 +359,36 @@
 
     .dashboard {
       display: grid;
-      gap: 18px;
-      margin-top: 18px;
+      gap: 22px;
+      margin-top: 22px;
     }
 
     .section-card {
+      display: grid;
+      gap: 18px;
       border-radius: 28px;
       background: var(--surface);
       border: 1px solid rgba(255, 255, 255, 0.46);
       box-shadow: var(--shadow-soft);
-      padding: 20px;
+      padding: 24px;
       backdrop-filter: blur(20px) saturate(160%);
       -webkit-backdrop-filter: blur(20px) saturate(160%);
     }
 
     .summary-grid {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 14px;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
     }
 
     .summary-card {
       position: relative;
       overflow: hidden;
-      min-height: 172px;
+      min-width: 0;
+      min-height: 188px;
       border-radius: 24px;
       border: 1px solid rgba(148, 163, 184, 0.22);
-      padding: 18px;
+      padding: 20px;
       background: linear-gradient(180deg, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0.54) 100%);
     }
 
@@ -410,7 +417,7 @@
       position: relative;
       z-index: 1;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-between;
       gap: 12px;
       margin-bottom: 16px;
@@ -420,6 +427,8 @@
       font-size: 0.98rem;
       font-weight: 800;
       color: var(--text-sub);
+      line-height: 1.5;
+      min-width: 0;
     }
 
     .summary-icon {
@@ -459,24 +468,27 @@
 
     .status-grid {
       display: grid;
-      grid-template-columns: repeat(6, minmax(0, 1fr));
-      gap: 12px;
+      grid-template-columns: repeat(auto-fit, minmax(176px, 1fr));
+      gap: 14px;
       margin-top: 16px;
     }
 
     .status-card {
+      min-width: 0;
       border-radius: 22px;
-      padding: 16px 14px;
+      padding: 18px 16px;
       border: 1px solid transparent;
       display: grid;
-      gap: 8px;
-      min-height: 128px;
+      align-content: start;
+      gap: 10px;
+      min-height: 142px;
       background: var(--surface-soft);
     }
 
     .status-card .label {
       font-size: 0.9rem;
       font-weight: 800;
+      line-height: 1.5;
     }
 
     .status-card .count {
@@ -491,6 +503,7 @@
       color: var(--text-sub);
       font-weight: 700;
       line-height: 1.5;
+      word-break: break-word;
     }
 
     .status-card.paid { border-color: rgba(16, 185, 129, 0.26); background: var(--emerald-soft); color: var(--emerald); }
@@ -542,24 +555,25 @@
 
     .project-grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 14px;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
     }
 
     .project-card {
+      min-width: 0;
       display: grid;
-      gap: 12px;
-      min-height: 176px;
-      padding: 18px;
+      gap: 14px;
+      min-height: 188px;
+      padding: 20px;
       border-radius: 24px;
       background: var(--surface-soft);
       border: 1px solid var(--line);
     }
 
     .project-card-head {
-      display: flex;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
       align-items: flex-start;
-      justify-content: space-between;
       gap: 12px;
     }
 
@@ -569,6 +583,8 @@
       line-height: 1.55;
       font-weight: 800;
       color: var(--text-main);
+      min-width: 0;
+      overflow-wrap: anywhere;
     }
 
     .project-count {
@@ -581,9 +597,9 @@
     }
 
     .project-meta {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-end;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: end;
       gap: 12px;
       margin-top: auto;
       color: var(--text-sub);
@@ -593,24 +609,24 @@
 
     .records-grid {
       display: grid;
-      gap: 14px;
-    }
-
-    .record-card {
-      border-radius: 24px;
-      padding: 18px;
-      border: 1px solid var(--line);
-      background: var(--surface-soft);
-      display: grid;
       gap: 16px;
     }
 
+    .record-card {
+      min-width: 0;
+      border-radius: 24px;
+      padding: 20px;
+      border: 1px solid var(--line);
+      background: var(--surface-soft);
+      display: grid;
+      gap: 18px;
+    }
+
     .record-head {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 12px;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: start;
+      gap: 16px;
     }
 
     .record-title {
@@ -619,6 +635,7 @@
       line-height: 1.5;
       font-weight: 850;
       color: var(--text-main);
+      overflow-wrap: anywhere;
     }
 
     .record-amount {
@@ -628,6 +645,8 @@
       letter-spacing: -0.03em;
       color: var(--blue);
       white-space: nowrap;
+      text-align: right;
+      align-self: start;
     }
 
     .status-badge {
@@ -650,11 +669,12 @@
 
     .record-meta-grid {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 12px;
     }
 
     .meta-item {
+      min-width: 0;
       display: grid;
       gap: 4px;
       padding: 12px 14px;
@@ -684,12 +704,13 @@
     }
 
     .record-foot {
-      display: flex;
-      flex-wrap: wrap;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 10px;
     }
 
     .foot-chip {
+      min-width: 0;
       display: inline-flex;
       align-items: center;
       gap: 8px;
@@ -701,6 +722,7 @@
       font-size: 0.88rem;
       font-weight: 700;
       line-height: 1.5;
+      overflow-wrap: anywhere;
     }
 
     body.dark-mode .foot-chip {
@@ -774,17 +796,18 @@
     }
 
     @media (max-width: 1120px) {
-      .summary-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+      .shell {
+        width: min(100vw - 26px, 100%);
       }
-      .status-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+      .section-card {
+        padding: 22px;
       }
-      .project-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+      .record-head {
+        grid-template-columns: 1fr;
       }
-      .record-meta-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+      .record-amount {
+        text-align: left;
+        white-space: normal;
       }
     }
 
@@ -800,17 +823,20 @@
       .error-state {
         border-radius: 24px;
       }
-      .search-grid {
-        grid-template-columns: 1fr;
+      .hero,
+      .section-card {
+        padding: 18px;
       }
-      .summary-grid,
-      .status-grid,
-      .project-grid,
-      .record-meta-grid {
+      .search-grid {
         grid-template-columns: 1fr;
       }
       .record-amount {
         font-size: 1.72rem;
+      }
+      .project-card-head,
+      .project-meta,
+      .record-foot {
+        grid-template-columns: 1fr;
       }
       .section-pill,
       .ghost-chip,
@@ -955,18 +981,7 @@
         return C.fmtMoney(value == null ? '' : value);
       }
 
-      function readStoredTheme() {
-        try {
-          return safeTrim(localStorage.getItem(THEME_KEY));
-        } catch (_e) {
-          return '';
-        }
-      }
-
       function getPreferredTheme() {
-        var stored = readStoredTheme();
-        if (stored === 'dark' || stored === 'light') return stored;
-        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) return 'dark';
         return 'light';
       }
 
