@@ -2,7 +2,9 @@
   'use strict';
 
   var STORAGE_SCRIPT_URL = 'docControlScriptUrlV3';
-  var STORAGE_DEVICE_KEY = 'docControlDeviceKeyV3';
+  var STORAGE_DEVICE_KEY = 'docControlDeviceKeyV1';
+  var LEGACY_STORAGE_DEVICE_KEY = 'docControlDeviceKeyV3';
+  var LEGACY_STORAGE_IP_AUTH = 'docControlIpAuthStateV1';
 
   function safeText(value) {
     return String(value == null ? '' : value);
@@ -44,6 +46,34 @@
     return value && typeof value === 'object' ? value : {};
   }
 
+  function readSessionDeviceKey() {
+    try {
+      return safeTrim(sessionStorage.getItem(STORAGE_DEVICE_KEY) || '');
+    } catch (_e) {
+      return '';
+    }
+  }
+
+  function clearLegacySessionArtifacts() {
+    try { localStorage.removeItem(LEGACY_STORAGE_DEVICE_KEY); } catch (_e1) {}
+    try { localStorage.removeItem(LEGACY_STORAGE_IP_AUTH); } catch (_e2) {}
+  }
+
+  function storeRuntimeDeviceKey(deviceKey) {
+    var normalized = safeTrim(deviceKey || '');
+    if (!normalized) return '';
+    try { sessionStorage.setItem(STORAGE_DEVICE_KEY, normalized); } catch (_e1) {}
+    clearLegacySessionArtifacts();
+    global.__docControlDeviceKey = normalized;
+    return normalized;
+  }
+
+  function clearRuntimeDeviceKey() {
+    try { sessionStorage.removeItem(STORAGE_DEVICE_KEY); } catch (_e1) {}
+    clearLegacySessionArtifacts();
+    try { delete global.__docControlDeviceKey; } catch (_e2) { global.__docControlDeviceKey = ''; }
+  }
+
   function readConfig() {
     var cfg = normalizeConfigObject(global.DOC_CONTROL_CONFIG);
     var links = normalizeConfigObject(cfg.links);
@@ -73,25 +103,25 @@
     var runtimeDevice = '';
     var query = parseQuery();
     var queryUrl = normalizeScriptUrl(query.su || query.scriptUrl || query.script || '');
-    var queryDevice = safeTrim(query.dk || query.deviceKey || query.device || '');
 
     try {
       savedUrl = normalizeScriptUrl(localStorage.getItem(STORAGE_SCRIPT_URL) || '');
-      savedDevice = safeTrim(localStorage.getItem(STORAGE_DEVICE_KEY) || '');
     } catch (_e) {}
+
+    savedDevice = readSessionDeviceKey();
+    clearLegacySessionArtifacts();
 
     runtimeDevice = getRuntimeDeviceKey();
 
     var scriptUrl = cfg.scriptUrl || queryUrl || savedUrl;
-    var deviceKey = cfg.deviceKey || queryDevice || savedDevice || runtimeDevice || randomDeviceKey();
+    var deviceKey = cfg.deviceKey || savedDevice || runtimeDevice || randomDeviceKey();
 
     if (scriptUrl) {
       try { localStorage.setItem(STORAGE_SCRIPT_URL, scriptUrl); } catch (_e0) {}
     }
 
     if (deviceKey) {
-      try { localStorage.setItem(STORAGE_DEVICE_KEY, deviceKey); } catch (_e2) {}
-      global.__docControlDeviceKey = deviceKey;
+      storeRuntimeDeviceKey(deviceKey);
     }
 
     return {
@@ -110,14 +140,24 @@
 
     try {
       localStorage.setItem(STORAGE_SCRIPT_URL, nextUrl);
-      localStorage.setItem(STORAGE_DEVICE_KEY, nextDevice);
     } catch (_e) {}
-    global.__docControlDeviceKey = nextDevice;
+    storeRuntimeDeviceKey(nextDevice);
 
     return {
       scriptUrl: nextUrl,
       deviceKey: nextDevice
     };
+  }
+
+  function resetSessionIdentity(scriptUrl) {
+    var nextScriptUrl = normalizeScriptUrl(scriptUrl || readConfig().scriptUrl || '');
+    if (!nextScriptUrl) throw new Error('missing_script_url');
+    clearRuntimeDeviceKey();
+    return persistSettings(nextScriptUrl, randomDeviceKey());
+  }
+
+  function clearSessionIdentity() {
+    clearRuntimeDeviceKey();
   }
 
   function ensureSettingsOrThrow() {
@@ -314,6 +354,8 @@
     readConfig: readConfig,
     getStoredSettings: getStoredSettings,
     persistSettings: persistSettings,
+    resetSessionIdentity: resetSessionIdentity,
+    clearSessionIdentity: clearSessionIdentity,
     ensureSettingsOrThrow: ensureSettingsOrThrow,
     createApiClient: createApiClient,
     parseQuery: parseQuery,

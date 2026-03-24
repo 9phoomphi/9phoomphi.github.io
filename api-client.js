@@ -490,6 +490,9 @@
     this.defaultDeviceKey = payload.deviceKey || this.defaultDeviceKey;
     var self = this;
     return this.call('auth.login', payload, opts).then(function (res) {
+      if (res && res.success && safeTrim(res.deviceKey)) {
+        self.defaultDeviceKey = safeTrim(res.deviceKey);
+      }
       if (res && res.success && res.user) self._cacheWrite('auth.me', res);
       return res;
     });
@@ -502,6 +505,13 @@
       clientIpKey: this.defaultIpKey
     }, opts).finally(function () {
       self._cacheClear('auth.me');
+      self.defaultDeviceKey = randomDeviceKey();
+      self.defaultIpKey = '';
+      try {
+        if (global.DocFrontendCommon && typeof global.DocFrontendCommon.clearSessionIdentity === 'function') {
+          global.DocFrontendCommon.clearSessionIdentity();
+        }
+      } catch (_e) {}
     });
   };
 
@@ -588,6 +598,17 @@
       deviceKey: this.defaultDeviceKey,
       clientIpKey: this.defaultIpKey,
       docId: safeTrim(docId || '')
+    }, opts);
+  };
+
+  DocumentControlApi.prototype.docPublicQrDetail = function (docId, qrToken, opts) {
+    opts = opts || {};
+    return this.call('doc.public_qr_detail', {
+      deviceKey: this.defaultDeviceKey,
+      clientIpKey: this.defaultIpKey,
+      docId: safeTrim(docId || ''),
+      qrToken: safeTrim(qrToken || ''),
+      allowLegacy: opts.allowLegacy ? '1' : ''
     }, opts);
   };
 
@@ -771,6 +792,27 @@
       selectedLocation: normalizedBox,
       storedLoc: normalizedBox,
       newLoc: normalizedBox
+    }, opts);
+  };
+
+  DocumentControlApi.prototype.boxPublicQrDetail = function (boxName, qrToken, opts) {
+    opts = opts || {};
+    var normalizedBox = safeTrim(boxName || '');
+    return this.call('box.public_qr_detail', {
+      boxName: normalizedBox,
+      box: normalizedBox,
+      boxId: normalizedBox,
+      box_name: normalizedBox,
+      id: normalizedBox,
+      name: normalizedBox,
+      location: normalizedBox,
+      loc: normalizedBox,
+      detail: normalizedBox,
+      selectedLocation: normalizedBox,
+      storedLoc: normalizedBox,
+      newLoc: normalizedBox,
+      qrToken: safeTrim(qrToken || ''),
+      allowLegacy: opts.allowLegacy ? '1' : ''
     }, opts);
   };
 

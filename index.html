@@ -3001,10 +3001,24 @@
         showError('');
         setStatus('กำลังเข้าสู่ระบบ...', 'warn');
 
+        try {
+          state.settings = C.resetSessionIdentity(state.settings && state.settings.scriptUrl ? state.settings.scriptUrl : (els.scriptUrl && els.scriptUrl.value ? els.scriptUrl.value : ''));
+          state.api = C.createApiClient(state.settings);
+        } catch (errReset) {
+          setLoading(false);
+          showError(errReset && errReset.message ? errReset.message : 'ไม่สามารถเริ่ม session ใหม่ได้');
+          setStatus('เริ่ม session ไม่สำเร็จ', 'error');
+          return;
+        }
+
         state.api.login(username, password, { loaderMessage: 'กำลังตรวจสอบข้อมูล...' }).then(function (res) {
           if (!res || res.success === false) {
             throw new Error(res && res.error ? res.error : 'เข้าสู่ระบบไม่สำเร็จ');
           }
+          try {
+            state.settings = C.persistSettings(state.settings && state.settings.scriptUrl ? state.settings.scriptUrl : (els.scriptUrl && els.scriptUrl.value ? els.scriptUrl.value : ''), res.deviceKey || state.api.defaultDeviceKey);
+            state.api = C.createApiClient(state.settings);
+          } catch (_syncErr) {}
           setLoggedIn(res.user || { username: username });
           clearRegisterSelection();
           setStatus('เข้าสู่ระบบสำเร็จ', 'ok');

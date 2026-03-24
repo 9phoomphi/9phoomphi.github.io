@@ -1620,6 +1620,11 @@
       var C = window.DocFrontendCommon;
       var q = C.parseQuery();
       var docId = C.safeTrim(q.id || '');
+      var qrToken = C.safeTrim(q.t || q.token || '');
+      var qrMode = C.safeTrim(q.qr || q.public || q.mode || '').toLowerCase();
+      var legacyQrHint = !!docId && !!C.safeTrim(q.dk || q.deviceKey || q.ipk || q.clientIpKey || q.su || q.scriptUrl || q.script || '');
+      var isLegacyPublicQrRequest = !qrToken && legacyQrHint;
+      var isPublicQrRequest = !!qrToken || qrMode === '1' || qrMode === 'true' || qrMode === 'qr' || qrMode === 'public' || isLegacyPublicQrRequest;
       var APP_BROWSER_NAME = 'ระบบทะเบียนคุมเอกสาร';
 
       var state = {
@@ -1894,15 +1899,18 @@
       }
 
       function getDocQrUrl() {
-        var targetDocId = C.safeTrim((state.doc && state.doc.docId) || docId || '');
-        var target = C.buildPageUrl('document-view.html', { id: targetDocId });
-        try {
-          target = new URL(target, window.location.href).toString();
-        } catch (_ignore) {}
-        if (typeof window.appendSessionKeysToUrl === 'function') {
-          target = window.appendSessionKeysToUrl(target);
-        } else if (state.settings && C.safeTrim(state.settings.deviceKey || '')) {
-          target += (target.indexOf('?') >= 0 ? '&' : '?') + 'dk=' + encodeURIComponent(C.safeTrim(state.settings.deviceKey || ''));
+        var target = C.safeTrim((state.doc && state.doc.publicQrUrl) || '');
+        if (!target) {
+          var targetDocId = C.safeTrim((state.doc && state.doc.docId) || docId || '');
+          var token = C.safeTrim((state.doc && state.doc.publicQrToken) || qrToken || '');
+          target = C.buildPageUrl('document-view.html', {
+            id: targetDocId,
+            qr: 1,
+            t: token
+          });
+          try {
+            target = new URL(target, window.location.href).toString();
+          } catch (_ignore) {}
         }
         return 'https://api.qrserver.com/v1/create-qr-code/?size=1200x1200&margin=0&qzone=2&ecc=Q&data=' + encodeURIComponent(target);
       }
@@ -1912,6 +1920,10 @@
       }
 
       function renderActionButtons(isReadOnly) {
+        if (state.doc && state.doc.isPublicQrView) {
+          els.actionButtons.innerHTML = '<div class="readonly-box"><i class="bi bi-qr-code-scan me-1"></i>โหมดดูรายละเอียดจาก QR Code: ดูข้อมูลได้อย่างเดียว</div>';
+          return;
+        }
         if (isReadOnly) {
           els.actionButtons.innerHTML = '<div class="readonly-box"><i class="bi bi-eye me-1"></i>บัญชีผู้มีสิทธิ์อ่าน: ดูข้อมูลได้เท่านั้น</div>';
           return;
@@ -2217,6 +2229,8 @@
         var isReadOnly = !!doc.isReadOnlyUser;
         syncDocRouteId(doc.docId || docId);
         applySheetTheme(doc.sheetColor || '');
+        if (els.btnBack) els.btnBack.style.display = doc.isPublicQrView ? 'none' : 'inline-flex';
+        if (els.btnPrintSticker) els.btnPrintSticker.style.display = doc.isPublicQrView ? 'none' : 'inline-flex';
 
         els.docIdTitle.textContent = doc.docId || '-';
         els.docIdSub.textContent = C.safeTrim(doc.docNoSdh || '') ? ('สธ ' + C.safeText(doc.docNoSdh || '')) : '-';
@@ -2468,29 +2482,55 @@
       async function loadDetail() {
         showError('');
 
-        var res = await Promise.all([
-          state.api.docDetail(docId),
-          state.api.optionsMembers(),
-          state.api.optionsInfo(),
-          state.api.me()
-        ]);
+        var detailRes;
+        var membersRes = { data: [] };
+        var infoRes = { data: { locations: [], fiscalYears: [] } };
+        var meRes = { user: null };
 
-        var detailRes = res[0] || {};
-        var membersRes = res[1] || {};
-        var infoRes = res[2] || {};
-        var meRes = res[3] || {};
+        if (isPublicQrRequest) {
+          detailRes = await state.api.docPublicQrDetail(docId, qrToken, {
+            noPageLoader: true,
+            allowLegacy: isLegacyPublicQrRequest || (!qrToken && !!docId)
+          });
+        } else {
+          var res = await Promise.all([
+            state.api.docDetail(docId),
+            state.api.optionsMembers(),
+            state.api.optionsInfo(),
+            state.api.me()
+          ]);
+          detailRes = res[0] || {};
+          membersRes = res[1] || {};
+          infoRes = res[2] || {};
+          meRes = res[3] || {};
+        }
 
-        if (!meRes || meRes.success === false || !meRes.user) {
+        if (!isPublicQrRequest && (!meRes || meRes.success === false || !meRes.user)) {
+          var legacyRes = await state.api.docPublicQrDetail(docId, '', {
+            noPageLoader: true,
+            allowLegacy: true
+          });
+          if (legacyRes && legacyRes.success && legacyRes.doc) {
+            state.currentUser = null;
+            state.doc = legacyRes.doc;
+            state.statusData = legacyRes.statusData || {};
+            state.members = [];
+            state.info = { locations: [], fiscalYears: [] };
+            syncDocRouteId((state.doc && state.doc.docId) || docId);
+            renderDocument();
+            els.mainCard.style.display = 'block';
+            return true;
+          }
           C.redirect('index.html', {}, true);
           return false;
         }
 
         if (!detailRes || detailRes.success === false || !detailRes.doc) {
-          C.redirect('not-found.html', {
-            message: 'ไม่พบเอกสาร',
-            detail: docId,
-            back: 'index.html'
-          }, true);
+          if (isPublicQrRequest) {
+            showError((detailRes && detailRes.error) ? detailRes.error : 'ไม่พบเอกสารจาก QR Code นี้');
+            return false;
+          }
+          C.redirect('not-found.html', { message: 'ไม่พบเอกสาร', detail: docId, back: 'index.html' }, true);
           return false;
         }
 
@@ -2528,10 +2568,10 @@
           }
 
           try {
-            state.settings = C.ensureSettingsOrThrow();
+            state.settings = isPublicQrRequest ? C.getStoredSettings() : C.ensureSettingsOrThrow();
             state.api = C.createApiClient(state.settings);
           } catch (_e) {
-            showError('กรุณาตั้งค่า scriptUrl และ deviceKey ที่หน้า index ก่อน');
+            showError(isPublicQrRequest ? 'ไม่พบการตั้งค่า scriptUrl สำหรับเปิด QR Code' : 'กรุณาตั้งค่า scriptUrl และ deviceKey ที่หน้า index ก่อน');
             return;
           }
 

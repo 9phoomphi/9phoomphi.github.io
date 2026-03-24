@@ -313,62 +313,51 @@
   }
 
   function getStoredIpAuthState() {
-    try {
-      var raw = localStorage.getItem('docControlIpAuthStateV1') || '';
-      if (!raw) return null;
-      var parsed = JSON.parse(raw);
-      if (!parsed || typeof parsed !== 'object') return null;
-      parsed.deviceKey = normalizeDeviceKeyClient(parsed.deviceKey || '');
-      parsed.ipKey = normalizeIpKeyClient(parsed.ipKey || '');
-      if (!parsed.deviceKey || !parsed.ipKey) return null;
-      return parsed;
-    } catch (_err) {
-      return null;
-    }
+    try { localStorage.removeItem('docControlIpAuthStateV1'); } catch (_err0) {}
+    return null;
   }
 
   function getStoredIpKey() {
-    var state = getStoredIpAuthState();
-    return normalizeIpKeyClient(state && state.ipKey || '');
+    return '';
+  }
+
+  function stripSensitiveSessionParams(url) {
+    if (!url) return url;
+    try {
+      var u = new URL(url, global.location.href);
+      u.searchParams.delete('dk');
+      u.searchParams.delete('deviceKey');
+      u.searchParams.delete('device');
+      u.searchParams.delete('ipk');
+      u.searchParams.delete('ipKey');
+      u.searchParams.delete('clientIpKey');
+      return u.toString();
+    } catch (_e0) {
+      var hashIdx = String(url).indexOf('#');
+      var hashPart = hashIdx >= 0 ? String(url).substring(hashIdx) : '';
+      var base = hashIdx >= 0 ? String(url).substring(0, hashIdx) : String(url);
+      return base
+        .replace(/([?&])(dk|deviceKey|device|ipk|ipKey|clientIpKey)=[^&#]*/gi, '$1')
+        .replace(/[?&]$/, '') + hashPart;
+    }
   }
 
   function ensureDeviceKey() {
     var storageKey = 'docControlDeviceKeyV1';
-    var fallbackLocalStorageKey = 'docControlDeviceKeyV3';
     var key = '';
-    var urlKey = '';
-
-    try {
-      var u = new URL(global.location.href);
-      urlKey = normalizeDeviceKeyClient(u.searchParams.get('dk') || '');
-    } catch (_e0) {
-      var m = String(global.location.search || '').match(/[?&]dk=([^&#]+)/);
-      if (m && m[1]) {
-        try {
-          urlKey = normalizeDeviceKeyClient(decodeURIComponent(m[1]));
-        } catch (_e1) {
-          urlKey = normalizeDeviceKeyClient(m[1]);
-        }
-      }
-    }
 
     try {
       key = normalizeDeviceKeyClient(sessionStorage.getItem(storageKey) || '');
     } catch (_e2) {}
 
-    if (!key) {
-      try {
-        key = normalizeDeviceKeyClient(localStorage.getItem(fallbackLocalStorageKey) || '');
-      } catch (_e3) {}
-    }
+    try { localStorage.removeItem('docControlDeviceKeyV3'); } catch (_e3) {}
+    try { localStorage.removeItem('docControlIpAuthStateV1'); } catch (_e4) {}
 
-    if (urlKey) key = urlKey;
     if (!key) key = normalizeDeviceKeyClient(global.__docControlDeviceKey || '');
     if (!key) key = 'dk_' + Math.random().toString(36).slice(2, 10) + '_' + Date.now().toString(36);
 
     if (key) {
-      try { sessionStorage.setItem(storageKey, key); } catch (_e4) {}
-      try { localStorage.setItem(fallbackLocalStorageKey, key); } catch (_e5) {}
+      try { sessionStorage.setItem(storageKey, key); } catch (_e5) {}
       global.__docControlDeviceKey = key;
     }
 
@@ -380,50 +369,20 @@
   }
 
   function appendDeviceKeyToUrl(url) {
-    if (!url) return url;
-    var key = getDeviceKey();
-    if (!key) return url;
-
-    try {
-      var u = new URL(url, global.location.href);
-      u.searchParams.set('dk', key);
-      return u.toString();
-    } catch (_e0) {
-      var hashIdx = url.indexOf('#');
-      var hashPart = hashIdx >= 0 ? url.substring(hashIdx) : '';
-      var base = hashIdx >= 0 ? url.substring(0, hashIdx) : url;
-      var cleaned = base.replace(/([?&])dk=[^&#]*/g, '$1').replace(/[?&]$/, '');
-      var joiner = cleaned.indexOf('?') === -1 ? '?' : '&';
-      return cleaned + joiner + 'dk=' + encodeURIComponent(key) + hashPart;
-    }
+    return stripSensitiveSessionParams(url);
   }
 
   function appendIpKeyToUrl(url) {
-    if (!url) return url;
-    var ipKey = getStoredIpKey();
-    if (!ipKey) return url;
-
-    try {
-      var u = new URL(url, global.location.href);
-      u.searchParams.set('ipk', ipKey);
-      return u.toString();
-    } catch (_e0) {
-      var hashIdx = url.indexOf('#');
-      var hashPart = hashIdx >= 0 ? url.substring(hashIdx) : '';
-      var base = hashIdx >= 0 ? url.substring(0, hashIdx) : url;
-      var cleaned = base.replace(/([?&])ipk=[^&#]*/g, '$1').replace(/[?&]$/, '');
-      var joiner = cleaned.indexOf('?') === -1 ? '?' : '&';
-      return cleaned + joiner + 'ipk=' + encodeURIComponent(ipKey) + hashPart;
-    }
+    return stripSensitiveSessionParams(url);
   }
 
   function appendSessionKeysToUrl(url) {
-    return appendIpKeyToUrl(appendDeviceKeyToUrl(url));
+    return stripSensitiveSessionParams(url);
   }
 
   function syncCurrentUrlSessionKeys() {
     try {
-      var next = appendSessionKeysToUrl(global.location.href);
+      var next = stripSensitiveSessionParams(global.location.href);
       if (next && next !== global.location.href) {
         global.history.replaceState(null, '', next);
       }
