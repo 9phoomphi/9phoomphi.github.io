@@ -350,6 +350,12 @@
       key = normalizeDeviceKeyClient(sessionStorage.getItem(storageKey) || '');
     } catch (_e2) {}
 
+    if (!key) {
+      try {
+        key = normalizeDeviceKeyClient(localStorage.getItem(storageKey) || '');
+      } catch (_e2b) {}
+    }
+
     try { localStorage.removeItem('docControlDeviceKeyV3'); } catch (_e3) {}
     try { localStorage.removeItem('docControlIpAuthStateV1'); } catch (_e4) {}
 
@@ -358,6 +364,7 @@
 
     if (key) {
       try { sessionStorage.setItem(storageKey, key); } catch (_e5) {}
+      try { localStorage.setItem(storageKey, key); } catch (_e6) {}
       global.__docControlDeviceKey = key;
     }
 

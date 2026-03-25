@@ -54,6 +54,14 @@
     }
   }
 
+  function readSharedDeviceKey() {
+    try {
+      return safeTrim(localStorage.getItem(STORAGE_DEVICE_KEY) || '');
+    } catch (_e) {
+      return '';
+    }
+  }
+
   function clearLegacySessionArtifacts() {
     try { localStorage.removeItem(LEGACY_STORAGE_DEVICE_KEY); } catch (_e1) {}
     try { localStorage.removeItem(LEGACY_STORAGE_IP_AUTH); } catch (_e2) {}
@@ -63,6 +71,7 @@
     var normalized = safeTrim(deviceKey || '');
     if (!normalized) return '';
     try { sessionStorage.setItem(STORAGE_DEVICE_KEY, normalized); } catch (_e1) {}
+    try { localStorage.setItem(STORAGE_DEVICE_KEY, normalized); } catch (_e2) {}
     clearLegacySessionArtifacts();
     global.__docControlDeviceKey = normalized;
     return normalized;
@@ -70,8 +79,9 @@
 
   function clearRuntimeDeviceKey() {
     try { sessionStorage.removeItem(STORAGE_DEVICE_KEY); } catch (_e1) {}
+    try { localStorage.removeItem(STORAGE_DEVICE_KEY); } catch (_e2) {}
     clearLegacySessionArtifacts();
-    try { delete global.__docControlDeviceKey; } catch (_e2) { global.__docControlDeviceKey = ''; }
+    try { delete global.__docControlDeviceKey; } catch (_e3) { global.__docControlDeviceKey = ''; }
   }
 
   function readConfig() {
@@ -100,6 +110,7 @@
     var cfg = readConfig();
     var savedUrl = '';
     var savedDevice = '';
+    var sharedDevice = '';
     var runtimeDevice = '';
     var query = parseQuery();
     var queryUrl = normalizeScriptUrl(query.su || query.scriptUrl || query.script || '');
@@ -109,12 +120,13 @@
     } catch (_e) {}
 
     savedDevice = readSessionDeviceKey();
+    sharedDevice = readSharedDeviceKey();
     clearLegacySessionArtifacts();
 
     runtimeDevice = getRuntimeDeviceKey();
 
     var scriptUrl = cfg.scriptUrl || queryUrl || savedUrl;
-    var deviceKey = cfg.deviceKey || savedDevice || runtimeDevice || randomDeviceKey();
+    var deviceKey = cfg.deviceKey || savedDevice || sharedDevice || runtimeDevice || randomDeviceKey();
 
     if (scriptUrl) {
       try { localStorage.setItem(STORAGE_SCRIPT_URL, scriptUrl); } catch (_e0) {}

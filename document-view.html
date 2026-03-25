@@ -1611,8 +1611,8 @@
 
   <script src="./config.js"></script>
   <script src="./api-client.js?v=20260318-2"></script>
-  <script src="./theme-legacy.js?v=20260221-3"></script>
-  <script src="./app-common.js?v=20260324-1"></script>
+  <script src="./theme-legacy.js?v=20260325-1"></script>
+  <script src="./app-common.js?v=20260325-1"></script>
   <script>
     (function () {
       'use strict';
@@ -1636,7 +1636,8 @@
         info: { locations: [], fiscalYears: [] },
         memberImgMap: {},
         memberPosMap: {},
-        currentUser: null
+        currentUser: null,
+        resolvedViewMode: isPublicQrRequest ? 'public' : 'pending'
       };
 
       var els = {
@@ -1719,6 +1720,22 @@
 
       function setBusy(isBusy) {
         els.loadingMsg.classList.toggle('show', !!isBusy);
+      }
+
+      function isResolvedPublicView() {
+        return state.resolvedViewMode === 'public' || !!(state.doc && state.doc.isPublicQrView);
+      }
+
+      function applyResolvedViewMode(mode) {
+        var normalized = mode === 'public' || mode === 'private' ? mode : 'pending';
+        state.resolvedViewMode = normalized;
+        if (els.btnBack) {
+          els.btnBack.style.display = normalized === 'private' ? 'inline-flex' : 'none';
+        }
+        if (els.btnPrintSticker) {
+          var canPrint = normalized === 'private' && !!state.doc;
+          els.btnPrintSticker.style.display = canPrint ? 'inline-flex' : 'none';
+        }
       }
 
       function showSuccessRow(text) {
@@ -1920,7 +1937,7 @@
       }
 
       function renderActionButtons(isReadOnly) {
-        if (state.doc && state.doc.isPublicQrView) {
+        if (isResolvedPublicView()) {
           els.actionButtons.innerHTML = '<div class="readonly-box"><i class="bi bi-qr-code-scan me-1"></i>โหมดดูรายละเอียดจาก QR Code: ดูข้อมูลได้อย่างเดียว</div>';
           return;
         }
@@ -2229,8 +2246,7 @@
         var isReadOnly = !!doc.isReadOnlyUser;
         syncDocRouteId(doc.docId || docId);
         applySheetTheme(doc.sheetColor || '');
-        if (els.btnBack) els.btnBack.style.display = doc.isPublicQrView ? 'none' : 'inline-flex';
-        if (els.btnPrintSticker) els.btnPrintSticker.style.display = doc.isPublicQrView ? 'none' : 'inline-flex';
+        applyResolvedViewMode(doc.isPublicQrView ? 'public' : state.resolvedViewMode);
 
         els.docIdTitle.textContent = doc.docId || '-';
         els.docIdSub.textContent = C.safeTrim(doc.docNoSdh || '') ? ('สธ ' + C.safeText(doc.docNoSdh || '')) : '-';
@@ -2487,30 +2503,55 @@
         var infoRes = { data: { locations: [], fiscalYears: [] } };
         var meRes = { user: null };
 
+        async function tryLegacyPublicDetail() {
+          var legacyRes = await state.api.docPublicQrDetail(docId, qrToken || '', {
+            noPageLoader: true,
+            allowLegacy: true
+          });
+          if (!legacyRes || legacyRes.success === false || !legacyRes.doc) return null;
+          return legacyRes;
+        }
+
         if (isPublicQrRequest) {
           detailRes = await state.api.docPublicQrDetail(docId, qrToken, {
             noPageLoader: true,
             allowLegacy: isLegacyPublicQrRequest || (!qrToken && !!docId)
           });
+          applyResolvedViewMode('public');
         } else {
-          var res = await Promise.all([
-            state.api.docDetail(docId),
-            state.api.optionsMembers(),
-            state.api.optionsInfo(),
-            state.api.me()
-          ]);
-          detailRes = res[0] || {};
-          membersRes = res[1] || {};
-          infoRes = res[2] || {};
-          meRes = res[3] || {};
+          try {
+            var res = await Promise.all([
+              state.api.docDetail(docId),
+              state.api.optionsMembers(),
+              state.api.optionsInfo(),
+              state.api.me()
+            ]);
+            detailRes = res[0] || {};
+            membersRes = res[1] || {};
+            infoRes = res[2] || {};
+            meRes = res[3] || {};
+          } catch (privateErr) {
+            var fallbackRes = await tryLegacyPublicDetail();
+            if (fallbackRes) {
+              applyResolvedViewMode('public');
+              state.currentUser = null;
+              state.doc = fallbackRes.doc;
+              state.statusData = fallbackRes.statusData || {};
+              state.members = [];
+              state.info = { locations: [], fiscalYears: [] };
+              syncDocRouteId((state.doc && state.doc.docId) || docId);
+              renderDocument();
+              els.mainCard.style.display = 'block';
+              return true;
+            }
+            throw privateErr;
+          }
         }
 
         if (!isPublicQrRequest && (!meRes || meRes.success === false || !meRes.user)) {
-          var legacyRes = await state.api.docPublicQrDetail(docId, '', {
-            noPageLoader: true,
-            allowLegacy: true
-          });
-          if (legacyRes && legacyRes.success && legacyRes.doc) {
+          var legacyRes = await tryLegacyPublicDetail();
+          if (legacyRes) {
+            applyResolvedViewMode('public');
             state.currentUser = null;
             state.doc = legacyRes.doc;
             state.statusData = legacyRes.statusData || {};
@@ -2534,6 +2575,9 @@
           return false;
         }
 
+        if (!isResolvedPublicView()) {
+          applyResolvedViewMode('private');
+        }
         state.currentUser = meRes.user;
         state.doc = detailRes.doc;
         state.statusData = detailRes.statusData || {};
@@ -2568,7 +2612,8 @@
           }
 
           try {
-            state.settings = isPublicQrRequest ? C.getStoredSettings() : C.ensureSettingsOrThrow();
+            state.settings = C.getStoredSettings();
+            if (!state.settings || !state.settings.scriptUrl) throw new Error('missing_script_url');
             state.api = C.createApiClient(state.settings);
           } catch (_e) {
             showError(isPublicQrRequest ? 'ไม่พบการตั้งค่า scriptUrl สำหรับเปิด QR Code' : 'กรุณาตั้งค่า scriptUrl และ deviceKey ที่หน้า index ก่อน');
@@ -2577,6 +2622,7 @@
 
           bindEvents();
           updateBrowserTitle(docId);
+          applyResolvedViewMode(state.resolvedViewMode);
 
           try {
             var ok = await loadDetail();
