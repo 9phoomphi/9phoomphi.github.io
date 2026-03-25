@@ -616,11 +616,11 @@
 <body class="page-box-view">
   <div class="box-page">
     <div class="box-top">
-      <button id="btnBack" type="button" class="back-btn"><i class="bi bi-arrow-left"></i> กลับ</button>
+      <button id="btnBack" type="button" class="back-btn" style="display:none;"><i class="bi bi-arrow-left"></i> กลับ</button>
     </div>
 
     <div id="errBox" class="error-box"></div>
-    <div id="readonlyNote" class="readonly-box"><i class="bi bi-qr-code-scan"></i><span>โหมดดูรายละเอียดจาก QR Code: ดูข้อมูลได้อย่างเดียว</span></div>
+    <div id="readonlyNote" class="readonly-box" style="display:none;"><i class="bi bi-qr-code-scan"></i><span>โหมดดูรายละเอียดจาก QR Code: ดูข้อมูลได้อย่างเดียว</span></div>
 
       <div id="mainCard" class="main-card" style="display:none;">
       <div class="header-bg">
@@ -900,7 +900,11 @@
 
       function renderViewMode() {
         if (els.btnBack) els.btnBack.style.display = isPublicQrRequest ? 'none' : 'inline-flex';
-        if (els.readonlyNote) els.readonlyNote.classList.toggle('show', !!isPublicQrRequest);
+        if (els.readonlyNote) {
+          var shouldShowReadonly = !!(isPublicQrRequest && state.detail);
+          els.readonlyNote.classList.toggle('show', shouldShowReadonly);
+          els.readonlyNote.style.display = shouldShowReadonly ? 'inline-flex' : 'none';
+        }
         if (els.btnManageBoxes) els.btnManageBoxes.style.display = isPublicQrRequest ? 'none' : 'inline-flex';
         if (els.btnPrintQr) els.btnPrintQr.style.display = isPublicQrRequest ? 'none' : 'inline-flex';
         if (els.btnPrintList) els.btnPrintList.style.display = isPublicQrRequest ? 'none' : 'inline-flex';
