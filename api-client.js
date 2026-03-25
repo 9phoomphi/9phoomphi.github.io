@@ -38,6 +38,47 @@
     return 'dk_' + Math.random().toString(36).slice(2, 10) + '_' + Date.now().toString(36);
   }
 
+  function detectBrowserLabel() {
+    var ua = safeTrim((global.navigator && global.navigator.userAgent) || '');
+    if (!ua) return '';
+    if (/edg\//i.test(ua)) return 'Microsoft Edge';
+    if (/opr\//i.test(ua) || /opera/i.test(ua)) return 'Opera';
+    if (/chrome\//i.test(ua) && !/edg\//i.test(ua)) return 'Google Chrome';
+    if (/firefox\//i.test(ua)) return 'Mozilla Firefox';
+    if (/safari\//i.test(ua) && !/chrome\//i.test(ua) && !/chromium/i.test(ua)) return 'Safari';
+    return 'Browser';
+  }
+
+  function detectPlatformLabel() {
+    var nav = global.navigator || {};
+    var ua = safeTrim(nav.userAgent || '');
+    var platform = safeTrim(nav.userAgentData && nav.userAgentData.platform || nav.platform || '');
+    var base = (platform || ua).toLowerCase();
+    if (!base) return '';
+    if (/iphone|ipad|ipod|ios/.test(base)) return 'iPhone/iPad';
+    if (/android/.test(base)) return 'Android';
+    if (/mac/.test(base)) return 'macOS';
+    if (/win/.test(base)) return 'Windows';
+    if (/linux/.test(base)) return 'Linux';
+    return platform || 'Device';
+  }
+
+  function buildClientDeviceLabel() {
+    var platform = detectPlatformLabel();
+    var browser = detectBrowserLabel();
+    if (platform && browser) return platform + ' / ' + browser;
+    return platform || browser || 'อุปกรณ์นี้';
+  }
+
+  function buildClientContext() {
+    return {
+      deviceLabel: buildClientDeviceLabel(),
+      browserLabel: detectBrowserLabel(),
+      platformLabel: detectPlatformLabel(),
+      userAgent: safeTrim((global.navigator && global.navigator.userAgent) || '')
+    };
+  }
+
   function normalizeTimeoutMs(value, fallback) {
     var num = Number(value);
     var base = Number(fallback || 15000);
@@ -145,6 +186,7 @@
     } else {
       this.transportMode = storedMode || 'jsonp';
     }
+    this.clientContext = buildClientContext();
     this.cachePrefix = 'docControlApiCacheV1:' + normalizeCachePrefix(this.scriptUrl);
   }
 
@@ -171,6 +213,11 @@
       body.machineKey = bodyMachineKey;
       body.mk = bodyMachineKey;
     }
+    var ctx = this.clientContext || {};
+    if (!safeTrim(normalizedPayload.deviceLabel || '')) body.deviceLabel = safeTrim(ctx.deviceLabel || '');
+    if (!safeTrim(normalizedPayload.browserLabel || '')) body.browserLabel = safeTrim(ctx.browserLabel || '');
+    if (!safeTrim(normalizedPayload.platformLabel || '')) body.platformLabel = safeTrim(ctx.platformLabel || '');
+    if (!safeTrim(normalizedPayload.userAgent || '')) body.userAgent = safeTrim(ctx.userAgent || '');
     var requestId = safeTrim(opts && opts.requestId ? opts.requestId : '');
     if (requestId) body.requestId = requestId;
     return body;
@@ -535,6 +582,21 @@
       if (res && res.success && res.user) self._cacheWrite('auth.me', res);
       return res;
     });
+  };
+
+  DocumentControlApi.prototype.authDevicesList = function (opts) {
+    return this.call('auth.devices.list', {
+      deviceKey: this.defaultDeviceKey,
+      clientMachineKey: this.defaultMachineKey
+    }, opts);
+  };
+
+  DocumentControlApi.prototype.authDeviceRevoke = function (targetMachineKey, opts) {
+    return this.call('auth.devices.revoke', {
+      deviceKey: this.defaultDeviceKey,
+      clientMachineKey: this.defaultMachineKey,
+      targetMachineKey: safeTrim(targetMachineKey || '')
+    }, opts);
   };
 
   DocumentControlApi.prototype.optionsInfo = function (opts) {

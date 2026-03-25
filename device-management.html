@@ -1,0 +1,871 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>จัดการอุปกรณ์</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="./theme-legacy.css?v=20260317-6">
+  <style>
+    :root {
+      --page-max: 1180px;
+      --card-radius: 24px;
+    }
+
+    body {
+      margin: 0;
+      font-family: "IBM Plex Sans Thai", sans-serif;
+      min-height: 100vh;
+      background:
+        radial-gradient(980px 420px at 12% -10%, rgba(59, 130, 246, 0.14), rgba(59, 130, 246, 0)),
+        radial-gradient(840px 420px at 92% -12%, rgba(14, 165, 233, 0.10), rgba(14, 165, 233, 0)),
+        linear-gradient(180deg, #f8fbff 0%, #eef4fb 56%, #e9f0f8 100%);
+      color: #0f172a;
+    }
+
+    body.dark-mode {
+      background:
+        radial-gradient(980px 420px at 12% -10%, rgba(59, 130, 246, 0.18), rgba(59, 130, 246, 0)),
+        radial-gradient(840px 420px at 92% -12%, rgba(14, 165, 233, 0.14), rgba(14, 165, 233, 0)),
+        linear-gradient(180deg, #08111f 0%, #0c1524 56%, #101b2b 100%);
+      color: #e5eefc;
+    }
+
+    .shell {
+      width: min(var(--page-max), calc(100vw - 32px));
+      margin: 0 auto;
+      padding: calc(18px + env(safe-area-inset-top, 0px)) 0 calc(24px + env(safe-area-inset-bottom, 0px));
+      display: grid;
+      gap: 18px;
+    }
+
+    .hero {
+      position: sticky;
+      top: 12px;
+      z-index: 40;
+      padding: 20px 22px;
+      border-radius: 28px;
+      background: rgba(255, 255, 255, 0.82);
+      border: 1px solid rgba(148, 163, 184, 0.28);
+      box-shadow: 0 18px 42px rgba(15, 23, 42, 0.10);
+      backdrop-filter: saturate(180%) blur(22px);
+      -webkit-backdrop-filter: saturate(180%) blur(22px);
+    }
+
+    body.dark-mode .hero {
+      background: rgba(15, 23, 42, 0.74);
+      border-color: rgba(148, 163, 184, 0.20);
+      box-shadow: 0 20px 42px rgba(2, 8, 20, 0.34);
+    }
+
+    .hero-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .hero-title {
+      margin: 0;
+      font-size: clamp(2rem, 3.4vw, 3rem);
+      line-height: 1.02;
+      letter-spacing: -0.03em;
+      font-weight: 850;
+    }
+
+    .hero-subtitle {
+      margin-top: 10px;
+      color: #64748b;
+      font-size: 1rem;
+      font-weight: 650;
+      line-height: 1.55;
+      max-width: 760px;
+    }
+
+    body.dark-mode .hero-subtitle {
+      color: #94a3b8;
+    }
+
+    .hero-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-left: auto;
+    }
+
+    .btn {
+      appearance: none;
+      border: none;
+      height: 48px;
+      padding: 0 18px;
+      border-radius: 16px;
+      font: inherit;
+      font-size: 0.98rem;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn:disabled {
+      opacity: 0.62;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .btn-primary {
+      color: #fff;
+      background: linear-gradient(180deg, #3bb0ff 0%, #1d6cf2 100%);
+      box-shadow: 0 14px 28px rgba(29, 108, 242, 0.22);
+    }
+
+    .btn-outline {
+      color: #0f172a;
+      background: rgba(255, 255, 255, 0.88);
+      border: 1px solid rgba(148, 163, 184, 0.38);
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.08);
+    }
+
+    body.dark-mode .btn-outline {
+      color: #e5eefc;
+      background: rgba(15, 23, 42, 0.70);
+      border-color: rgba(148, 163, 184, 0.26);
+      box-shadow: 0 12px 28px rgba(2, 8, 20, 0.18);
+    }
+
+    .btn-danger {
+      color: #fff;
+      background: linear-gradient(180deg, #ef4444 0%, #dc2626 100%);
+      box-shadow: 0 12px 26px rgba(220, 38, 38, 0.22);
+    }
+
+    .user-chip {
+      margin-top: 16px;
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: 20px;
+      border: 1px solid rgba(148, 163, 184, 0.28);
+      background: rgba(255, 255, 255, 0.72);
+    }
+
+    body.dark-mode .user-chip {
+      background: rgba(15, 23, 42, 0.62);
+      border-color: rgba(148, 163, 184, 0.20);
+    }
+
+    .user-avatar,
+    .user-avatar-fallback {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      flex: 0 0 48px;
+    }
+
+    .user-avatar {
+      object-fit: cover;
+      border: 2px solid rgba(255, 255, 255, 0.86);
+      box-shadow: 0 10px 20px rgba(15, 23, 42, 0.16);
+    }
+
+    .user-avatar-fallback {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(180deg, #60a5fa 0%, #2563eb 100%);
+      color: #fff;
+      font-weight: 800;
+    }
+
+    .user-name {
+      font-size: 1rem;
+      font-weight: 800;
+      line-height: 1.2;
+    }
+
+    .user-role {
+      margin-top: 3px;
+      color: #64748b;
+      font-size: 0.9rem;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    body.dark-mode .user-role {
+      color: #94a3b8;
+    }
+
+    .error-box {
+      display: none;
+      padding: 14px 16px;
+      border-radius: 18px;
+      font-weight: 700;
+      border: 1px solid rgba(239, 68, 68, 0.28);
+      background: rgba(254, 226, 226, 0.92);
+      color: #991b1b;
+      box-shadow: 0 10px 24px rgba(239, 68, 68, 0.10);
+    }
+
+    .error-box.show {
+      display: block;
+    }
+
+    body.dark-mode .error-box {
+      background: rgba(127, 29, 29, 0.24);
+      color: #fecaca;
+      border-color: rgba(248, 113, 113, 0.28);
+    }
+
+    .stats-grid {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .stat-card,
+    .panel,
+    .device-card {
+      border-radius: var(--card-radius);
+      background: rgba(255, 255, 255, 0.88);
+      border: 1px solid rgba(148, 163, 184, 0.24);
+      box-shadow: 0 16px 32px rgba(15, 23, 42, 0.08);
+    }
+
+    body.dark-mode .stat-card,
+    body.dark-mode .panel,
+    body.dark-mode .device-card {
+      background: rgba(15, 23, 42, 0.78);
+      border-color: rgba(148, 163, 184, 0.18);
+      box-shadow: 0 18px 34px rgba(2, 8, 20, 0.24);
+    }
+
+    .stat-card {
+      padding: 18px 20px;
+      display: grid;
+      gap: 8px;
+    }
+
+    .stat-label {
+      color: #64748b;
+      font-size: 0.92rem;
+      font-weight: 750;
+      line-height: 1.4;
+    }
+
+    body.dark-mode .stat-label {
+      color: #94a3b8;
+    }
+
+    .stat-value {
+      font-size: clamp(1.8rem, 3.2vw, 2.55rem);
+      font-weight: 850;
+      line-height: 1;
+      letter-spacing: -0.03em;
+      color: #0f172a;
+    }
+
+    body.dark-mode .stat-value {
+      color: #f8fafc;
+    }
+
+    .stat-hint {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: #2563eb;
+    }
+
+    body.dark-mode .stat-hint {
+      color: #7dd3fc;
+    }
+
+    .panel {
+      padding: 18px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .panel-title {
+      margin: 0;
+      font-size: 1.18rem;
+      line-height: 1.25;
+      font-weight: 850;
+    }
+
+    .panel-subtitle {
+      color: #64748b;
+      font-size: 0.92rem;
+      font-weight: 650;
+      line-height: 1.5;
+    }
+
+    body.dark-mode .panel-subtitle {
+      color: #94a3b8;
+    }
+
+    .device-list {
+      display: grid;
+      gap: 14px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .device-card {
+      padding: 18px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .device-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .device-name {
+      margin: 0;
+      font-size: 1.08rem;
+      line-height: 1.32;
+      font-weight: 850;
+      overflow-wrap: anywhere;
+    }
+
+    .device-desc {
+      margin-top: 6px;
+      color: #64748b;
+      font-size: 0.92rem;
+      line-height: 1.45;
+      font-weight: 650;
+      overflow-wrap: anywhere;
+    }
+
+    body.dark-mode .device-desc {
+      color: #94a3b8;
+    }
+
+    .device-badges {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      min-height: 34px;
+      padding: 0 12px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      border: 1px solid transparent;
+      white-space: nowrap;
+    }
+
+    .badge-current {
+      color: #166534;
+      background: rgba(220, 252, 231, 0.92);
+      border-color: rgba(34, 197, 94, 0.32);
+    }
+
+    .badge-slot {
+      color: #1d4ed8;
+      background: rgba(219, 234, 254, 0.92);
+      border-color: rgba(59, 130, 246, 0.24);
+    }
+
+    body.dark-mode .badge-current {
+      color: #bbf7d0;
+      background: rgba(20, 83, 45, 0.42);
+      border-color: rgba(74, 222, 128, 0.24);
+    }
+
+    body.dark-mode .badge-slot {
+      color: #bfdbfe;
+      background: rgba(30, 41, 59, 0.7);
+      border-color: rgba(96, 165, 250, 0.22);
+    }
+
+    .device-meta {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .meta-item {
+      padding: 12px 14px;
+      border-radius: 18px;
+      background: rgba(241, 245, 249, 0.82);
+      border: 1px solid rgba(148, 163, 184, 0.18);
+    }
+
+    body.dark-mode .meta-item {
+      background: rgba(15, 23, 42, 0.68);
+      border-color: rgba(148, 163, 184, 0.12);
+    }
+
+    .meta-label {
+      color: #64748b;
+      font-size: 0.78rem;
+      line-height: 1.35;
+      font-weight: 750;
+    }
+
+    .meta-value {
+      margin-top: 4px;
+      font-size: 0.96rem;
+      line-height: 1.45;
+      font-weight: 800;
+      overflow-wrap: anywhere;
+    }
+
+    body.dark-mode .meta-label {
+      color: #94a3b8;
+    }
+
+    .device-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .device-key {
+      color: #64748b;
+      font-size: 0.8rem;
+      line-height: 1.4;
+      font-weight: 650;
+      overflow-wrap: anywhere;
+    }
+
+    body.dark-mode .device-key {
+      color: #94a3b8;
+    }
+
+    .empty-state,
+    .loading-state {
+      padding: 34px 18px;
+      text-align: center;
+      color: #64748b;
+      font-weight: 700;
+      line-height: 1.7;
+    }
+
+    body.dark-mode .empty-state,
+    body.dark-mode .loading-state {
+      color: #94a3b8;
+    }
+
+    .loading-state .spinner-border {
+      width: 40px;
+      height: 40px;
+      border: 3px solid rgba(37, 99, 235, 0.16);
+      border-top-color: #2563eb;
+      border-radius: 50%;
+      margin: 0 auto 12px;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 980px) {
+      .stats-grid,
+      .device-list {
+        grid-template-columns: 1fr;
+      }
+
+      .device-meta {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .shell {
+        width: min(var(--page-max), calc(100vw - 20px));
+        padding-top: calc(12px + env(safe-area-inset-top, 0px));
+      }
+
+      .hero {
+        top: 8px;
+        padding: 18px 16px;
+        border-radius: 24px;
+      }
+
+      .hero-actions {
+        width: 100%;
+      }
+
+      .hero-actions .btn {
+        flex: 1 1 calc(50% - 6px);
+        min-width: 0;
+      }
+
+      .user-chip {
+        width: 100%;
+      }
+
+      .device-head,
+      .device-foot {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <section class="hero">
+      <div class="hero-head">
+        <div>
+          <h1 class="hero-title">จัดการอุปกรณ์</h1>
+          <div class="hero-subtitle">ดูจำนวนเครื่องที่บัญชีนี้กำลังใช้งานอยู่ และตัดสิทธิ์การเข้าสู่ระบบของเครื่องอื่นได้ทันที</div>
+        </div>
+        <div class="hero-actions">
+          <button id="btnBack" class="btn btn-outline" type="button"><i class="bi bi-arrow-left"></i>กลับ</button>
+          <button id="btnRefresh" class="btn btn-primary" type="button"><i class="bi bi-arrow-clockwise"></i>รีเฟรช</button>
+        </div>
+      </div>
+      <div id="sessionUserChip" class="user-chip hidden">
+        <img id="sessionUserAvatar" class="user-avatar hidden" alt="ผู้ใช้งานระบบ">
+        <span id="sessionUserAvatarFallback" class="user-avatar-fallback">U</span>
+        <div>
+          <div id="sessionUserName" class="user-name">-</div>
+          <div id="sessionUserRole" class="user-role">กำลังตรวจสอบสิทธิ์</div>
+        </div>
+      </div>
+    </section>
+
+    <div id="errorBox" class="error-box"></div>
+
+    <section class="stats-grid">
+      <article class="stat-card">
+        <div class="stat-label">จำนวนเครื่องที่กำลังใช้งาน</div>
+        <div id="statTotal" class="stat-value">-</div>
+        <div id="statLimit" class="stat-hint">จากทั้งหมด - เครื่อง</div>
+      </article>
+      <article class="stat-card">
+        <div class="stat-label">สล็อตที่เหลือ</div>
+        <div id="statRemaining" class="stat-value">-</div>
+        <div class="stat-hint">สำหรับเพิ่มเครื่องใหม่</div>
+      </article>
+      <article class="stat-card">
+        <div class="stat-label">เครื่องที่กำลังใช้งานอยู่ตอนนี้</div>
+        <div id="statCurrent" class="stat-value" style="font-size:1.24rem;line-height:1.25;letter-spacing:-0.01em;">-</div>
+        <div class="stat-hint">อ้างอิงจากเครื่องที่เปิดหน้านี้</div>
+      </article>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <div>
+          <h2 class="panel-title">รายการอุปกรณ์</h2>
+          <div class="panel-subtitle">เครื่องที่แสดงด้านล่างคือ session ที่บัญชีนี้กำลังใช้งานอยู่จริงในระบบ</div>
+        </div>
+      </div>
+      <div id="deviceList" class="device-list">
+        <div class="loading-state" style="grid-column:1 / -1;">
+          <div class="spinner-border"></div>
+          <div>กำลังโหลดรายการอุปกรณ์...</div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="./config.js"></script>
+  <script src="./api-client.js?v=20260325-1"></script>
+  <script src="./theme-legacy.js?v=20260325-2"></script>
+  <script src="./app-common.js?v=20260325-2"></script>
+  <script>
+    (function () {
+      'use strict';
+
+      var C = window.DocFrontendCommon;
+      var query = C.parseQuery();
+      var state = {
+        settings: null,
+        api: null,
+        user: null,
+        loading: false,
+        devices: [],
+        limit: 3,
+        backPath: 'index.html'
+      };
+
+      var els = {
+        btnBack: document.getElementById('btnBack'),
+        btnRefresh: document.getElementById('btnRefresh'),
+        errorBox: document.getElementById('errorBox'),
+        sessionUserChip: document.getElementById('sessionUserChip'),
+        sessionUserAvatar: document.getElementById('sessionUserAvatar'),
+        sessionUserAvatarFallback: document.getElementById('sessionUserAvatarFallback'),
+        sessionUserName: document.getElementById('sessionUserName'),
+        sessionUserRole: document.getElementById('sessionUserRole'),
+        statTotal: document.getElementById('statTotal'),
+        statLimit: document.getElementById('statLimit'),
+        statRemaining: document.getElementById('statRemaining'),
+        statCurrent: document.getElementById('statCurrent'),
+        deviceList: document.getElementById('deviceList')
+      };
+
+      function safeBackPath(value) {
+        var path = C.safeTrim(value || '').toLowerCase();
+        if (path === 'loan-index.html') return 'loan-index.html';
+        if (path === 'welcome.html') return 'welcome.html';
+        return 'index.html';
+      }
+
+      function showError(message) {
+        var msg = C.safeTrim(message || '');
+        if (!msg) {
+          els.errorBox.textContent = '';
+          els.errorBox.classList.remove('show');
+          return;
+        }
+        els.errorBox.textContent = msg;
+        els.errorBox.classList.add('show');
+      }
+
+      function setLoading(isLoading) {
+        state.loading = !!isLoading;
+        if (els.btnBack) els.btnBack.disabled = !!isLoading;
+        if (els.btnRefresh) els.btnRefresh.disabled = !!isLoading;
+        var revokeButtons = document.querySelectorAll('[data-revoke-machine]');
+        for (var i = 0; i < revokeButtons.length; i++) revokeButtons[i].disabled = !!isLoading;
+      }
+
+      function formatDateTime(value) {
+        var text = C.safeTrim(value || '');
+        if (!text) return '-';
+        var dt = new Date(text);
+        if (isNaN(dt.getTime())) return text;
+        return dt.toLocaleString('th-TH', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      }
+
+      function setSessionChip(user) {
+        var name = C.safeText((user && (user.displayName || user.username)) || '-');
+        var role = C.safeText((user && user.position) || (user && user.accessRoleLabel) || 'ผู้ใช้งานระบบ');
+        var avatarUrl = C.safeTrim((user && (user.imageUrl || user.avatar)) || '');
+
+        if (els.sessionUserName) els.sessionUserName.textContent = name;
+        if (els.sessionUserRole) els.sessionUserRole.textContent = role;
+        if (els.sessionUserChip) els.sessionUserChip.classList.remove('hidden');
+
+        if (els.sessionUserAvatar && els.sessionUserAvatarFallback) {
+          if (avatarUrl) {
+            els.sessionUserAvatar.src = avatarUrl;
+            els.sessionUserAvatar.classList.remove('hidden');
+            els.sessionUserAvatarFallback.classList.add('hidden');
+          } else {
+            els.sessionUserAvatar.removeAttribute('src');
+            els.sessionUserAvatar.classList.add('hidden');
+            els.sessionUserAvatarFallback.textContent = (name.charAt(0) || 'U').toUpperCase();
+            els.sessionUserAvatarFallback.classList.remove('hidden');
+          }
+        }
+      }
+
+      function renderStats(payload) {
+        var data = payload && payload.data ? payload.data : {};
+        var total = Number(data.total || 0);
+        var limit = Number(data.limit || 3);
+        var remaining = Math.max(0, limit - total);
+        var currentLabel = '-';
+        var list = Array.isArray(data.devices) ? data.devices : [];
+        for (var i = 0; i < list.length; i++) {
+          if (list[i] && list[i].isCurrent) {
+            currentLabel = C.safeText(list[i].machineLabel || list[i].deviceLabel || 'อุปกรณ์นี้');
+            break;
+          }
+        }
+        if (els.statTotal) els.statTotal.textContent = String(total);
+        if (els.statLimit) els.statLimit.textContent = 'จากทั้งหมด ' + String(limit) + ' เครื่อง';
+        if (els.statRemaining) els.statRemaining.textContent = String(remaining);
+        if (els.statCurrent) els.statCurrent.textContent = currentLabel;
+      }
+
+      function renderDevices(payload) {
+        var data = payload && payload.data ? payload.data : {};
+        var devices = Array.isArray(data.devices) ? data.devices : [];
+        state.devices = devices.slice();
+        if (!devices.length) {
+          els.deviceList.innerHTML = '<div class="empty-state" style="grid-column:1 / -1;">ยังไม่พบเครื่องที่กำลังใช้งานอยู่</div>';
+          return;
+        }
+
+        var html = '';
+        for (var i = 0; i < devices.length; i++) {
+          var item = devices[i] || {};
+          var machineKey = C.escapeHtml(item.machineKey || '');
+          var machineLabel = C.escapeHtml(item.machineLabel || item.deviceLabel || 'อุปกรณ์ไม่ทราบชื่อ');
+          var browserLabel = C.escapeHtml(item.browserLabel || '-');
+          var platformLabel = C.escapeHtml(item.platformLabel || '-');
+          var deviceKeyCount = Array.isArray(item.deviceKeys) ? item.deviceKeys.length : 0;
+          var deviceKeysLabel = C.escapeHtml(deviceKeyCount ? item.deviceKeys.join(', ') : '-');
+          var revokeText = item.isCurrent ? 'ลบสิทธิ์เครื่องนี้' : 'ลบสิทธิ์เครื่องนี้ออก';
+
+          html += '<article class="device-card">';
+          html += '<div class="device-head">';
+          html += '<div>';
+          html += '<h3 class="device-name">' + machineLabel + '</h3>';
+          html += '<div class="device-desc">' + platformLabel + ' / ' + browserLabel + '</div>';
+          html += '</div>';
+          html += '<div class="device-badges">';
+          if (item.isCurrent) html += '<span class="badge badge-current"><i class="bi bi-check-circle-fill"></i>เครื่องนี้</span>';
+          html += '<span class="badge badge-slot"><i class="bi bi-pc-display"></i>' + String(deviceKeyCount || 1) + ' session</span>';
+          html += '</div>';
+          html += '</div>';
+          html += '<div class="device-meta">';
+          html += '<div class="meta-item"><div class="meta-label">เข้าใช้งานครั้งแรก</div><div class="meta-value">' + C.escapeHtml(formatDateTime(item.loginAt)) + '</div></div>';
+          html += '<div class="meta-item"><div class="meta-label">ใช้งานล่าสุด</div><div class="meta-value">' + C.escapeHtml(formatDateTime(item.lastActivityAt)) + '</div></div>';
+          html += '<div class="meta-item"><div class="meta-label">ชื่ออุปกรณ์</div><div class="meta-value">' + C.escapeHtml(item.deviceLabel || '-') + '</div></div>';
+          html += '<div class="meta-item"><div class="meta-label">เบราว์เซอร์ / ระบบ</div><div class="meta-value">' + platformLabel + ' / ' + browserLabel + '</div></div>';
+          html += '</div>';
+          html += '<div class="device-foot">';
+          html += '<div class="device-key">machineKey: ' + machineKey + '<br>deviceKeys: ' + deviceKeysLabel + '</div>';
+          html += '<button class="btn btn-danger" type="button" data-revoke-machine="' + machineKey + '" data-is-current="' + (item.isCurrent ? '1' : '0') + '" data-machine-label="' + machineLabel + '"><i class="bi bi-trash3"></i>' + revokeText + '</button>';
+          html += '</div>';
+          html += '</article>';
+        }
+        els.deviceList.innerHTML = html;
+      }
+
+      function redirectBack(replace) {
+        C.redirect(state.backPath, {}, !!replace);
+      }
+
+      function loadDevices() {
+        if (!state.api) return Promise.reject(new Error('ยังไม่ได้ตั้งค่า API'));
+        setLoading(true);
+        showError('');
+        return state.api.authDevicesList({ noPageLoader: true }).then(function (res) {
+          if (!res || res.success === false) {
+            throw new Error(res && res.error ? res.error : 'โหลดรายการอุปกรณ์ไม่สำเร็จ');
+          }
+          state.limit = Number(res && res.data && res.data.limit || 3);
+          renderStats(res);
+          renderDevices(res);
+          setLoading(false);
+          return res;
+        }).catch(function (err) {
+          setLoading(false);
+          showError((err && err.message) ? err.message : 'โหลดรายการอุปกรณ์ไม่สำเร็จ');
+          if (els.deviceList) {
+            els.deviceList.innerHTML = '<div class="empty-state" style="grid-column:1 / -1;">ไม่สามารถโหลดรายการอุปกรณ์ได้</div>';
+          }
+          throw err;
+        });
+      }
+
+      function revokeMachine(machineKey, isCurrent, machineLabel) {
+        if (!state.api || !machineKey || state.loading) return;
+        var label = C.safeText(machineLabel || 'เครื่องที่เลือก');
+        var confirmed = window.confirm('ยืนยันลบสิทธิ์การเข้าสู่ระบบของ ' + label + ' ?');
+        if (!confirmed) return;
+
+        setLoading(true);
+        showError('');
+        state.api.authDeviceRevoke(machineKey, { noPageLoader: true }).then(function (res) {
+          if (!res || res.success === false) {
+            throw new Error(res && res.error ? res.error : 'ลบสิทธิ์เครื่องไม่สำเร็จ');
+          }
+          if (isCurrent) {
+            try { C.clearSessionIdentity(); } catch (_e0) {}
+            redirectBack(true);
+            return null;
+          }
+          return loadDevices();
+        }).catch(function (err) {
+          setLoading(false);
+          showError((err && err.message) ? err.message : 'ลบสิทธิ์เครื่องไม่สำเร็จ');
+        });
+      }
+
+      function bindEvents() {
+        if (els.btnBack) {
+          els.btnBack.addEventListener('click', function () {
+            redirectBack();
+          });
+        }
+
+        if (els.btnRefresh) {
+          els.btnRefresh.addEventListener('click', function () {
+            loadDevices().catch(function () {});
+          });
+        }
+
+        if (els.deviceList) {
+          els.deviceList.addEventListener('click', function (ev) {
+            var btn = ev.target && ev.target.closest ? ev.target.closest('[data-revoke-machine]') : null;
+            if (!btn) return;
+            revokeMachine(
+              C.safeTrim(btn.getAttribute('data-revoke-machine') || ''),
+              btn.getAttribute('data-is-current') === '1',
+              btn.getAttribute('data-machine-label') || ''
+            );
+          });
+        }
+      }
+
+      function init() {
+        state.backPath = safeBackPath(query.back || '');
+        bindEvents();
+
+        try {
+          state.settings = C.ensureSettingsOrThrow();
+          state.api = C.createApiClient(state.settings);
+        } catch (err) {
+          showError(err && err.message ? err.message : 'ยังไม่ได้ตั้งค่า API');
+          return;
+        }
+
+        setLoading(true);
+        state.api.me({ noPageLoader: true }).then(function (res) {
+          if (!res || res.success === false || !res.user) {
+            redirectBack(true);
+            return null;
+          }
+          state.user = res.user;
+          setSessionChip(state.user);
+          return loadDevices();
+        }).catch(function () {
+          redirectBack(true);
+        }).finally(function () {
+          setLoading(false);
+        });
+      }
+
+      init();
+    })();
+  </script>
+</body>
+</html>

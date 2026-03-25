@@ -1742,6 +1742,7 @@
               </div>
             </div>
             <button id="btnRegisterHub" class="btn outline loan-action-btn loan-action-back" type="button"><i class="bi bi-arrow-left me-1"></i>เลือกทะเบียนคุม</button>
+            <button id="btnManageDevices" class="btn outline loan-action-btn hidden" type="button"><i class="bi bi-pc-display-horizontal me-1"></i>จัดการอุปกรณ์</button>
             <button id="btnOpenSettings" class="btn outline app-settings-btn hidden" type="button">ตั้งค่า API</button>
           </div>
         </div>
@@ -2017,6 +2018,7 @@
         connectStatus: document.getElementById('connectStatus'),
         btnOpenSettings: document.getElementById('btnOpenSettings'),
         btnRegisterHub: document.getElementById('btnRegisterHub'),
+        btnManageDevices: document.getElementById('btnManageDevices'),
         btnLogout: document.getElementById('btnLogout'),
         settingsCard: document.getElementById('settingsCard'),
         scriptUrl: document.getElementById('scriptUrl'),
@@ -2188,7 +2190,8 @@
           els.btnNext,
           els.jumpPageInline,
           els.btnAddFab,
-          els.btnRegisterHub
+          els.btnRegisterHub,
+          els.btnManageDevices
         ];
 
         for (var i = 0; i < lockEls.length; i++) {
@@ -2332,6 +2335,7 @@
           if (els.appCard) els.appCard.classList.remove('hidden');
           if (els.btnLogout) els.btnLogout.classList.remove('hidden');
           if (els.sessionUserChip) els.sessionUserChip.classList.remove('hidden');
+          if (els.btnManageDevices) els.btnManageDevices.classList.remove('hidden');
           if (els.btnOpenSettings && state.config && !state.config.lockSettings) {
             els.btnOpenSettings.classList.remove('hidden');
           }
@@ -2369,6 +2373,7 @@
         if (els.loginCard) els.loginCard.classList.remove('hidden');
         if (els.btnLogout) els.btnLogout.classList.add('hidden');
         if (els.sessionUserChip) els.sessionUserChip.classList.add('hidden');
+        if (els.btnManageDevices) els.btnManageDevices.classList.add('hidden');
         if (els.btnOpenSettings) els.btnOpenSettings.classList.add('hidden');
         if (els.tabBoxScan) els.tabBoxScan.classList.remove('hidden');
         if (els.tabManageBoxes) els.tabManageBoxes.classList.add('hidden');
@@ -3244,6 +3249,12 @@
         if (els.btnRegisterHub) {
           els.btnRegisterHub.addEventListener('click', function () {
             goRegisterHub();
+          });
+        }
+
+        if (els.btnManageDevices) {
+          els.btnManageDevices.addEventListener('click', function () {
+            C.redirect('device-management.html', { back: 'index.html' });
           });
         }
 
