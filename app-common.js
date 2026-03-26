@@ -66,22 +66,34 @@
 
   function clearLegacySessionArtifacts() {
     try { localStorage.removeItem(LEGACY_STORAGE_DEVICE_KEY); } catch (_e1) {}
-    try { localStorage.removeItem(STORAGE_DEVICE_KEY); } catch (_e2) {}
   }
 
-  function storeRuntimeDeviceKey(deviceKey) {
+  function storeRuntimeDeviceKey(deviceKey, opts) {
     var normalized = safeTrim(deviceKey || '');
+    var shouldSyncShared = !(opts && opts.syncShared === false);
     if (!normalized) return '';
     try { sessionStorage.setItem(STORAGE_DEVICE_KEY, normalized); } catch (_e1) {}
     clearLegacySessionArtifacts();
+    if (shouldSyncShared) {
+      try {
+        if (typeof global.storeSharedDeviceKey === 'function') global.storeSharedDeviceKey(normalized);
+        else localStorage.setItem(STORAGE_DEVICE_KEY, normalized);
+      } catch (_e2) {}
+    }
     global.__docControlDeviceKey = normalized;
     return normalized;
   }
 
-  function clearRuntimeDeviceKey() {
+  function clearRuntimeDeviceKey(opts) {
+    var preserveShared = !!(opts && opts.preserveShared);
     try { sessionStorage.removeItem(STORAGE_DEVICE_KEY); } catch (_e1) {}
-    try { localStorage.removeItem(STORAGE_DEVICE_KEY); } catch (_e2) {}
     clearLegacySessionArtifacts();
+    if (!preserveShared) {
+      try {
+        if (typeof global.clearSharedDeviceKey === 'function') global.clearSharedDeviceKey();
+        else localStorage.removeItem(STORAGE_DEVICE_KEY);
+      } catch (_e2) {}
+    }
     try { delete global.__docControlDeviceKey; } catch (_e3) { global.__docControlDeviceKey = ''; }
   }
 
@@ -146,7 +158,7 @@
     };
   }
 
-  function persistSettings(scriptUrl, deviceKey) {
+  function persistSettings(scriptUrl, deviceKey, opts) {
     var nextUrl = normalizeScriptUrl(scriptUrl);
     var nextDevice = safeTrim(deviceKey) || getRuntimeDeviceKey() || randomDeviceKey();
     var nextMachineKey = getRuntimeMachineKey();
@@ -156,7 +168,7 @@
     try {
       localStorage.setItem(STORAGE_SCRIPT_URL, nextUrl);
     } catch (_e) {}
-    storeRuntimeDeviceKey(nextDevice);
+    storeRuntimeDeviceKey(nextDevice, opts);
 
     return {
       scriptUrl: nextUrl,
@@ -168,8 +180,8 @@
   function resetSessionIdentity(scriptUrl) {
     var nextScriptUrl = normalizeScriptUrl(scriptUrl || readConfig().scriptUrl || '');
     if (!nextScriptUrl) throw new Error('missing_script_url');
-    clearRuntimeDeviceKey();
-    return persistSettings(nextScriptUrl, randomDeviceKey());
+    clearRuntimeDeviceKey({ preserveShared: true });
+    return persistSettings(nextScriptUrl, randomDeviceKey(), { syncShared: false });
   }
 
   function clearSessionIdentity() {

@@ -387,6 +387,166 @@
     return normalizeMachineKeyClient('mk_' + buf.join(''));
   }
 
+  var ACTIVE_DEVICE_TABS_KEY = 'docControlActiveTabsV1';
+  var ACTIVE_DEVICE_TAB_ID_KEY = 'docControlTabIdV1';
+  var ACTIVE_DEVICE_TAB_TTL_MS = 45000;
+  var ACTIVE_DEVICE_HEARTBEAT_MS = 15000;
+  var activeDeviceHeartbeatId = 0;
+  var sharedDeviceSyncBound = false;
+
+  function buildActiveDeviceTabId() {
+    return 'tab_' + Math.random().toString(36).slice(2, 10) + '_' + Date.now().toString(36);
+  }
+
+  function getActiveDeviceTabId() {
+    var tabId = '';
+    try {
+      tabId = String(sessionStorage.getItem(ACTIVE_DEVICE_TAB_ID_KEY) || '').trim();
+    } catch (_e0) {}
+    if (!tabId) tabId = String(global.__docControlTabId || '').trim();
+    if (!tabId) tabId = buildActiveDeviceTabId();
+    try { sessionStorage.setItem(ACTIVE_DEVICE_TAB_ID_KEY, tabId); } catch (_e1) {}
+    global.__docControlTabId = tabId;
+    return tabId;
+  }
+
+  function readActiveDeviceTabs() {
+    try {
+      var raw = localStorage.getItem(ACTIVE_DEVICE_TABS_KEY) || '';
+      if (!raw) return {};
+      var parsed = JSON.parse(raw);
+      return parsed && typeof parsed === 'object' ? parsed : {};
+    } catch (_e0) {
+      return {};
+    }
+  }
+
+  function writeActiveDeviceTabs(map) {
+    var out = map && typeof map === 'object' ? map : {};
+    var keys = Object.keys(out);
+    try {
+      if (!keys.length) localStorage.removeItem(ACTIVE_DEVICE_TABS_KEY);
+      else localStorage.setItem(ACTIVE_DEVICE_TABS_KEY, JSON.stringify(out));
+    } catch (_e0) {}
+    return out;
+  }
+
+  function pruneActiveDeviceTabs(map, nowTs) {
+    var now = Number(nowTs || Date.now()) || Date.now();
+    var src = map && typeof map === 'object' ? map : {};
+    var next = {};
+    var changed = false;
+    var key;
+
+    for (key in src) {
+      if (!Object.prototype.hasOwnProperty.call(src, key)) continue;
+      var ts = Number(src[key] || 0);
+      if (!ts || (now - ts) > ACTIVE_DEVICE_TAB_TTL_MS) {
+        changed = true;
+        continue;
+      }
+      next[key] = ts;
+      if (ts !== src[key]) changed = true;
+    }
+
+    if (changed) writeActiveDeviceTabs(next);
+    return next;
+  }
+
+  function countActiveDeviceTabs(map) {
+    return Object.keys(map && typeof map === 'object' ? map : {}).length;
+  }
+
+  function countSiblingActiveDeviceTabs(map) {
+    var tabs = map && typeof map === 'object' ? map : {};
+    var currentTabId = getActiveDeviceTabId();
+    var total = 0;
+    var key;
+    for (key in tabs) {
+      if (!Object.prototype.hasOwnProperty.call(tabs, key)) continue;
+      if (key === currentTabId) continue;
+      total += 1;
+    }
+    return total;
+  }
+
+  function touchActiveDeviceTab() {
+    var tabs = pruneActiveDeviceTabs(readActiveDeviceTabs(), Date.now());
+    tabs[getActiveDeviceTabId()] = Date.now();
+    return writeActiveDeviceTabs(tabs);
+  }
+
+  function clearSharedDeviceKeyWhenIdle() {
+    var tabs = pruneActiveDeviceTabs(readActiveDeviceTabs(), Date.now());
+    if (countActiveDeviceTabs(tabs)) return;
+    try { localStorage.removeItem('docControlDeviceKeyV1'); } catch (_e0) {}
+  }
+
+  function storeSharedDeviceKey(deviceKey) {
+    var normalized = normalizeDeviceKeyClient(deviceKey || '');
+    touchActiveDeviceTab();
+    if (!normalized) return '';
+    try { localStorage.setItem('docControlDeviceKeyV1', normalized); } catch (_e0) {}
+    return normalized;
+  }
+
+  function readSharedDeviceKey() {
+    var tabs = pruneActiveDeviceTabs(readActiveDeviceTabs(), Date.now());
+    if (countSiblingActiveDeviceTabs(tabs) < 1) {
+      if (!countActiveDeviceTabs(tabs)) clearSharedDeviceKeyWhenIdle();
+      return '';
+    }
+    try {
+      return normalizeDeviceKeyClient(localStorage.getItem('docControlDeviceKeyV1') || '');
+    } catch (_e0) {
+      return '';
+    }
+  }
+
+  function clearSharedDeviceKey() {
+    try { localStorage.removeItem('docControlDeviceKeyV1'); } catch (_e0) {}
+  }
+
+  function startActiveDeviceTracking() {
+    touchActiveDeviceTab();
+    if (activeDeviceHeartbeatId || typeof global.setInterval !== 'function') return;
+    activeDeviceHeartbeatId = global.setInterval(function () {
+      touchActiveDeviceTab();
+    }, ACTIVE_DEVICE_HEARTBEAT_MS);
+  }
+
+  function stopActiveDeviceTracking() {
+    if (activeDeviceHeartbeatId && typeof global.clearInterval === 'function') {
+      global.clearInterval(activeDeviceHeartbeatId);
+      activeDeviceHeartbeatId = 0;
+    }
+    var tabs = pruneActiveDeviceTabs(readActiveDeviceTabs(), Date.now());
+    var currentTabId = getActiveDeviceTabId();
+    if (Object.prototype.hasOwnProperty.call(tabs, currentTabId)) {
+      delete tabs[currentTabId];
+      writeActiveDeviceTabs(tabs);
+    }
+    if (!countActiveDeviceTabs(tabs)) clearSharedDeviceKeyWhenIdle();
+  }
+
+  function bindSharedDeviceKeySync() {
+    if (sharedDeviceSyncBound || !global.addEventListener) return;
+    sharedDeviceSyncBound = true;
+    global.addEventListener('storage', function (event) {
+      if (!event || event.key !== 'docControlDeviceKeyV1') return;
+      var next = normalizeDeviceKeyClient(event.newValue || '');
+      if (next) {
+        try { sessionStorage.setItem('docControlDeviceKeyV1', next); } catch (_e0) {}
+        global.__docControlDeviceKey = next;
+        return;
+      }
+      try { sessionStorage.removeItem('docControlDeviceKeyV1'); } catch (_e1) {}
+      try { delete global.__docControlDeviceKey; } catch (_e2) { global.__docControlDeviceKey = ''; }
+    });
+    global.addEventListener('pagehide', stopActiveDeviceTracking);
+    global.addEventListener('beforeunload', stopActiveDeviceTracking);
+  }
+
   function getStoredMachineKey() {
     var storageKey = 'docControlMachineKeyV1';
     var key = '';
@@ -442,13 +602,14 @@
       key = normalizeDeviceKeyClient(sessionStorage.getItem(storageKey) || '');
     } catch (_e2) {}
 
-    try { localStorage.removeItem(storageKey); } catch (_e2b) {}
+    if (!key) key = readSharedDeviceKey();
     try { localStorage.removeItem('docControlDeviceKeyV3'); } catch (_e3) {}
     if (!key) key = normalizeDeviceKeyClient(global.__docControlDeviceKey || '');
     if (!key) key = 'dk_' + Math.random().toString(36).slice(2, 10) + '_' + Date.now().toString(36);
 
     if (key) {
       try { sessionStorage.setItem(storageKey, key); } catch (_e5) {}
+      storeSharedDeviceKey(key);
       global.__docControlDeviceKey = key;
     }
 
@@ -974,6 +1135,8 @@
     initTheme();
     bindViewportHeightVar();
     markDeviceClasses();
+    startActiveDeviceTracking();
+    bindSharedDeviceKeySync();
     ensureDeviceKey();
     syncCurrentUrlSessionKeys();
     bindPageLoaderLinks();
@@ -989,6 +1152,9 @@
 
   global.normalizeDeviceKeyClient = normalizeDeviceKeyClient;
   global.normalizeMachineKeyClient = normalizeMachineKeyClient;
+  global.readSharedDeviceKey = readSharedDeviceKey;
+  global.storeSharedDeviceKey = storeSharedDeviceKey;
+  global.clearSharedDeviceKey = clearSharedDeviceKey;
   global.getStoredMachineKey = getStoredMachineKey;
   global.ensureDeviceKey = ensureDeviceKey;
   global.getDeviceKey = getDeviceKey;
