@@ -734,6 +734,10 @@
       font-weight: 700;
     }
 
+    #introState {
+      min-height: 360px;
+    }
+
     .spinner {
       width: 24px;
       height: 24px;
@@ -741,10 +745,6 @@
       border: 3px solid rgba(217, 119, 6, 0.22);
       border-top-color: var(--amber);
       animation: spin 0.9s linear infinite;
-    }
-
-    .brand-panel {
-      padding: 14px 18px;
     }
 
     .brand-footer {
@@ -756,6 +756,10 @@
       flex-wrap: wrap;
       color: var(--text-sub);
       text-align: center;
+    }
+
+    .brand-panel {
+      padding: 14px 18px;
     }
 
     .brand-footer img {
@@ -847,13 +851,6 @@
       </div>
     </section>
 
-    <section class="panel brand-panel">
-      <div class="brand-footer">
-        <img src="https://ddc.moph.go.th/uploads/ckeditor2//files/logo-%E0%B8%81%E0%B8%A3%E0%B8%A1.png" alt="โลโก้กรมควบคุมโรค">
-        <div class="brand-footer-text">กองโรคจากการประกอบอาชีพและสิ่งแวดล้อม : กลุ่มบริหารทั่วไป งานการเงินและบัญชี</div>
-      </div>
-    </section>
-
     <section id="introState" class="panel state intro">
       <div class="state-icon"><i class="bi bi-person-vcard"></i></div>
       <h2>เริ่มตรวจสอบด้วยชื่อ-สกุลของผู้ยืม</h2>
@@ -923,6 +920,13 @@
       <div id="mobileList" class="mobile-list"></div>
 
       <div id="truncateNote" class="meta-row hidden"></div>
+    </section>
+
+    <section class="panel brand-panel">
+      <div class="brand-footer">
+        <img src="https://ddc.moph.go.th/uploads/ckeditor2//files/logo-%E0%B8%81%E0%B8%A3%E0%B8%A1.png" alt="โลโก้กรมควบคุมโรค">
+        <div class="brand-footer-text">กองโรคจากการประกอบอาชีพและสิ่งแวดล้อม : กลุ่มบริหารทั่วไป งานการเงินและบัญชี</div>
+      </div>
     </section>
   </main>
 
