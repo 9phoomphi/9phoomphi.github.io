@@ -2,7 +2,7 @@
   'use strict';
 
   global.DOC_CONTROL_CONFIG = {
-    scriptUrl: 'https://script.google.com/macros/s/AKfycbxdn5N0U31qstGLMaCo0TaJ_HILwLPLIA8tSp1sXxCXT1N-hJvRWp83ZA9UNnTIcjJe/exec',
+    scriptUrl: 'https://script.google.com/macros/s/AKfycbyaaDwEKt1rhfgmdslUerpXTOzrvhYzlQBlgi_MI3rLxAcT0RmgDKPPHF6ByfJWGO6l/exec',
     lockSettings: true
   };
 })(typeof window !== 'undefined' ? window : this);
